@@ -34,8 +34,9 @@ jobs:
       - run: sed -i '1s/^/NLOC,CNN,token,PARAM,length,location,file,functionName,FullFunctionName,from,to\n/' lizard-reports/lizard-analysis-raw.csv
 
       - name: Archive lizard reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "code-quality-report"
           path: "./lizard-reports/"
+
           
