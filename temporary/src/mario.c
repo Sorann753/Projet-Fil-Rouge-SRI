@@ -22,7 +22,7 @@ void marioCollision(Mario* const self, enum ItemKind obj){
     }
 } 
 
-void superMarioCollision(Mario* const self, enum ItemKind obj, Mario* const selfa, enum ItemKind obaj, Mario* const selfq, enum ItemKind obqj, int i){
+void superMarioCollision(Mario* const self, enum ItemKind obj){
     switch(obj){
         case Object_Shell:
             self->currentState = Mario_Mario;
