@@ -1,0 +1,41 @@
+# @author  Sorann
+# @date    2024
+
+name: Lizard Analysis
+on: [push, pull_request]
+
+jobs:
+  lizard-global:
+    runs-on: ubuntu-latest
+    env:
+      SCAN_PATH: "./temporary"
+      EXCLUDE_PATH: "\"./temporary/inc/*\""
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+            python-version: '3.12'
+      - run: "pip install lizard jinja2"
+
+      - run: "mkdir lizard-reports"
+
+      # we set the continue-on-error flag because lizard return 1 when the code has a flaw and it makes the action crash otherwise
+      - run: "lizard -o lizard-reports/lizard-analysis-raw.csv -a 7 -L 100 -T nloc=500 -x ${{env.EXCLUDE_PATH}} ${{env.SCAN_PATH}}"
+        continue-on-error: true
+        
+      - run: "lizard -o lizard-reports/lizard-analysis-duplicate.md -Eduplicate -a 7 -L 100 -T nloc=500 -x ${{env.EXCLUDE_PATH}} ${{env.SCAN_PATH}}"
+        continue-on-error: true
+        
+      - run: "lizard -H -o lizard-reports/lizard-analysis-report.html -a 7 -L 100 -T nloc=500 -x ${{env.EXCLUDE_PATH}} ${{env.SCAN_PATH}}"
+        continue-on-error: true
+      
+      # adding column names to csv report for later analysis
+      - run: sed -i '1s/^/NLOC,CNN,token,PARAM,length,location,file,functionName,FullFunctionName,from,to\n/' lizard-reports/lizard-analysis-raw.csv
+
+      - name: Archive lizard reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: "code-quality-report"
+          path: "./lizard-reports/"
+          
