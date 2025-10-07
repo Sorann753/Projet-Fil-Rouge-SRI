@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
         .coins = 0,
     };
 
-    int obj = Object_Bomb;
+    ItemKind obj = Object_Bomb;
 
     int i = 0;
     while (mario.currentState != Mario_DeadMario && i < 10) {
