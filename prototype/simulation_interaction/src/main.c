@@ -38,14 +38,14 @@ struct SimParam {
     atomic_bool* const terminate;
 };
 
-void produceMessage(MessageQueue* head, Order newOrder){
+void produceMessage(MessageQueue** head, Order newOrder){
     /**
      * @pre head->next == NULL
      * @pre newOrder != ORDER_NONE
      */
 
     // if false then we're not at the head so there is a coding error so we abort
-    assert(head->next == NULL);
+    assert((*head)->next == NULL);
 
     // never add a NONE order or it would block the channel
     if(newOrder == ORDER_NONE) return; 
@@ -56,14 +56,14 @@ void produceMessage(MessageQueue* head, Order newOrder){
         .msg = ORDER_NONE,
         .next = NULL
     };
-    head->next = newMessage;
+    (*head)->next = newMessage;
 
     // send the message and allow for consumption of it
-    atomic_store_explicit(&(head->msg), newOrder, memory_order_release);
+    atomic_store_explicit(&((*head)->msg), newOrder, memory_order_release);
     //! DO NOT DEREFERENCE HEAD UNTIL IT'S MOVED !!!
 
     // we move the head to the end of the pipe
-    head = newMessage;
+    *head = newMessage;
     //! WE CAN NOW DEREFERENCE HEAD AGAIN
 
     /**
@@ -72,17 +72,17 @@ void produceMessage(MessageQueue* head, Order newOrder){
      */
 }
 
-Order consumeMessage(MessageQueue* tail){
+Order consumeMessage(MessageQueue** tail){
 
     // get the value
-    Order value = atomic_load_explicit(&(tail->msg), memory_order_acquire);
+    Order value = atomic_load_explicit(&((*tail)->msg), memory_order_acquire);
     
     // if there is an actual value at the tail
     if(value != ORDER_NONE){
         // we consume it
-        MessageQueue* next_tail = tail->next;
-        free(tail);
-        tail = next_tail;
+        MessageQueue* next_tail = (*tail)->next;
+        free(*tail);
+        *tail = next_tail;
     }
 
     return value;
@@ -101,17 +101,17 @@ int simInterfaceProcess(void* param){
     while(!atomic_load(terminate)){
         // we wait until there are messages to fetch
         mtx_lock(mutex);
-        while(atomic_load_explicit(&(messageConsumer->msg), memory_order_acquire) != ORDER_NONE){
+        while(atomic_load(&(messageConsumer->msg)) == ORDER_NONE && !atomic_load(terminate)){
             cnd_wait(cond, mutex);
         }
         mtx_unlock(mutex);
 
         // then we consume all the messages from the queue until none remains
         Order readOrder;
-        while((readOrder = consumeMessage(messageConsumer)) != ORDER_NONE){
+        while((readOrder = consumeMessage(&messageConsumer)) != ORDER_NONE){
             FILE* fileHandler = fopen(exchangeFileName, "a");
-            while(!fileHandler){
-                perror("[CRITICAL] - Unable to open the exchange file, aborting");
+            if(!fileHandler){
+                perror("[CRITICAL] - Unable to open the exchange file, aborting\n");
                 atomic_store(terminate, true);
                 // NOTE : to manage memory correctly we should cleanup all of the MessageQueue here but we'll ignore that since it's a POC
                 // TODO : do it properly
@@ -123,29 +123,32 @@ int simInterfaceProcess(void* param){
                     fputs("FORWARD\n", fileHandler);
                     break;
                 case ORDER_BACKWARD:
-                    fputs("BACKWARD", fileHandler);
+                    fputs("BACKWARD\n", fileHandler);
                     break;
                 case ORDER_LEFT:
-                    fputs("LEFT", fileHandler);
+                    fputs("LEFT\n", fileHandler);
                     break;
                 case ORDER_RIGHT:
-                    fputs("RIGHT", fileHandler);
+                    fputs("RIGHT\n", fileHandler);
                     break;
 
                 default:
-                    perror("[WEIRD] - This is a weird situation, we've read a message that's not a valid order from the channel ???");
+                    perror("[WEIRD] - This is a weird situation, we've read a message that's not a valid order from the channel ???\n");
             }
+
+            fclose(fileHandler);
         }
     }
 }
 
 void afficherMenu(){
     printf("=== MENU ===\n");
-    printf("[1] - En avant\n");
-    printf("[2] - En arriere\n");
-    printf("[3] - Tourner a gauche\n");
-    printf("[4] - Tourner a droite\n");
-    printf("[5] - FIN");
+    printf("[1] - Go Forward\n");
+    printf("[2] - Go Backward\n");
+    printf("[3] - Turn Left\n");
+    printf("[4] - Turn Right\n");
+    printf("[5] - CLOSE\n");
+    printf("USER >> ");
 }
 
 size_t readln(char* out, size_t maxlen){
@@ -183,8 +186,6 @@ int cliProcess(void* param){
 
     // we continue sending stuff to the simulation until we're told to stop
     while( !atomic_load(terminate) ){
-        printf("[LOG] - Entrée dans la boucle\n");
-
         afficherMenu();
         
         char buffer[2];
@@ -192,16 +193,16 @@ int cliProcess(void* param){
 
         switch(buffer[0]){
             case '1':
-                produceMessage(messageProducer, ORDER_FORWARD);
+                produceMessage(&messageProducer, ORDER_FORWARD);
                 break;
             case '2':
-                produceMessage(messageProducer, ORDER_BACKWARD);
+                produceMessage(&messageProducer, ORDER_BACKWARD);
                 break;
             case '3':
-                produceMessage(messageProducer, ORDER_LEFT);
+                produceMessage(&messageProducer, ORDER_LEFT);
                 break;
             case '4':
-                produceMessage(messageProducer, ORDER_RIGHT);
+                produceMessage(&messageProducer, ORDER_RIGHT);
                 break;
             case '5':
                 // finish the program
@@ -209,7 +210,7 @@ int cliProcess(void* param){
                 break;
 
             default:
-                printf("[ERROR] - Entrée invalide, merci de choisir parmis les choix du menu\n");
+                printf("[ERROR] - Invalid input, please chose from the menu\n");
         }
 
         mtx_lock(lock);
@@ -248,15 +249,17 @@ int main(){
 
     thrd_t ConsoleProcess;
     thrd_t ComunicationProcess;
-    if(thrd_create(&ConsoleProcess, cliProcess, &p1) != thrd_success || thrd_create(&ComunicationProcess, simInterfaceProcess, &p2) != thrd_success) {
-        perror("[CRITICAL] - We were unable to start the threads");
+    if(thrd_create(&ComunicationProcess, simInterfaceProcess, &p2) != thrd_success || thrd_create(&ConsoleProcess, cliProcess, &p1) != thrd_success) {
+        perror("[CRITICAL] - We were unable to start the threads\n");
         return -1;
     }
     // Thread started and running
-    printf("[SUCCESS] - Les thread ont été créer avec succès");
+    printf("[SUCCESS] - Threads created\n");
     thrd_join(ConsoleProcess, NULL);
+    printf("[LOG] - console closed\n");
     thrd_join(ComunicationProcess, NULL);
+    printf("[LOG] - communication closed\n");
     
-
+    printf("[SUCCESS] - End of the program\n");    
     return 0;
 }
