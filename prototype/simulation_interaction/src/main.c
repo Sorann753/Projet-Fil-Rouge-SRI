@@ -23,6 +23,21 @@ struct MessageQueue_t{
 };
 typedef struct MessageQueue_t MessageQueue;
 
+struct CLIParam {
+    MessageQueue* messageProducer;
+    cnd_t* cond;
+    mtx_t* lock;
+    atomic_bool* const terminate;
+};
+
+struct SimParam {
+    const char* exchangeFileName;
+    MessageQueue* messageConsumer;
+    cnd_t* cond;
+    mtx_t* mutex;
+    atomic_bool* const terminate;
+};
+
 void produceMessage(MessageQueue* head, Order newOrder){
     /**
      * @pre head->next == NULL
@@ -73,22 +88,29 @@ Order consumeMessage(MessageQueue* tail){
     return value;
 }
 
-void simInterfaceProcess(const char* exchangeFileName, MessageQueue* messageConsumer, atomic_bool* const terminate){
+int simInterfaceProcess(void* param){
+    // extract the parameters
+    struct SimParam* args = (struct SimParam*)param;
+    const char* exchangeFileName = args->exchangeFileName;
+    MessageQueue* messageConsumer = args->messageConsumer;
+    cnd_t* cond = args->cond;
+    mtx_t* mutex = args->mutex;
+    atomic_bool* const terminate = args->terminate;
     
     // we continue sending stuff to the simulation until we're told to stop
     while(!atomic_load(terminate)){
         // we wait until there are messages to fetch
-        mtx_lock(NULL);
-        while(false){
-            cnd_wait(0, 0);
+        mtx_lock(mutex);
+        while(atomic_load_explicit(&(messageConsumer->msg), memory_order_acquire) != ORDER_NONE){
+            cnd_wait(cond, mutex);
         }
-        mtx_unlock(NULL);
+        mtx_unlock(mutex);
 
         // then we consume all the messages from the queue until none remains
         Order readOrder;
         while((readOrder = consumeMessage(messageConsumer)) != ORDER_NONE){
             FILE* fileHandler = fopen(exchangeFileName, "a");
-            if(!fileHandler){
+            while(!fileHandler){
                 perror("[CRITICAL] - Unable to open the exchange file, aborting");
                 atomic_store(terminate, true);
                 // NOTE : to manage memory correctly we should cleanup all of the MessageQueue here but we'll ignore that since it's a POC
@@ -149,7 +171,15 @@ size_t readln(char* out, size_t maxlen){
     return readCount;
 }
 
-void cliProcess(MessageQueue* messageProducer, atomic_bool* const terminate){
+int cliProcess(void* param){
+
+    // extract the parameters
+    struct CLIParam* args = (struct CLIParam*)param;
+    MessageQueue* messageProducer = args->messageProducer;
+    cnd_t* cond = args->cond;
+    mtx_t* lock = args->lock;
+    atomic_bool* const terminate = args->terminate;
+
 
     // we continue sending stuff to the simulation until we're told to stop
     while( !atomic_load(terminate) ){
@@ -181,11 +211,52 @@ void cliProcess(MessageQueue* messageProducer, atomic_bool* const terminate){
             default:
                 printf("[ERROR] - Entrée invalide, merci de choisir parmis les choix du menu\n");
         }
+
+        mtx_lock(lock);
+        cnd_signal(cond);
+        mtx_unlock(lock);
     }
 }
 
+
 int main(){
     atomic_bool terminate = false;
+    cnd_t condition_var;
+    mtx_t mutex;
+    mtx_init(&mutex, mtx_plain);
+    cnd_init(&condition_var);
+
+    // allocate the first block of the channel, note that it will be made unusable after the consumer use it
+    MessageQueue* channel = (MessageQueue*)malloc(sizeof(MessageQueue));
+    channel->msg = ORDER_NONE; // set it as empty
+    channel->next = NULL;
+
+    struct CLIParam p1 = {
+        .messageProducer = channel,
+        .cond = &condition_var,
+        .lock = &mutex,
+        .terminate = &terminate,
+    };
+
+    struct SimParam p2 = {
+        .exchangeFileName = "channel.txt",
+        .messageConsumer = channel,
+        .cond = &condition_var,
+        .mutex = &mutex,
+        .terminate = &terminate,
+    };
+
+    thrd_t ConsoleProcess;
+    thrd_t ComunicationProcess;
+    if(thrd_create(&ConsoleProcess, cliProcess, &p1) != thrd_success || thrd_create(&ComunicationProcess, simInterfaceProcess, &p2) != thrd_success) {
+        perror("[CRITICAL] - We were unable to start the threads");
+        return -1;
+    }
+    // Thread started and running
+    printf("[SUCCESS] - Les thread ont été créer avec succès");
+    thrd_join(ConsoleProcess, NULL);
+    thrd_join(ComunicationProcess, NULL);
+    
 
     return 0;
 }

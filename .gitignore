@@ -57,3 +57,4 @@ dkms.conf
 # local stuff
 *.local.*
 local/
+venv/
