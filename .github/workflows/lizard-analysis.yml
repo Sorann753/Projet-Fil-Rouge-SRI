@@ -8,7 +8,7 @@ jobs:
   lizard-global:
     runs-on: ubuntu-latest
     env:
-      SCAN_PATH: "./temporary"
+      SCAN_PATH: "./source"
       EXCLUDE_PATH: "\"./temporary/inc/*\""
 
     steps:
