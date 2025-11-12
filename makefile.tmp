@@ -1,0 +1,19 @@
+# makefile pour le projet
+# fait a la main, pas encore utilisable
+
+CFLAGS = -Wall -Wextra -Werror -std=c11 -pedantic -Wfloat-equal -Wshadow \
+-Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=3 \
+-Wwrite-strings -Wformat=2 
+
+DBGFLAG = -g2 -fsanitize={address, thread, undefined}
+RELEASE_FLAG = -O2
+
+debug%.o : %.c
+	gcc -c $(CFLAGS) $(DBGFLAG) $< -o $@
+
+release%.o : %.c
+	gcc -c $(CFLAGS) $(RELEASE_FLAG) $< -o $@
+
+release : release%o 
+	gcc -c $(CFLAGS) $< -o $@
+

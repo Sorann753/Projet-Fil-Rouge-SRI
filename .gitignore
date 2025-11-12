@@ -58,3 +58,6 @@ dkms.conf
 *.local.*
 local/
 venv/
+.xmake/
+build/
+.vscode/
