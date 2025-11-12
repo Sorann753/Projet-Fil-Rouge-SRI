@@ -1,12 +1,12 @@
 add_rules("mode.debug", "mode.release")
+add_cflags("-Wall", "-Wextra", "-pedantic", "-Wfloat-equal", "-Wshadow")
+add_cflags("-Wpointer-arith", "-Wcast-align", "-Wstrict-prototypes", "-Wstrict-overflow=3")
+add_cflags("-Wwrite-strings", "-Wformat=2")
 
 target("PFR-simulator")
     set_kind("binary")
     add_includedirs("include/")
     add_files("source/*.c")
-    add_cflags("-Wall", "-Wextra", "-pedantic", "-Wfloat-equal", "-Wshadow")
-    add_cflags("-Wpointer-arith", "-Wcast-align", "-Wstrict-prototypes", "-Wstrict-overflow=3")
-    add_cflags("-Wwrite-strings", "-Wformat=2")
     set_warnings("all", "error")
     set_languages("c11")
 
