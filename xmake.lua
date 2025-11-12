@@ -11,7 +11,7 @@ target("PFR-simulator")
     set_languages("c11")
 
     if is_mode("debug") then
-        add_cflags("-g2", "-fsanitize={address, thread, undefined}")
+        add_cflags("-g2")
     else
         set_optimize("faster")
     end
