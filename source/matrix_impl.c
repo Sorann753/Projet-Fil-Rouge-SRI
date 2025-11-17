@@ -26,7 +26,7 @@ void int_matrixPrint(const Matrix* const mat){
     int* matContent = (int*)mat->content;
     for(size_t i = 0; i < blockCount; i++){
         printf("%d ", matContent[i]);
-        if(i+1 % mat->columns == 0){
+        if((i+1) % mat->columns == 0){
             printf("\n");
         }
     }
