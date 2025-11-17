@@ -3,7 +3,7 @@
  * @date 11/2025
  */
 
-#include "matrix.h"
+#include "matrix_impl.h"
 
 int int_matrixGet(const Matrix* const mat, const size_t x, const size_t y){
     size_t index = matrixGetIndex(mat, x, y);
@@ -17,6 +17,19 @@ void int_matrixSet(Matrix* const mat, const size_t x, const size_t y, const int 
     size_t index = matrixGetIndex(mat, x, y);
     int* ptr = ((int*)(mat->content));
     ptr[index] = value;
+}
+
+void int_matrixPrint(const Matrix* const mat){
+    assert(mat->isValid);
+
+    size_t blockCount = mat->columns * mat->lines;
+    int* matContent = (int*)mat->content;
+    for(size_t i = 0; i < blockCount; i++){
+        printf("%d ", matContent[i]);
+        if(i+1 % mat->columns == 0){
+            printf("\n");
+        }
+    }
 }
 
 Matrix int_addMatrix(const Matrix* const first, const Matrix* const second){
@@ -101,6 +114,19 @@ void double_matrixSet(Matrix* const mat, const size_t x, const size_t y, const d
     size_t index = matrixGetIndex(mat, x, y);
     double* ptr = ((double*)(mat->content));
     ptr[index] = value;
+}
+
+void double_matrixPrint(const Matrix* const mat){
+    assert(mat->isValid);
+
+    size_t blockCount = mat->columns * mat->lines;
+    double* matContent = (double*)mat->content;
+    for(size_t i = 0; i < blockCount; i++){
+        printf("%f ", matContent[i]);
+        if((i+1) % mat->columns == 0){
+            printf("\n");
+        }
+    }
 }
 
 Matrix double_addMatrix(const Matrix* const first, const Matrix* const second){
