@@ -17,6 +17,7 @@ target("PFR-simulator")
     end
 
 target("PFR-hardware")
+    set_default(false)
     set_kind("binary")
     add_includedirs("include/")
     add_files("source/*.c")
