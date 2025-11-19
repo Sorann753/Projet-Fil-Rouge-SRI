@@ -9,6 +9,15 @@
 
 
 /*-------------- SIMULATION ---------------*/
+
+/*creation de type*/
+typedef enum action_t{
+    ACT_FORWARD,
+    ACT_BACKWARD,
+    ACT_TURN,
+}action;
+
+
 /*TODO: Creer des fonction de deplacement*/
 
 
