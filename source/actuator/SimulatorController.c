@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "include/actuator/SimulatorController.h"
+#include "actuator/SimulatorController.h"
 #include <assert.h>
 #include <stdbool.h>
 
