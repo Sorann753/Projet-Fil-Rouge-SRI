@@ -3,12 +3,12 @@
 
 #include <stdio.h>
 
+char selectMenu(void);
+
 void homeMenu(void);
 
 void controlMenu(void);
 
 void languagesMenu(void);
-
-void menu(void);
 
 #endif
