@@ -3,7 +3,7 @@
     
 /*.h commun a la simulation et au hardware*/
 /*TODO: traduire les commande en commande de simulation simple*/
-void send_action_sim();
+void send_action_sim(void);
 
 
 

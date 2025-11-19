@@ -8,7 +8,7 @@
 
 #include <stdio.h> 
 
-#include "matrix.h"
+#include "utils/matrix.h"
 
 
 // NOTE : the speed of the mathematical operations on the matrix may be improved, however it might not be necessary

@@ -3,7 +3,7 @@
  * @date 11/2025
  */
 
-#include "matrix_impl.h"
+#include "utils/matrix_impl.h"
 
 int int_matrixGet(const Matrix* const mat, const size_t x, const size_t y){
     size_t index = matrixGetIndex(mat, x, y);

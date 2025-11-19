@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "matrix_impl.h"
+#include "utils/matrix_impl.h"
 
 #define SIMULATOR
 // #define HARDWARE

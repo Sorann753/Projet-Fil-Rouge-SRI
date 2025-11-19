@@ -3,7 +3,7 @@
  * @date 11/2025
  */
 
-#include "matrix.h"
+#include "utils/matrix.h"
 
 Matrix initMatrix(const size_t lines, const size_t columns, const size_t typeSize){
     // the third one is here to check for very weird integer overflow

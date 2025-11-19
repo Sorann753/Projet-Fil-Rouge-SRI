@@ -6,7 +6,7 @@ add_cflags("-Wwrite-strings", "-Wformat=2")
 target("PFR-simulator")
     set_kind("binary")
     add_includedirs("include/")
-    add_files("source/*.c")
+    add_files("source/**.c")
     set_warnings("all", "error")
     set_languages("c11")
 
