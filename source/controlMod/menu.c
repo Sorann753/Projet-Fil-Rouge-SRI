@@ -9,8 +9,8 @@ char selectMenu(void)
    return character;
 }
 
- void homeMenu()
- {
+void homeMenu()
+{
    char choice;
    do
    {
@@ -36,10 +36,10 @@ char selectMenu(void)
       }
    } while (choice != 113);
 
- }
+}
 
- void controlMenu()
- {
+void controlMenu()
+{
    int choice;
    do
    {
@@ -65,9 +65,9 @@ char selectMenu(void)
       }
    } while (choice != 48);
    
- }
+}
 
- void languagesMenu()
+void languagesMenu()
 {
    char choice;
    do
