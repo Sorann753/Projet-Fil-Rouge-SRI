@@ -37,6 +37,6 @@ target("PFR-test")
 target("PFR-testMenu")
     set_default(false)
     set_kind("binary")
-    add_includedirs("include/controlMod")
+    add_includedirs("include/")
     add_files("source/controlMod/**.c")
 

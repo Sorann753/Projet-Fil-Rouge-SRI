@@ -1,6 +1,7 @@
 #include <stdlib.h>
+#include <stdbool.h>
 
-#include "menu.h"
+#include "controlMod/menu.h"
 
 char selectMenu(void)
 {
@@ -12,85 +13,118 @@ char selectMenu(void)
 void homeMenu()
 {
    char choice;
-   do
+   bool running = true;
+
+   while(running)
    {
-      system("clear");
-      printf("HOME\n");
-      printf("1.Control Mode\n");
-      printf("2.Languages\n");
-      printf("q.Quit\n");
+      printf("------ HOME ------\n");
+      printf("| 1.Control Mode |\n");
+      printf("| 2.Languages    |\n");
+      printf("| q.Quit         |\n");
+      printf("------------------\n\n");
       choice = selectMenu();
+      
+
       switch (choice)
       {
-      case 49:
-         controlMenu();
-         break;
-      case 50:
-         languagesMenu();
-         break;
-      case 113:
-         printf("EXIT");
-         break;
-      default:
-         printf("invalide choice please retry\n");
+         case 49:
+            controlMenu();
+            break;
+         case 50:
+            languagesMenu();
+            break;
+         case 113:
+            printf("--- EXIT ---\n");
+            running = false;
+            break;
+         default:
+            system("clear");
       }
-   } while (choice != 113);
-
+   }
 }
 
 void controlMenu()
 {
    int choice;
-   do
+   bool running = true;
+   
+   while(running)
    {
-      system("clear");
-      printf("Control\n");
-      printf("1.CLI Mode\n");
-      printf("2.Vocal Mode\n");
-      printf("0.Return\n");
+      printf("---- Control ----\n");
+      printf("| 1.CLI Mode    |\n");
+      printf("| 2.Vocal Mode  |\n");
+      printf("| 0.Return      |\n");
+      printf("-----------------\n\n");
       choice = selectMenu();
+      
+      
       switch (choice)
       {
-      case 49:
-         printf("CLI MODE WORKING PROGRESS");
-         break;
-      case 50:
-         printf("VOCAL MODE WORKING PROGRESS");
-         break;
-      case 48:
-         homeMenu();
-         break;
-      default:
-         printf("invalide choice please retry\n");
+         case 49:
+            printf("CLI MODE WORKING PROGRESS\n");
+            WORKING_PROGRESS();
+            break;
+         case 50:
+            printf("VOCAL MODE WORKING PROGRESS\n");
+            WORKING_PROGRESS();
+            break;
+         case 48:
+            running = false;
+            break;
+         default:
+            system("clear");
       }
-   } while (choice != 48);
-   
+   }
 }
 
 void languagesMenu()
 {
    char choice;
-   do
+   bool running = true;
+   
+   while(running)
    {
-      system("clear");
-      printf("Languages\n");
-      printf("1.Français\n");
-      printf("2.English\n");
-      printf("0.Return\n");
+      printf("-- Languages --\n");
+      printf("| 1.Français  |\n");
+      printf("| 2.English   |\n");
+      printf("| 0.Return    |\n");
+      printf("---------------\n\n");
       choice = selectMenu();
+      
       switch (choice)
       {
-      case 49:
-         printf("FRANÇAIS WORKING PROGRESS");
-         break;
-      case 50:
-         printf("ENGLISH WORKING PROGRESS");
-         break;
-      case 48:
-         homeMenu();
-         break;
-      default:
-         printf("invalide choice please retry\n");
+         case 49:
+            printf("FRANÇAIS WORKING PROGRESS\n");
+            WORKING_PROGRESS();
+            break;
+         case 50:
+            printf("ENGLISH WORKING PROGRESS\n");
+            WORKING_PROGRESS();
+            break;
+         case 48:
+            running = false;
+            break;
+         default:
+            system("clear");
       }
-   } while (choice != 48);
+   }
+}
+
+void WORKING_PROGRESS()
+{
+   char choice;
+   bool running = true;
+
+   while (running)
+   {
+      printf("WORKING_PROGRESS\n");
+      printf("press q for exit\n");
+      choice = selectMenu();
+      if (choice == 113)
+      {
+         running = false;
+      }
+      
+   }
+   
 }
