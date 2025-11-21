@@ -3,10 +3,13 @@
  */
 
 #include "testCases/matrixTest.h"
+#include "testCases/testMenu.h"
 
 int main(void){
 
     testMatrix();
-
+    
+    // keep this one as the last since it require user input
+    testMenu();
     return 0;
 }

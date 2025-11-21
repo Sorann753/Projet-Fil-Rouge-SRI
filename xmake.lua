@@ -26,17 +26,10 @@ target("PFR-hardware")
     add_files("source/*.c")
 
 
+
 target("PFR-test")    
     set_default(false)
     set_kind("binary")
     add_includedirs("include/")
     add_files("source/**.c")
     remove_files("source/main.c") --on ne compile pas le main vus qu'on compile les test
-
-
-target("PFR-testMenu")
-    set_default(false)
-    set_kind("binary")
-    add_includedirs("include/")
-    add_files("source/controlMod/**.c")
-

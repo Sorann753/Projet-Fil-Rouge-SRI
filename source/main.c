@@ -9,8 +9,7 @@
 
 int main(void){
     #if defined (SIMULATOR) && defined (HARDWARE)
-    // you are not supposed to enable both at once
-    assert(false); 
+    #error you are not supposed to enable both at once
     #endif
 
     printf("Hello world !\n");
