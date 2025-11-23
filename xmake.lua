@@ -11,12 +11,6 @@ target("PFR-simulator")
     add_files("source/**.c")
     remove_files("source/test.c", "source/testCases/**c") --les trucs a ne pas compiler
 
-    if is_mode("debug") then
-        add_cflags("-g2")
-    else
-        set_optimize("faster")
-    end
-
 
 
 target("PFR-hardware")
@@ -29,6 +23,7 @@ target("PFR-hardware")
 
 target("PFR-test")    
     set_default(false)
+    set_rules("mode.debug")
     set_kind("binary")
     add_includedirs("include/")
     add_files("source/**.c")

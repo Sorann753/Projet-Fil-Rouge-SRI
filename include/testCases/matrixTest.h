@@ -3,6 +3,8 @@
 
 #include <utils/matrix_impl.h>
 
-void testMatrix(void);
+void testDoubleMatrix(void);
+
+void testByteMatrix(void);
 
 #endif

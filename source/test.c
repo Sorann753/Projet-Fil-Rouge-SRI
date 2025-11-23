@@ -7,7 +7,9 @@
 
 int main(void){
 
-    testMatrix();
+    testDoubleMatrix();
+
+    testByteMatrix();
     
     // keep this one as the last since it require user input
     testMenu();

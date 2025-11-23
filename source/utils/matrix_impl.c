@@ -5,7 +5,7 @@
 
 #include "utils/matrix_impl.h"
 
-int int_matrixGet(const Matrix* const mat, const size_t x, const size_t y){
+int int_matrixGet(const Matrix* const mat, size_t x, size_t y){
     size_t index = matrixGetIndex(mat, x, y);
     int* ptr = (int*)mat->content;
     int value = ptr[index];
@@ -13,7 +13,7 @@ int int_matrixGet(const Matrix* const mat, const size_t x, const size_t y){
     return value;
 }
 
-void int_matrixSet(Matrix* const mat, const size_t x, const size_t y, const int value){
+void int_matrixSet(Matrix* const mat, size_t x, size_t y, int value){
     size_t index = matrixGetIndex(mat, x, y);
     int* ptr = ((int*)(mat->content));
     ptr[index] = value;
@@ -55,7 +55,7 @@ Matrix int_addMatrix(const Matrix* const first, const Matrix* const second){
     return result;
 }
 
-Matrix int_scaleMatrix(const Matrix* const mat, const int scalar){
+Matrix int_scaleMatrix(const Matrix* const mat, int scalar){
     assert(mat->isValid);
     
     Matrix result = initMatrix(mat->lines, mat->columns, sizeof(int));
@@ -102,7 +102,7 @@ Matrix int_multiplyMatrix(const Matrix* const first, const Matrix* const second)
 
 
 
-double double_matrixGet(const Matrix* const mat, const size_t x, const size_t y){
+double double_matrixGet(const Matrix* const mat, size_t x, size_t y){
     size_t index = matrixGetIndex(mat, x, y);
     double* ptr = (double*)mat->content;
     double value = ptr[index];
@@ -110,7 +110,7 @@ double double_matrixGet(const Matrix* const mat, const size_t x, const size_t y)
     return value;
 }
 
-void double_matrixSet(Matrix* const mat, const size_t x, const size_t y, const double value){
+void double_matrixSet(Matrix* const mat, size_t x, size_t y, double value){
     size_t index = matrixGetIndex(mat, x, y);
     double* ptr = ((double*)(mat->content));
     ptr[index] = value;
@@ -152,7 +152,7 @@ Matrix double_addMatrix(const Matrix* const first, const Matrix* const second){
     return result;
 }
 
-Matrix double_scaleMatrix(const Matrix* const mat, const double scalar){
+Matrix double_scaleMatrix(const Matrix* const mat, double scalar){
     assert(mat->isValid);
     
     Matrix result = initMatrix(mat->lines, mat->columns, sizeof(double));
@@ -178,6 +178,103 @@ Matrix double_multiplyMatrix(const Matrix* const first, const Matrix* const seco
     double* resultContent = (double*)result.content;
     double* firstContent = (double*)first->content;
     double* secondContent = (double*)second->content;
+
+    // NOTE : this is a simple implementation so it has O(n^3) complexity, upgrade if needed later
+    for(size_t i = 0; i < first->lines; i++){
+        for(size_t j = 0; j < second->columns; j++){
+            size_t resIndex = i * second->columns + j;
+            resultContent[resIndex] = 0;
+            for(size_t k = 0; k < first->columns; k++){
+                size_t leftIndex = i * first->columns + k;
+                size_t rightIndex = k * second->columns + j;
+                resultContent[resIndex] += firstContent[leftIndex] * secondContent[rightIndex];
+            }
+        }
+    }
+
+    return result;
+}
+
+
+
+
+
+byte byte_matrixGet(const Matrix* const mat, size_t x, size_t y){
+    size_t index = matrixGetIndex(mat, x, y);
+    byte* ptr = (byte*)mat->content;
+    byte value = ptr[index];
+
+    return value;
+}
+
+void byte_matrixSet(Matrix* const mat, size_t x, size_t y, byte value){
+    size_t index = matrixGetIndex(mat, x, y);
+    byte* ptr = ((byte*)(mat->content));
+    ptr[index] = value;
+}
+
+void byte_matrixPrint(const Matrix* const mat){
+    assert(mat->isValid);
+
+    size_t blockCount = mat->columns * mat->lines;
+    byte* matContent = (byte*)mat->content;
+    for(size_t i = 0; i < blockCount; i++){
+        printf("%02hhX ", matContent[i]);
+        if((i+1) % mat->columns == 0){
+            printf("\n");
+        }
+    }
+}
+
+Matrix byte_addMatrix(const Matrix* const first, const Matrix* const second){
+    assert(first->isValid && second->isValid);
+    // check dimensions
+    assert(first->columns == second->columns && first->lines == second->lines);
+
+    // prepare the matrix to store the results
+    Matrix result = initMatrix(first->lines, first->columns, sizeof(byte));
+
+    // create alias to make code cleaner
+    size_t blockCount = first->columns * first->lines;
+    byte* firstContent = (byte*)first->content;
+    byte* secondContent = (byte*)second->content;
+    byte* resultContent = (byte*)result.content;
+    
+    // NOTE : since the matrix is linearized we can iterate through it with a single loop
+    for(size_t i = 0; i < blockCount; i++){
+        resultContent[i] = firstContent[i] + secondContent[i];
+    }
+
+    // NOTE : ownership is handed back to the caller so be sure to free it later
+    return result;
+}
+
+Matrix byte_scaleMatrix(const Matrix* const mat, byte scalar){
+    assert(mat->isValid);
+    
+    Matrix result = initMatrix(mat->lines, mat->columns, sizeof(byte));
+
+    size_t blockCount = mat->lines * mat->columns;
+    byte* resultContent = (byte*)result.content;
+    byte* matContent = (byte*)mat->content;
+
+    for(size_t i = 0; i < blockCount; i++){
+        resultContent[i] = matContent[i] * scalar;
+    }
+
+    return result;
+}
+
+Matrix byte_multiplyMatrix(const Matrix* const first, const Matrix* const second){
+    assert(first->isValid && second->isValid);
+    // dimensions are flipped for a matrix product
+    assert(first->lines == second->columns && first->columns == second->lines);
+
+    Matrix result = initMatrix(first->lines, second->columns, sizeof(byte));
+
+    byte* resultContent = (byte*)result.content;
+    byte* firstContent = (byte*)first->content;
+    byte* secondContent = (byte*)second->content;
 
     // NOTE : this is a simple implementation so it has O(n^3) complexity, upgrade if needed later
     for(size_t i = 0; i < first->lines; i++){
