@@ -27,13 +27,13 @@ void homeMenu()
 
       switch (choice)
       {
-         case 49:
+         case '1':
             controlMenu();
             break;
-         case 50:
+         case '2':
             languagesMenu();
             break;
-         case 113:
+         case 'q':
             printf("--- EXIT ---\n");
             running = false;
             break;
@@ -60,15 +60,15 @@ void controlMenu()
       
       switch (choice)
       {
-         case 49:
+         case '1':
             printf("CLI MODE WORKING PROGRESS\n");
             WORKING_PROGRESS();
             break;
-         case 50:
+         case '2':
             printf("VOCAL MODE WORKING PROGRESS\n");
             WORKING_PROGRESS();
             break;
-         case 48:
+         case '0':
             running = false;
             break;
          default:
@@ -93,15 +93,15 @@ void languagesMenu()
       
       switch (choice)
       {
-         case 49:
+         case '1':
             printf("FRANÇAIS WORKING PROGRESS\n");
             WORKING_PROGRESS();
             break;
-         case 50:
+         case '2':
             printf("ENGLISH WORKING PROGRESS\n");
             WORKING_PROGRESS();
             break;
-         case 48:
+         case '0':
             running = false;
             break;
          default:
