@@ -4,13 +4,15 @@
 
 #include "testCases/matrixTest.h"
 #include "testCases/testMenu.h"
+#include "testCases/speechTest.h"
 
 int main(void){
 
     testDoubleMatrix();
 
     testByteMatrix();
-    
+
+    testGetSpeech();
     // keep this one as the last since it require user input
     testMenu();
     return 0;
