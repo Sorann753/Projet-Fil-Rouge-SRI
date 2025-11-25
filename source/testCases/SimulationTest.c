@@ -10,8 +10,9 @@
 /**
  * @brief test des fonctions qui ecrivent dans SimulatorController.txt pour communiquer avec le python
  */
-void TestAction(){
-
+void TestAction(void){
+    printf("----- TEST SIMULATION -----\n");
+    
     /*tester les fonction de deplacement*/
     backward(100);
     forward(55);
@@ -21,4 +22,5 @@ void TestAction(){
     backward(44);
     forward(60);
 
+    printf("----- FIN TEST SIMULATION -----\n");
 }

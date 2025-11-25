@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "actuator/SimulatorController.h"
 #include <assert.h>
 #include <stdbool.h>
+#include <math.h>
 
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
@@ -19,6 +21,7 @@ void WriteAction(action act, float value){ /*le char (pointeur = string) est en 
     /*test de louverture du fichier*/
     if (!my_file){
         printf("SIM_FILE: the SimulationControler.txt hase note been able to open");
+        return;
     }
 
 
@@ -27,18 +30,22 @@ void WriteAction(action act, float value){ /*le char (pointeur = string) est en 
     {
     case ACT_FORWARD:
         fprintf(my_file, "FORWARD %f\n", value);
+        printf("ligne ajouter a SimulatorController.txt");
         break;
 
     case ACT_BACKWARD:
         fprintf(my_file, "BACKWARD %f\n", value);
+        printf("ligne ajouter a SimulatorController.txt");
         break;
 
     case ACT_TURN:
         fprintf(my_file, "TURN %f\n", value);
+        printf("ligne ajouter a SimulatorController.txt");
         break;
 
     default:
         fprintf(my_file, "ACTION %f\n", value);
+        printf("(default) ligne ajouter a SimulatorController.txt");
         break;
     }
 
@@ -55,13 +62,12 @@ void WriteAction(action act, float value){ /*le char (pointeur = string) est en 
  */
 void forward(float distance){
     if (distance<0){
-        fprintf(stderr, "forward(): distance must be >0 \n");
-        return;
+        backward(distance);
     }
-    assert(distance<0);
-
+    
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_FORWARD, distance);
+    printf("l'action forward a été ajouter \n");
 } 
 
 
@@ -71,15 +77,13 @@ void forward(float distance){
  * @param distance
  */
 void backward(float distance){
-    if (distance<0){
-        fprintf(stderr, "backward(): distance must be >0 \n");
-        return;
-    }
-    assert(distance<0);
+    
+    distance = fabsf(distance);
+
 
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_BACKWARD, distance);
-
+    printf("l'action backward a été ajoute \n");
 }
 
 
@@ -95,7 +99,7 @@ void turn(float angle){
     }
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_TURN, angle);
-
+    printf("l'action turn a été ajouter\n");
 }
 
 
