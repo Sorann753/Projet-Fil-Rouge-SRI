@@ -16,5 +16,8 @@ int main(void){
     
     // keep this one as the last since it require user input
     testMenu();
+
+    /*lancer la simulation*/
+    system("python3 source/actuator/Simulator.py");
     return 0;
 }

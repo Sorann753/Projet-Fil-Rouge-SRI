@@ -1,8 +1,8 @@
 import turtle
 import os
-import time
+import time #pour utiliser time.sleep()
 
-PATH = "build/linux/x86_64/debug/SimulatorController.txt"
+PATH = "SimulatorController.txt"
 
 #creation du Robot
 def init_bot():
@@ -82,4 +82,3 @@ if __name__ == "__main__":
     ReadAction(bot)
 
     print("navigation reussi !")
-    turtle.exitonclick()
