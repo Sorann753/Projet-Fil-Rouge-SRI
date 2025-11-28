@@ -1,5 +1,8 @@
 #include "utils/stringUtils.h"
 
+/**
+ * @brief lire les ligne a partir du teminal (alternative au scanf)
+ */
 size_t readln(char* out, const size_t maxlen){
     assert(out != NULL);
     char in;
