@@ -13,14 +13,17 @@
 void TestAction(void){
     printf("----- TEST SIMULATION -----\n");
     
+    /*initialisation du fichier SimulatorController.txt*/
+    init_Simulator();
+
     /*tester les fonction de deplacement*/
-    backward(100);
-    forward(55);
-    forward(63);
-    turn(45);
-    forward(47);
-    backward(44);
-    forward(60);
+    backward(1);
+    forward(30);
+    forward(3);
+    turn(4);
+    forward(7);
+    backward(4);
+    forward(6);
 
     printf("----- FIN TEST SIMULATION -----\n");
 }

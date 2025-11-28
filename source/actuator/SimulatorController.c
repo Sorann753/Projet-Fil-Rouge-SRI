@@ -9,7 +9,23 @@
 #define SIM_FILE "./SimulatorController.txt"
 
 /**
- * @brief procédure pour ecrire dans un fichier laction et la valeur
+ * @brief procédure pour efacer le contenue de SimulatorContorller.txt
+ */
+void init_Simulator(void){
+    FILE* my_file= fopen(SIM_FILE, "w");
+    if (my_file == NULL){
+        printf("SIM_FILE: the SimulationController hase note been initalisated");
+        return;
+    }
+
+    printf("le fichier SimulatorContoller.txt a été vidé !");
+
+}
+
+
+
+/**
+ * @brief procédure pour ecrire dans un fichier laction et la valeur dans SimulatorController.txt
  * @param act laction enumerer dans le .h
  * @param value la valuer associer a laction 
  */
@@ -19,7 +35,7 @@ void WriteAction(action act, float value){ /*le char (pointeur = string) est en 
     FILE* my_file = fopen(SIM_FILE, "a" );
     
     /*test de louverture du fichier*/
-    if (!my_file){
+    if (my_file==NULL){
         printf("SIM_FILE: the SimulationControler.txt hase note been able to open");
         return;
     }

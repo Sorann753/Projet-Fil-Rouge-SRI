@@ -18,8 +18,11 @@ typedef enum action_t{
 }action;
 
 
-/*TODO: Creer des fonction de deplacement*/
 
+/**
+ * @brief procédure pour efacer le contenue de SimulatorContorller.txt
+ */
+void init_Simulator(void);
 
 /**
  * @brief procédure pour avancer d'une distance donner en entrer dans en simulation
