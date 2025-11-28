@@ -1,32 +1,40 @@
 import turtle
 import os
+import time
 
-PATH = "Projet-Fil-Rouge-SRI/build/linux/x86_64/debug/SimulatorController.txt"
+PATH = "build/linux/x86_64/debug/SimulatorController.txt"
 
 #creation du Robot
 def init_bot():
     robot = turtle.Turtle()
     robot.color("orange")
     robot.shape("square")
+    robot.speed(1)
+    robot.width(5)
+
+    print("creation du robot reussit")
     return robot
     
 
 
 #la fonction de navigation    
 def navigation(action, value, robot):
-    
+    value_float = float(value)
     #naviger en fonction de laction
     if action == "FORWARD":
-        print(f"NAV_FORWARD: {value} metre")
-        turtle.forward(value)
+        print(f"NAV_FORWARD: {value_float} metre")
+        robot.forward(value_float)
+        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
 
     elif action == "BACKWARD":
-        print(f"NAV_BACKWARD {value} metre")
-        turtle.forward(-value)
+        print(f"NAV_BACKWARD {value_float} metre")
+        robot.forward(-value_float)
+        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
 
     elif action == "TURN":
-        print(f"NAV_TURN: {value}°")
-        turtle.left(value)
+        print(f"NAV_TURN: {value_float}°")
+        robot.left(value_float)
+        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
 
     else:
         print("NAV_ERROR: unknown action !")
@@ -65,6 +73,7 @@ def ReadAction(robot):
 
             #apelle de la fonction de navigation
             navigation(action, value, robot)
+            print("lecture ligne")
 
 
 
@@ -73,3 +82,4 @@ if __name__ == "__main__":
     ReadAction(bot)
 
     print("navigation reussi !")
+    turtle.exitonclick()
