@@ -5,8 +5,23 @@
 #include <stdbool.h>
 #include <math.h>
 
+
+/*TODO: fonction conversion radiant*/
+/*TODO: ajout de la mise a jour de la postion */
+
+
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
+
+/*definir pi*/
+#ifndef PI
+#define PI = 3.14159265358979323846
+#endif
+
+
+/*VARIABLE GLOBALE : initialisation de la position*/
+    static RobotPosition Position = {0.0f, 0.0f, 0.0f};
+    
 
 /**
  * @brief procédure pour efacer le contenue de SimulatorContorller.txt
@@ -18,7 +33,12 @@ void init_Simulator(void){
         return;
     }
 
+    
+
+
     printf("le fichier SimulatorContoller.txt a été vidé !");
+
+
 
 }
 
@@ -81,6 +101,9 @@ void forward(float distance){
         backward(distance);
     }
     
+    /*mise a jour de la position*/
+    
+
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_FORWARD, distance);
     printf("l'action forward a été ajouter \n");
@@ -113,6 +136,10 @@ void turn(float angle){
         fprintf(stderr, "turn(): angle value must be between -360 and +360 degr \n");
         return;
     }
+
+    /*mise a jour du theta*/
+    Position.theta += angle;
+
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_TURN, angle);
     printf("l'action turn a été ajouter\n");

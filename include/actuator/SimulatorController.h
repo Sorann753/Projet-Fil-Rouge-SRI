@@ -7,15 +7,23 @@
 
 /*.h commun a la simulation et au hardware*/
 
+/*TODO fonction pour recuperer la fonction actuelle */
 
 /*-------------- SIMULATION ---------------*/
 
-/*creation de type*/
+/*definir les differentes actions*/
 typedef enum action_t{
     ACT_FORWARD,
     ACT_BACKWARD,
     ACT_TURN,
 }action;
+
+/*definir la postion du robot*/
+typedef struct RobotPostion{
+    float x;
+    float y;
+    float theta;
+}RobotPosition;
 
 
 
