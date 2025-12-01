@@ -1,27 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "actuator/SimulatorController.h"
+#include "utils/position.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <math.h>
 
 
-/*TODO: fonction conversion radiant*/
-/*TODO: ajout de la mise a jour de la postion */
-
-
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
 
-/*definir pi*/
-#ifndef PI
-#define PI = 3.14159265358979323846
-#endif
-
 
 /*VARIABLE GLOBALE : initialisation de la position*/
-    static RobotPosition Position = {0.0f, 0.0f, 0.0f};
-    
+static RobotPosition Position = {0.0f, 0.0f, 0.0f};
+
+
+
+/*GETTER: pour recuperer la position actuelle du robot*/
+RobotPosition getter_position(void){
+    return Position;
+}
+
+
 
 /**
  * @brief procédure pour efacer le contenue de SimulatorContorller.txt
@@ -29,16 +29,16 @@
 void init_Simulator(void){
     FILE* my_file= fopen(SIM_FILE, "w");
     if (my_file == NULL){
-        printf("SIM_FILE: the SimulationController hase note been initalisated");
+        printf("SIM_FILE: the SimulationController hase note been initalisated\n");
         return;
     }
 
-    
+    /*reset de la position*/
+    Position.x = 0.0f;
+    Position.y = 0.0f;
+    Position.theta = 0.0f;
 
-
-    printf("le fichier SimulatorContoller.txt a été vidé !");
-
-
+    printf("le fichier SimulatorContoller.txt a été vidé !\n");
 
 }
 
@@ -56,32 +56,29 @@ void WriteAction(action act, float value){ /*le char (pointeur = string) est en 
     
     /*test de louverture du fichier*/
     if (my_file==NULL){
-        printf("SIM_FILE: the SimulationControler.txt hase note been able to open");
+        printf("SIM_FILE: the SimulationControler.txt hase note been able to open\n");
         return;
     }
 
+    
 
     /*utilisation dun switch case pour ecrire en fonction des actions mise en entrer*/
     switch (act)
     {
     case ACT_FORWARD:
         fprintf(my_file, "FORWARD %f\n", value);
-        printf("ligne ajouter a SimulatorController.txt");
         break;
 
     case ACT_BACKWARD:
         fprintf(my_file, "BACKWARD %f\n", value);
-        printf("ligne ajouter a SimulatorController.txt");
         break;
 
     case ACT_TURN:
         fprintf(my_file, "TURN %f\n", value);
-        printf("ligne ajouter a SimulatorController.txt");
         break;
 
     default:
         fprintf(my_file, "ACTION %f\n", value);
-        printf("(default) ligne ajouter a SimulatorController.txt");
         break;
     }
 
@@ -101,12 +98,17 @@ void forward(float distance){
         backward(distance);
     }
     
+    /*conversion de theta en radiant*/
+    float theta_rad = degr_to_rad(Position.theta);
+
     /*mise a jour de la position*/
+    Position.x = Position.x + distance * cosf(theta_rad);
+    Position.y = Position.y + distance * sinf(theta_rad);
     
 
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_FORWARD, distance);
-    printf("l'action forward a été ajouter \n");
+    printf("FORWARD: position(%.0f,%.0f) \n", Position.x, Position.y);
 } 
 
 
@@ -119,10 +121,19 @@ void backward(float distance){
     
     distance = fabsf(distance);
 
+    
+    /*conversion de theta en radiant*/
+    float theta_rad = degr_to_rad(Position.theta);
+    
+
+    /*mise a jour de la position*/
+    Position.x -= Position.x + distance * cosf(theta_rad);
+    Position.y -= Position.y + distance * sinf(theta_rad);
+    
 
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_BACKWARD, distance);
-    printf("l'action backward a été ajoute \n");
+    printf("BACKWARD: position(%.0f,%.0f) \n", Position.x, Position.y);
 }
 
 
@@ -137,12 +148,14 @@ void turn(float angle){
         return;
     }
 
-    /*mise a jour du theta*/
+    /*TODO: Mise a jour du theta*/
     Position.theta += angle;
+    
+    
 
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_TURN, angle);
-    printf("l'action turn a été ajouter\n");
+    printf("TURN: theta= %.0f\n", Position.theta);
 }
 
 

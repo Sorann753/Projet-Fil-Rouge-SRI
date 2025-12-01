@@ -6,6 +6,7 @@
 #include <stdlib.h> /*pour utiliser system()*/
 #include "testCases/SimulationTest.h"
 #include "actuator/SimulatorController.h"
+#include "utils/position.h"
 
 
 /**
@@ -17,7 +18,7 @@ void TestAction(void){
     /*initialisation du fichier SimulatorController.txt*/
     init_Simulator();
 
-    /*tester les fonction de deplacement*/
+    /*TEST: fonction de deplacement*/
     backward(100);
     forward(300);
     turn(45);
@@ -28,8 +29,13 @@ void TestAction(void){
     turn(50);
     forward(600);
 
+
+    /*TEST: getter_position*/
+    RobotPosition my_robot_position = getter_position();
+    printf("la position de mon robot : (%.2f, %.2f) anlge: %.3f \n",my_robot_position.x, my_robot_position.y, my_robot_position.theta);
+
     /*lancer la simulation*/
-    system("python3 source/actuator/Simulator.py");
+    system("python3 source/actuator/Simulator.py\n");
 
     printf("----- FIN TEST SIMULATION -----\n");
 }
