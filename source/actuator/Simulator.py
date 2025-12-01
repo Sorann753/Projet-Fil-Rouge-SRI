@@ -1,6 +1,7 @@
 import turtle
 import os
 import time #pour utiliser time.sleep()
+import tkinter
 
 PATH = "SimulatorController.txt"
 
@@ -47,33 +48,38 @@ def ReadAction(robot):
     if not (os.path.exists(PATH)):
         print(f"FILE_SIM: {PATH} hase note been opend in Simulator.py")
         return
-    
-    #ouvrire et lire le fichier SimulatorController.txt
-    with open(PATH, "r") as my_file:
-        
-        #on recupére toutes les ligne du fichier
-        lines = my_file.readlines()
-
-        #on parcours chaque ligne
-        for line in lines:
-            #on va retirer les espace et les retour a la ligne
-            line = line.strip() 
-
-            #on separe [action, valeur] dans un tablaux 
-            commande = line.split(" ")
-
-            #on test si on as bien action et valeur 
-            if (len(commande) < 2):
-                print(f"FILE_SIM : the line : {line} is not valide ")
-                continue 
+    try:
+        #ouvrire et lire le fichier SimulatorController.txt
+        with open(PATH, "r") as my_file:
             
-            #recuperer action et valeur
-            action = commande[0]
-            value = commande[1]
+            #on recupére toutes les ligne du fichier
+            lines = my_file.readlines()
 
-            #apelle de la fonction de navigation
-            navigation(action, value, robot)
-            print("lecture ligne")
+            #on parcours chaque ligne
+            for line in lines:
+                #on va retirer les espace et les retour a la ligne
+                line = line.strip() 
+
+                #on separe [action, valeur] dans un tablaux 
+                commande = line.split(" ")
+
+                #on test si on as bien action et valeur 
+                if (len(commande) < 2):
+                    print(f"FILE_SIM : the line : {line} is not valide ")
+                    continue 
+                
+                #recuperer action et valeur
+                action = commande[0]
+                value = commande[1]
+
+                #apelle de la fonction de navigation
+                navigation(action, value, robot)
+                print("lecture ligne")
+
+    except(turtle.Terminator, tkinter.TclError):
+        print("ERREUR: simulation interompu !")
+        return
+        
 
 
 

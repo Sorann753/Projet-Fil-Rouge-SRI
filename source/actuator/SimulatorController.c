@@ -1,3 +1,6 @@
+/**
+ * @author GHOUILEM Abdelhafidh
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include "actuator/SimulatorController.h"
@@ -5,6 +8,15 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <math.h>
+
+/**
+ * TODO: normalisation de langle dans trun() pour quil ne sort pas de lintervalle
+ * TODO: limiter la fenétre de simulation pour que le robot ne sort pas 
+ * TODO: creation et lecture du .map
+ * TODO: dessiner le .map dans la simulation
+ * TODO: ajouter linteraction avec les obstacles
+ * TODO: ecriture dans historique
+ * */
 
 
 /*chemin du fichier de sortie*/
@@ -127,8 +139,8 @@ void backward(float distance){
     
 
     /*mise a jour de la position*/
-    Position.x -= Position.x + distance * cosf(theta_rad);
-    Position.y -= Position.y + distance * sinf(theta_rad);
+    Position.x = Position.x - distance * cosf(theta_rad);
+    Position.y = Position.y - distance * sinf(theta_rad);
     
 
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
