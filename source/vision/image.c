@@ -61,10 +61,11 @@ ImageHeader loadHeader(FILE* source){
 
     if(fgets(buffer, sizeof(buffer), source) != NULL){
         // parsing the header
-        ImageHeader head = parseHeader(buffer);
+        return parseHeader(buffer);
     }
     else{
         // read error case
+        return (ImageHeader){0, 0, 0};
     }
 }
 
