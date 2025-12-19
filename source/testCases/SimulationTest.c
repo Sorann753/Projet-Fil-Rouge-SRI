@@ -12,33 +12,28 @@
 /**
  * @brief test des fonctions qui ecrivent dans SimulatorController.txt pour communiquer avec le python
  */
-void TestAction(void){
+void TestAction(void)
+{
     printf("----- TEST SIMULATION -----\n");
-    
+
+    /*initialisation de la position du robot*/
+    RobotPosition my_robot;
+
     /*initialisation du fichier SimulatorController.txt*/
-    init_Simulator();
+    init_Simulator(&my_robot);
 
     /*TEST: fonction de deplacement*/
-    backward(100);
-    forward(300);
-    turn(45);
-    forward(120);
-    turn(-90);
-    forward(400);
-    backward(550);
-    turn(50);
-    forward(600);
+    forward(300, &my_robot);
+    turn(90, &my_robot);
+    forward(100, &my_robot);
+    backward(50, &my_robot);
 
-
-    /*TEST: getter_position*/
-    RobotPosition my_robot_position = getter_position();
-    printf("la position de mon robot : (%.2f, %.2f) anlge: %.3f \n",my_robot_position.x, my_robot_position.y, my_robot_position.theta);
+    printf("position: (%.2f, %.2f) anlge: %.3f \n", my_robot.x, my_robot.y, my_robot.theta);
 
     /*definir la commande a executer dans le terminale*/
     char commande[600];
     /*ecrire dans commande*/
     sprintf(commande, "python3 %s", SIMULATION_PATH);
-
 
     /*lancer la simulation*/
     system(commande);
