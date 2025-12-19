@@ -18,6 +18,11 @@ typedef enum action_t
 /*---- PROTOTYPES ----*/
 
 /**
+ * @brief ouverture et lecture de la position initial (config)
+ */
+void read_sim_config(RobotPosition *Position);
+
+/**
  * @brief procédure pour efacer le contenue de SimulatorContorller.txt
  */
 void init_Simulator(RobotPosition *Position);

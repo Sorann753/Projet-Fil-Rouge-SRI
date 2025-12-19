@@ -5,8 +5,8 @@
     "background_color": "white"
   },
   "robot": {
-    "initial_x": 0,
-    "initial_y": 0,
+    "initial_x": -200,
+    "initial_y": -200,
     "line_width": 2,
     "line_color": "black"
   },

@@ -13,13 +13,13 @@ def init_bot():
     robot.speed(1)
     robot.width(5)
 
-    print("creation du robot reussit")
+    print("\ncreation du robot reussit\n\n")
     return robot
     
 
 
 #la fonction de navigation    
-def navigation(action, value, robot):
+def navigation(action, value, robot, value2):
     value_float = float(value)
     #naviger en fonction de laction
     if action == "FORWARD":
@@ -37,8 +37,17 @@ def navigation(action, value, robot):
         robot.left(value_float)
         time.sleep(1) #faire un delay de 1sec entre chaque mouvement
 
+    elif action == "INIT":
+        x = value_float
+        y = float(value2)
+        robot.up()
+        robot.goto(x, y)
+        robot.down()
+        print(f"position initial({x}, {y})\n") 
+        
+
     else:
-        print("NAV_ERROR: unknown action !")
+        print("\nERREUR (python): unknown action !\n")
         return
 
 
@@ -46,7 +55,7 @@ def navigation(action, value, robot):
 
 def ReadAction(robot):
     if not (os.path.exists(PATH)):
-        print(f"FILE_SIM: {PATH} hase note been opend in Simulator.py")
+        print(f"ERREUR (FILE_SIM): {PATH} hase note been opend in Simulator.py")
         return
     try:
         #ouvrire et lire le fichier SimulatorController.txt
@@ -71,13 +80,18 @@ def ReadAction(robot):
                 #recuperer action et valeur
                 action = commande[0]
                 value = commande[1]
+                value2 = 0
+
+                #lire la position initial
+                if (action == "INIT"):
+                    value2 = commande[2]
 
                 #apelle de la fonction de navigation
-                navigation(action, value, robot)
+                navigation(action, value, robot, value2)
                 print("lecture ligne")
 
     except(turtle.Terminator, tkinter.TclError):
-        print("ERREUR: simulation interompu !")
+        print("ERREUR (python): simulation interompu !")
         return
         
 
@@ -87,4 +101,4 @@ if __name__ == "__main__":
     bot = init_bot()
     ReadAction(bot)
 
-    print("navigation reussi !")
+    print("\n\n(python) navigation reussi !\n\n")

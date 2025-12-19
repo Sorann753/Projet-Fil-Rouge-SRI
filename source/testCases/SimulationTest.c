@@ -30,6 +30,10 @@ void TestAction(void)
 
     printf("position: (%.2f, %.2f) anlge: %.3f \n", my_robot.x, my_robot.y, my_robot.theta);
 
+    printf("\nCONTENU DE SimulatorController.txt :\n");
+    system("cat ./SimulatorController.txt");
+    printf("\n");
+
     /*definir la commande a executer dans le terminale*/
     char commande[600];
     /*ecrire dans commande*/
