@@ -1,8 +1,0 @@
-{
-  "red":    { "r_min": 180, "g_max": 80,  "b_max": 80  },
-  "green":  { "g_min": 160, "r_max": 60,  "b_max": 60  },
-  "blue":   { "b_min": 160, "r_max": 60,  "g_max": 60  },
-  "yellow": { "r_min": 180, "g_min": 180, "b_max": 80  },
-  "black":  { "r_max": 40,  "g_max": 40,  "b_max": 40  },
-  "white":  { "r_min": 200, "g_min": 200, "b_min": 200 }
-}

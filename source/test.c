@@ -5,6 +5,7 @@
 #include "testCases/matrixTest.h"
 #include "testCases/testMenu.h"
 #include "testCases/SimulationTest.h"
+#include "testCases/configLoadTest.h"
 
 int main(void){
 
@@ -14,9 +15,10 @@ int main(void){
     
     TestAction();
     
+    testLoadConfig();
+
     // keep this one as the last since it require user input
     testMenu();
-
     
     return 0;
 }

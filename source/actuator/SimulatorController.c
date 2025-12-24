@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "actuator/SimulatorController.h"
+#include "configLoader/configLoader.h"
 #include "utils/position.h"
 #include <assert.h>
 #include <stdbool.h>
@@ -23,63 +24,41 @@
 
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
-#define SIM_JSON "/home/hafidh/Documents/GitHub/Projet-Fil-Rouge-SRI/config/simulator/simulator.json"
 
 /**
  * @brief ouverture et lecture de la position initial (config)
  */
 void read_sim_config(RobotPosition *Position)
 {
-    /*ouverture du fichier config (simulation.json)*/
-    FILE *sim_config = fopen(SIM_JSON, "r");
-    if (sim_config == NULL)
-    {
-        fprintf(stderr, "\nERREUR (SIM_JSON): the simulation config file hase note been initalisated\n\n");
-        return;
-    }
-    printf("\nsimulator.json has been succesfuly opend\n");
+    char *x_str = config_loader("config/simulatorConfig.toml", "initial_x");
+    char *y_str = config_loader("config/simulatorConfig.toml", "initial_y");
 
-    /*lecture du fichier de config*/
-    char line[300];
-
-    /*on lit le json ligne par ligne quon met dans le tableau de char "line" */
-    while (fgets(line, sizeof(line), sim_config))
+    if (!x_str || !y_str)
     {
-        /*chercher initial_x*/
-        if (strstr(line, "initial_x"))
-        {
-            char *ptr_char = strstr(line, ":"); /*on se position au niveau du ":" de la line*/
-            if (ptr_char != NULL)
-            {
-                sscanf(ptr_char + 1, "%f", &Position->x); /*on ajoute 1 a ladresse pour aller au char suivant*/
-            }
-            printf("sim_config : initial_x trouver !\n");
-        }
-        /*chercher initial_y*/
-        if (strstr(line, "initial_y"))
-        {
-            char *ptr_char = strstr(line, ":"); /*on se position au niveau du ":" */
-            if (ptr_char != NULL)
-            {
-                sscanf(ptr_char + 1, "%f", &Position->y); /*on ajoute 1 a ladresse pour aller au char suivant*/
-            }
-            printf("sim_config : initial_y trouver !\n");
-        }
-    }
-    /*fermer le fichier apres la lecture*/
-    fclose(sim_config);
-
-    /*ouverture du fichier SimulatorController.txt pour ecrire la position pour le python*/
-    FILE *action_file = fopen(SIM_FILE, "a");
-    if (action_file == NULL)
-    {
-        fprintf(stderr, "ERREUR (SIM_FILE):  the simulationcontroller.txt could not been opened");
+        fprintf(stderr, "ERROR: cannot read robot initial positions from TOML\n");
+        free(x_str);
+        free(y_str);
         return;
     }
 
-    /*ecrire la premier ligne INIT X Y pour le python*/
+    Position->x = atof(x_str);
+    Position->y = atof(y_str);
+    Position->theta = 0.0f;
+
+    free(x_str);
+    free(y_str);
+
+    printf("Robot initial position: x=%.2f, y=%.2f\n", Position->x, Position->y);
+
+    /* Initialisation du fichier de simulation */
+    FILE *action_file = fopen(SIM_FILE, "w");
+    if (!action_file)
+    {
+        fprintf(stderr, "ERROR: could not open %s\n", SIM_FILE);
+        return;
+    }
+
     fprintf(action_file, "INIT %f %f\n", Position->x, Position->y);
-    printf("\nposition initial ajouter a SimulatorController.txt\n");
     fclose(action_file);
 }
 

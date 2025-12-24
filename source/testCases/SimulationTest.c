@@ -5,16 +5,18 @@
 #include <stdio.h>
 #include <stdlib.h> /*pour utiliser system()*/
 #include "testCases/SimulationTest.h"
+#include "configLoader/configLoader.h"
 #include "actuator/SimulatorController.h"
 #include "utils/position.h"
 
-#define SIMULATION_PATH "/home/hafidh/Documents/GitHub/Projet-Fil-Rouge-SRI/source/actuator/Simulator.py"
 /**
  * @brief test des fonctions qui ecrivent dans SimulatorController.txt pour communiquer avec le python
  */
 void TestAction(void)
 {
     printf("----- TEST SIMULATION -----\n");
+
+    char *python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
 
     /*initialisation de la position du robot*/
     RobotPosition my_robot;
@@ -34,10 +36,13 @@ void TestAction(void)
     system("cat ./SimulatorController.txt");
     printf("\n");
 
+    /* creation d'une variable pour trouver le chemin du script python a executer*/
+    char full_python_path[512];
+    snprintf(full_python_path, sizeof(full_python_path), "../../../../%s", python_path);
     /*definir la commande a executer dans le terminale*/
     char commande[600];
     /*ecrire dans commande*/
-    sprintf(commande, "python3 %s", SIMULATION_PATH);
+    sprintf(commande, "python3 %s", full_python_path);
 
     /*lancer la simulation*/
     system(commande);

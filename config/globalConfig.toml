@@ -1,0 +1,11 @@
+# CONFIGURATION GENERALE PROJET PFR
+
+[language]
+langue = fr #fr ou en
+
+[path]
+python_simulation_path = source/actuator/Simulator.py
+python_voice_interpreter = ???
+history_folder = history/
+image_folder = data/
+
