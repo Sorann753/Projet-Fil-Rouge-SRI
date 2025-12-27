@@ -33,9 +33,9 @@ static void trim(char *str)
 }
 
 /**
- * @brief Lit la valeur d'une clé dans un fichier TOML
+ * @brief Lit la valeur d'une clé dans un fichier TOML (chemin relatif depuis la racine du prjet (PROJET-FIL-ROUGE-SRI))
  *        La section [xxx] est ignorée, on cherche juste la clé globale
- * @param filename Chemin vers le fichier TOML (relatif depuis build/debug)
+ * @param filename Chemin vers le fichier TOML (relatif depuis la racine du projet (PROJET-FIL-ROUGE-SRI/))
  * @param key Clé à chercher dans le fichier (ex: "python_simulation_path")
  * @return Chaîne mallocée contenant la valeur (à libérer par l'appelant), ou NULL si non trouvée
  */
