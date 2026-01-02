@@ -5,17 +5,7 @@
 #define SIMULATOR_CONTROLLER_H
 #include <stdint.h> /*pour ajouter les type a taille garantie*/
 #include "utils/position.h"
-/*---- TYPES ----*/
-
-/*definir les differentes actions*/
-typedef enum action_t
-{
-    ACT_FORWARD,
-    ACT_BACKWARD,
-    ACT_TURN,
-} action;
-
-/*---- PROTOTYPES ----*/
+#include "../manualPilot/command.h"
 
 /**
  * @brief ouverture et lecture de la position initial (config)

@@ -4,8 +4,6 @@
 #ifndef __POSITION_H__
 #define __POSITION_H__
 
-/*---- TYPES ---- */
-
 /*definir la postion du robot*/
 typedef struct RobotPostion
 {

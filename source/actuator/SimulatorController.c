@@ -91,7 +91,7 @@ void init_Simulator(RobotPosition *Position)
  * @param act laction enumerer dans le .h
  * @param value la valuer associer a laction
  */
-void WriteAction(action act, float value)
+void WriteAction(action_t act, float value)
 { /*le char (pointeur = string) est en const (appliquer sur le char on ne le modifie pas dans la fonction) */
 
     /*ouvrire le fichier (mode a = ecrire a la fin du fichier)*/
