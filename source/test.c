@@ -5,6 +5,7 @@
 #include "testCases/matrixTest.h"
 #include "testCases/testMenu.h"
 #include "testCases/testVision.h"
+#include "testCases/testTreeMap.h"
 
 int main(void){
 
@@ -12,9 +13,14 @@ int main(void){
 
     testByteMatrix();
 
+    testTreeMap();
+
+    testTreeManyInsert(10000);
+
     testHeaderParsing();
     
     // keep this one as the last since it require user input
     testMenu();
+    
     return 0;
 }

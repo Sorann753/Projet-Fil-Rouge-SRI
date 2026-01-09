@@ -22,7 +22,7 @@ typedef struct ImageHeader_t{
     uint8_t canalCount;
 } ImageHeader;
 
-typedef Pixel Color;
+typedef Pixel Color; // cuz they are basically the same thing
 
 typedef Matrix Image; // for Pixel Matrix
 
@@ -34,8 +34,14 @@ ImageHeader loadHeader(FILE* source);
 
 Image loadImage(const char* sourcePath);
 
-Pixel getPixel(const Image* const img, size_t X, size_t Y);
+// Pixel getPixel(const Image* const img, size_t X, size_t Y);
 
-void setPixel(Image* const img, size_t X, size_t Y, Pixel p);
+// void setPixel(Image* const img, size_t X, size_t Y, Pixel p);
+
+
+// functions for potential vectorization of some operations
+// might not be useful but at least it's around if needed
+uint32_t packPixel(Pixel rawPixel);
+Pixel unpackPixel(uint32_t packedPixel);
 
 #endif

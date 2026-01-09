@@ -152,3 +152,29 @@ Image loadImage(const char* sourcePath){
 Pixel getPixel(const Image* const img, size_t X, size_t Y);
 
 void setPixel(Image* const img, size_t X, size_t Y, Pixel p);
+
+
+
+uint32_t packPixel(Pixel rawPixel){
+    uint32_t packed = 0;
+
+    packed |= rawPixel.R;
+    packed |= rawPixel.G << 8;
+    packed |= rawPixel.B << 16;
+
+    /** @post packed is now in the format 0x00BBGGRR (lsb) */
+
+    return packed;
+}
+
+Pixel unpackPixel(uint32_t packedPixel){
+    byte red = packedPixel & 0x000000FF;
+    byte green = packedPixel & 0x0000FF00;
+    byte blue = packedPixel & 0x00FF0000;
+
+    return (Pixel){
+        .R = red,
+        .G = green,
+        .B = blue
+    };
+}

@@ -22,7 +22,13 @@ typedef struct TreeMap_t{
 
     void* content;
     const char* key;
+
+    // count the number of values of which we are still the owner
+    int ownedCount; 
 } TreeMap;
+
+#include <malloc.h>
+void printMallocStat(void);
 
 /**
  * 
@@ -58,16 +64,14 @@ void insertValue(TreeMap** map, const char* key, void* value, bool freeOnOverrid
 void* getValue(const TreeMap* map, const char* key);
 
 /**
- * @brief takes the tree in src and insert each nodes in dest
- * @param src
- * @param dest
+ * @brief //TODO
+ * @param origin the node which must be replaced
  * @return ...
  *
- * @post dest take ownership of the data in src
- * @warning src must not be freed since dest is now the owner
+ * @post the node pointed by origin has been freed
  * @note this function is mostly for internal uses, be sure of what you're doing
  */
-TreeMap* reinsert(TreeMap* src, TreeMap* dest);
+void rebranch(TreeMap** origin);
 
 /**
  * 

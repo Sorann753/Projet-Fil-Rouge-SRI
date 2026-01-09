@@ -75,6 +75,7 @@ void testTreeManyInsert(int insertCount){
     printf("----- TEST MANY INSERT -----\n");
 
     TreeMap* dict = initTreeMap();
+    // printMallocStat();
 
     // add a lot of stuff
     for(int i = 45; i < insertCount; i++){
@@ -87,12 +88,15 @@ void testTreeManyInsert(int insertCount){
         insertValue(&dict, fakeKey(i), (void*)someTestElement, true);
     }
 
+    // printMallocStat();
+
     // delete half of it
     for(int i = insertCount/2; i < insertCount; i++){
         const char* key = fakeKey(i);
         deleteValue(&dict, key);
         free((char*) key);
     }
+    printMallocStat();
 
     // insert a new half
     for(int i = 0; i < insertCount/2; i++){
@@ -105,9 +109,12 @@ void testTreeManyInsert(int insertCount){
 
         insertValue(&dict, fakeKey(k), (void*)someTestElement, true);
     }
+    printMallocStat();
 
     // we free the whole thing
     freeTreeMap(&dict);
+
+    printMallocStat();
 
     printf("----- TEST SUCCESS -----\n\n");
 }
