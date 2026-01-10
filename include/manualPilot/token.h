@@ -1,6 +1,10 @@
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
+/**
+ * TODO: definie le token (mot)
+ */
+
 #include <string.h>
 #include "./command.h"
 

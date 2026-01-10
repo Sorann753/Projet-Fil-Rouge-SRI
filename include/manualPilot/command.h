@@ -1,6 +1,9 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
+/*le maximum de commande dans command_list*/
+#define MAX_COMMAND 20
+
 /**
  * TODO: ajout des unitées
  */
@@ -48,11 +51,22 @@ typedef struct command
 {
     action_t action;
     float value;
+    // TODO: ajouter la conidtion valeur null
     color_t color;
     object_t object;
     direction_t direction;
 
     int negated; // =1 si "Ne pas" sinon =0
 } command;
+
+/**
+ * @brief liste de command
+ */
+typedef struct command_list
+{
+    command cmd[MAX_COMMAND];
+    int count;
+
+} command_list;
 
 #endif
