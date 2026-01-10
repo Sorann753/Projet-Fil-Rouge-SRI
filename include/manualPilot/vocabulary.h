@@ -6,7 +6,9 @@
 #define __VOCABULARY_LOADER_H__
 
 /**
- * TODO: Charger le toml dans le dictionnaire (arbre)
+ * TODO: Charger le dico depuis fr.toml
+ * TODO: Chercher un mot dans le dico
+ * TODO: Librer la memoir
  */
 
 #define MAX_SYN 30
