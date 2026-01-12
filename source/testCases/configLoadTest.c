@@ -28,6 +28,12 @@ int testLoadConfig(void)
         free(value);
     }   
 
+    value = config_loader("config/fr.toml", "forward");
+    if (value) {
+        printf("forward = %s\n", value);
+        free(value);
+    }   
+
     printf("----- FIN TEST LOAD CONFIG -----\n\n");
 
 

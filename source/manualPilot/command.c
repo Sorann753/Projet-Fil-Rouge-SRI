@@ -1,1 +1,0 @@
-#include "./manualPilot/command.h"
