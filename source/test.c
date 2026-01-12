@@ -6,6 +6,8 @@
 
 #include "testCases/matrixTest.h"
 #include "testCases/testMenu.h"
+#include "testCases/testVision.h"
+#include "testCases/testTreeMap.h"
 #include "testCases/SimulationTest.h"
 #include "testCases/configLoadTest.h"
 #include "testCases/historyTest.h"
@@ -15,6 +17,12 @@ int main(void){
     testDoubleMatrix();
 
     testByteMatrix();
+
+    testTreeMap();
+
+    testTreeManyInsert(100000);
+
+    testHeaderParsing();
     
     TestAction();
     
