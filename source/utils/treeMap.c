@@ -11,7 +11,6 @@ TreeMap* initTreeMap(void) {
     T->key = NULL;
     T->left = NULL;
     T->right = NULL;
-    T->ownedCount = 0;
 
     return T;
 }
@@ -39,16 +38,13 @@ void freeTreeMap(TreeMap** mapp) {
     // clean key and content
     free(map->content);
     free((char*)map->key);
-    map->ownedCount -= 2;
 
     // secure the pointers
     map->content = NULL;
     map->key = NULL;
 
     // delete the other branches
-    if(map->left != NULL) map->ownedCount--;
     freeTreeMap(&map->left);
-    if(map->right != NULL) map->ownedCount--;
     freeTreeMap(&map->right);
     map->left = NULL;
     map->right = NULL;
@@ -90,18 +86,14 @@ void insertValue(TreeMap** mapp, const char* HeapKey, void* value, bool freeOnOv
     if(map->key == NULL) {
         map->key = HeapKey;
         map->content = value;
-
-        map->ownedCount += 2;
         return;
     }
 
     int order = strcmp(HeapKey, map->key);
     if(order < 0) { // value goes on the left
         insertValue(&(map->left), HeapKey, value, freeOnOverride);
-        map->ownedCount++;
     } else if(order > 0) { // value goes on the right
         insertValue(&(map->right), HeapKey, value, freeOnOverride);
-        map->ownedCount++;
     } else { // this is the same key, so we just change the value
         //! MAKE SURE THAT THE VALUE IS FREED SOMEWHERE
         if(freeOnOverride) {
@@ -148,21 +140,25 @@ void rebranch(TreeMap** origin) {
     TreeMap* map = *origin; // alias
     if(map == NULL) return;
 
-    if(map->left == NULL) return map->right;
-    if(map->right == NULL) return map->left;
+    if(map->left == NULL) {
+        *origin = map->right;
+        return;
+    }
+    if(map->right == NULL) {
+        *origin = map->left;
+        return;
+    }
 
     TreeMap* leftBuffer = map->left;
     map->left = NULL;
-    // TODO : handle the counter
 
     TreeMap* it = map->right;
     while(it->left != NULL) {
-        it = map->left;
+        it = it->left;
     }
-
     it->left = leftBuffer;
 
-    // IN PROGRESS
+    *origin = map->right;
 }
 
 // remove without freeing the content, however we do free the key
@@ -182,20 +178,16 @@ void removeValue(TreeMap** mapp, const char* key) {
     if(order < 0) {
         // the data to remove is on the left
         removeValue(&map->left, key);
-        map->ownedCount--;
     } else if(order > 0) {
         // the data to remove is on the right
         removeValue(&map->right, key);
-        map->ownedCount--;
     } else { // we found the data
         free((char*)map->key);
-        map->ownedCount--;
         map->key = NULL;
 
         //! we explicitly DO NOT free the content pointer
         //! this function assume the user will do it themselves and has a copy
         map->content = NULL;
-        map->ownedCount--; // we're not the owner anymore
 
         rebranch(mapp);
 
@@ -217,30 +209,21 @@ void deleteValue(TreeMap** mapp, const char* key) {
     if(order < 0) {
         // the data to remove is on the left
         deleteValue(&(map->left), key);
-        map->ownedCount--;
     } else if(order > 0) {
         // the data to remove is on the right
         deleteValue(&(map->right), key);
-        map->ownedCount--;
     } else { // we found the data
         free((char*)map->key);
-        map->ownedCount--;
         map->key = NULL;
 
         free(map->content);
         map->content = NULL;
-        map->ownedCount--;
 
         // we're replacing the current node with one of the child nodes
         // if no childs then NULL
-        TreeMap* newNode = rebranch(map->left, map->right);
-        if(newNode != NULL) map->ownedCount -= newNode->ownedCount - 1;
+        rebranch(mapp);
 
-        assert(map->ownedCount == 0);
         free(map); // we free the old containing node
-        map = NULL;
-
-        *mapp = newNode;
     }
 }
 

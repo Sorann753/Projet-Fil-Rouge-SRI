@@ -22,9 +22,6 @@ typedef struct TreeMap_t{
 
     void* content;
     const char* key;
-
-    // count the number of values of which we are still the owner
-    int ownedCount; 
 } TreeMap;
 
 #include <malloc.h>
@@ -68,7 +65,7 @@ void* getValue(const TreeMap* map, const char* key);
  * @param origin the node which must be replaced
  * @return ...
  *
- * @post the node pointed by origin has been freed
+ * @post the node pointed by origin has been lost, be sure to have another pointer around
  * @note this function is mostly for internal uses, be sure of what you're doing
  */
 void rebranch(TreeMap** origin);

@@ -15,7 +15,7 @@ int main(void){
 
     testTreeMap();
 
-    testTreeManyInsert(10000);
+    testTreeManyInsert(100000);
 
     testHeaderParsing();
     
