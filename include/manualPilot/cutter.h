@@ -19,7 +19,7 @@ typedef struct tokenlist
 /**
  * @brief initialise la liste de token
  */
-tokenlist init_tokenizer();
+tokenlist init_tokenizer(void);
 
 /**
  * @brief decoupe la phrase en liste de tokens

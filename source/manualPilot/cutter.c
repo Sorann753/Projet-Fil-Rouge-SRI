@@ -3,7 +3,7 @@
 /**
  * @brief initialise la liste de token
  */
-tokenlist init_tokenizer()
+tokenlist init_tokenizer(void)
 {
     tokenlist phrase_couper;
     phrase_couper.count = 0;
@@ -15,4 +15,6 @@ tokenlist init_tokenizer()
  */
 tokenlist tokenizer(char *phrase, tokenlist *result)
 {
+    //temporary just so it compiles
+    return *result;
 }
