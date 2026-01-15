@@ -11,8 +11,12 @@
 #include "testCases/SimulationTest.h"
 #include "testCases/configLoadTest.h"
 #include "testCases/historyTest.h"
+#include "testCases/cuttertest.h"
 
-int main(void){
+int main(void)
+{
+
+    test_cutter();
 
     testDoubleMatrix();
 
@@ -23,15 +27,15 @@ int main(void){
     testTreeManyInsert(100000);
 
     testHeaderParsing();
-    
+
     TestAction();
-    
+
     testLoadConfig();
 
-    testHistory(INFO,"Ecriture sur l'historique");
+    testHistory(INFO, "Ecriture sur l'historique");
 
     // keep this one as the last since it require user input
     testMenu();
-    
+
     return 0;
 }
