@@ -12,9 +12,10 @@
 #include "testCases/configLoadTest.h"
 #include "testCases/historyTest.h"
 #include "testCases/cuttertest.h"
-
+#include "testCases/vocabularytest.h"
 int main(void)
 {
+    test_vocabulary();
 
     test_cutter();
 
