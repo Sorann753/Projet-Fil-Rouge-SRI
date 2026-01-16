@@ -8,7 +8,7 @@
 #include "manualPilot/token.h"
 
 /**
- * @brief Fonction helper : ajoute plusieurs mots avec les mêmes infos
+ * @brief ajout des mots
  * @param arbre Pointeur vers le pointeur de l'arbre
  * @param raw_list La chaîne toml sans decoupage "['avance', 'va']"
  * @param type (TOK_VERBE, TOK_COLOR, etc.)
