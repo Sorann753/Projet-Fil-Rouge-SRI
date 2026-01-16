@@ -1,3 +1,6 @@
+/**
+ * @author GHOUILEM ABDELHAFIDH
+ */
 #ifndef __VOCABULARY_TEST_H__
 #define __VOCABULARY_TEST_H__
 

@@ -1,3 +1,7 @@
+/**
+ * @author GHOUILEM ABDELHAFIDH
+ */
+
 #ifndef __CUTTER_H__
 #define __CUTTER_H__
 

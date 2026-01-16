@@ -13,11 +13,14 @@
 #include "testCases/historyTest.h"
 #include "testCases/cuttertest.h"
 #include "testCases/vocabularytest.h"
+#include "testCases/analysistest.h"
 int main(void)
 {
     test_vocabulary();
 
     test_cutter();
+
+    test_analysis();
 
     testDoubleMatrix();
 

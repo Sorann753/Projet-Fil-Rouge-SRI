@@ -1,3 +1,7 @@
+/**
+ * @author GHOUILEM ABDELHAFIDH
+ */
+
 #include "manualPilot/cutter.h"
 
 #include <stdlib.h>

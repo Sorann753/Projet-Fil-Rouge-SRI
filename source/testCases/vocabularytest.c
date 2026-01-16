@@ -1,5 +1,13 @@
+/**
+ * @author GHOUILEM ABDELHAFIDH
+ */
 #include <stdio.h>
 #include "manualPilot/vocabulary.h"
+
+/**
+ * @return TYPE   => 0:TOK_VERB, 1:TOK_NUM, 2:TOK_COLOR ...etc
+ * @return ACTION => 0:ACT_FORWARD, 1:ACT_BACKWARD, 2:ACT_TURN ...etc
+ */
 
 void test_vocabulary(void)
 {
