@@ -136,6 +136,11 @@ TreeMap *vocabulary_load(const char *filepath)
     add_words(&arbre, phrase, TOK_COLOR, ACT_NONE, COL_GREEN, DIR_NONE);
     free(phrase);
 
+    /*SEPARATEUR*/
+    phrase = config_loader(filepath, "separator");
+    add_words(&arbre, phrase, TOK_UNKNOWN, ACT_NONE, COL_NONE, DIR_NONE);
+    free(phrase);
+
     printf("vocabulary succesfuly charged !\n");
     return arbre;
 }

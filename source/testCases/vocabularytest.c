@@ -13,6 +13,10 @@ void test_vocabulary(void)
 {
     printf("----- TEST VOCABULARY -----\n\n");
 
+    printf("_______________________________________________________________________________________\n");
+    printf("TYPE   => 0:TOK_VERB, 1:TOK_NUM, 2:TOK_COLOR, 3:TOK_OBJECT, 4:TOK_UNKNOWN, TOK_NONE\nACTION => 0:ACT_FORWARD, 1:ACT_BACKWARD, 2:ACT_TURN, 3:ACT_STOP, 4:ACT_SEARCH, 5:ACT_NONE\n");
+    printf("_______________________________________________________________________________________\n\n");
+
     /* Charger le vocabulaire */
     TreeMap *vocab = vocabulary_load("config/vocabulary/fr.toml");
 
