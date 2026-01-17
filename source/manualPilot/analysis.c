@@ -102,7 +102,7 @@ void print_analysis(tokenlist *tok_list)
 
     for (int i = 0; i < tok_list->count; i++)
     {
-        printf("  [%d] \"%s\" → type:%d", i, tok_list->tokenTAB[i].texte, tok_list->tokenTAB[i].type);
+        printf("  [%d] \"%s\" => type:%d", i, tok_list->tokenTAB[i].texte, tok_list->tokenTAB[i].type);
 
         /* afficher en fonction du type du token */
         switch (tok_list->tokenTAB[i].type)
@@ -115,6 +115,9 @@ void print_analysis(tokenlist *tok_list)
             break;
         case TOK_COLOR:
             printf(" (COLOR, color:%d)\n", tok_list->tokenTAB[i].data.color);
+            break;
+        case TOK_DIRECTION:
+            printf(" (DIRECTION, dir:%d)\n", tok_list->tokenTAB[i].data.direction);
             break;
         default:
             printf(" (UNKNOWN)\n");

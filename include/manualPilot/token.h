@@ -19,6 +19,7 @@ typedef enum tokentype
     TOK_NUM,
     TOK_COLOR,
     TOK_OBJECT,
+    TOK_DIRECTION,
     TOK_UNKNOWN,
     TOK_NONE
 } tokentype;

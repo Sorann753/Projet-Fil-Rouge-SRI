@@ -1,13 +1,14 @@
 # Mouvement
-forward = ["avance", "marche", "go", "avancer", "tout droit"]
+forward = ["avance", "marche", "go", "avancer"]
 backward = ["recule", "arriere", "back", "reculer"]
-turn = ["tourne", "pivote", "virage", "rotation", "tourner"]
-stop = ["stop", "arrete", "halt", "stopper", "pause"]
+turn = ["tourne", "tourner", "pivote"]
+stop = ["stop", "arrete", "arreter", "halte"]
+search = ["cherche", "trouve", "scan", "detecte"]
 
 # Vision
 search = ["cherche", "trouve", "scan", "detecte", "voir"]
 
-# Liaison
+# Séparateurs
 separator = ["et", "puis", "ensuite", "alors"]
 
 # Directions
@@ -22,3 +23,7 @@ yellow = ["jaune"]
 orange = ["orange"]
 black = ["noir", "noire"]
 white = ["blanc", "blanche"]
+
+# Objets (optionnel)
+cube = ["cube", "boite"]
+ball = ["balle", "boule"]

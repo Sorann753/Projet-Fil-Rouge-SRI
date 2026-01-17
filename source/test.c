@@ -14,6 +14,8 @@
 #include "testCases/cuttertest.h"
 #include "testCases/vocabularytest.h"
 #include "testCases/analysistest.h"
+#include "testCases/parsertest.h"
+
 int main(void)
 {
     test_vocabulary();
@@ -23,6 +25,9 @@ int main(void)
     printf("\n\n**********************************************\n\n");
 
     test_analysis();
+    printf("\n\n**********************************************\n\n");
+
+    test_parser();
     printf("\n\n**********************************************\n\n");
 
     testDoubleMatrix();

@@ -10,28 +10,18 @@
 
 /**
  * @brief ajoute plusieurs mots avec les mêmes toks
- * @param arbre Pointeur vers le pointeur de l'arbre
- * @param toml_phrase "['avance', 'va']"
- * @param type Le type de token (TOK_VERBE, TOK_COLOR, etc.)
- * @param action L'action associée (si c'est un verbe)
- * @param color La couleur associée (si c'est une couleur)
- * @param direction La direction associée (si c'est une direction)
  */
 void add_words(TreeMap **arbre, char *toml_phrase, tokentype type, action_t action, color_t color, direction_t direction)
 {
-    /* Vérifier que la liste n'est pas NULL */
     if (toml_phrase == NULL)
     {
         return;
     }
 
-    /* Découper la liste aux caractères: [ ] ' " , espace */
     char *mot = strtok(toml_phrase, "[]'\", \t\n");
 
-    /*parcours toute la phrase de synonymes (mise en parametre)*/
     while (mot != NULL)
     {
-        /* créer un token pour ce mot et allouer de la memoir*/
         token *tok = malloc(sizeof(token));
 
         if (tok == NULL)
@@ -40,39 +30,34 @@ void add_words(TreeMap **arbre, char *toml_phrase, tokentype type, action_t acti
             return;
         }
 
-        /* rmplir les toks du token */
-        strncpy(tok->texte, mot, 100);
-        tok->texte[100] = '\0';    /*pour sassurer quil y as un \0 a la fin*/
-        tok->type = type;          /*mis en parametre de la fonction*/
-        tok->data.action = action; /* mis en parametre de la fontion*/
+        strncpy(tok->texte, mot, 99); /*99 car (de 0 a 100)*/
+        tok->texte[99] = '\0';
+        tok->type = type;
 
-        /* en fonction du type*/
+        /* Stocker la bonne donnée selon le type */
         if (type == TOK_COLOR)
         {
-            tok->data.color = color; /*mis en parametre*/
+            tok->data.color = color;
+        }
+        else if (type == TOK_DIRECTION)
+        {
+            tok->data.direction = direction;
         }
         else if (type == TOK_VERBE)
         {
-            tok->data.action = action; /*mis en parametre*/
+            tok->data.action = action;
         }
-        /* rmq: l'union on ne peut utiliser qu'un seul variable à la fois */
 
-        /* Ajouter dans l'arbre */
         insertValue(arbre, makeKey(mot), tok, true);
-
-        /* Passer au mot suivant */
         mot = strtok(NULL, "[]'\", \t\n");
     }
 }
 
 /**
  * @brief Charge le vocabulaire depuis un fichier TOML
- * @param lemplacement du toml.fr
  */
 TreeMap *vocabulary_load(const char *filepath)
 {
-
-    /* intialiser l'arbre vide */
     TreeMap *arbre = initTreeMap();
     if (arbre == NULL)
     {
@@ -82,61 +67,50 @@ TreeMap *vocabulary_load(const char *filepath)
 
     char *phrase;
 
-    /*LES VERBES DU TOML*/
-
-    /* Forward */
-
-    /*lire la phrase brut du toml.fr apres forward: ...... */
+    /* VERBES */
     phrase = config_loader(filepath, "forward");
-
-    add_words(&arbre, phrase, TOK_VERBE, ACT_FORWARD, COL_NONE, DIR_NONE); /*ajouter */
+    add_words(&arbre, phrase, TOK_VERBE, ACT_FORWARD, COL_NONE, DIR_NONE);
     free(phrase);
 
-    /* Backward */
     phrase = config_loader(filepath, "backward");
     add_words(&arbre, phrase, TOK_VERBE, ACT_BACKWARD, COL_NONE, DIR_NONE);
     free(phrase);
 
-    /* Turn */
     phrase = config_loader(filepath, "turn");
     add_words(&arbre, phrase, TOK_VERBE, ACT_TURN, COL_NONE, DIR_NONE);
     free(phrase);
 
-    /* Stop */
     phrase = config_loader(filepath, "stop");
     add_words(&arbre, phrase, TOK_VERBE, ACT_STOP, COL_NONE, DIR_NONE);
     free(phrase);
 
-    /*DIRECTION*/
+    phrase = config_loader(filepath, "search");
+    add_words(&arbre, phrase, TOK_VERBE, ACT_SEARCH, COL_NONE, DIR_NONE);
+    free(phrase);
 
-    /* Left */
+    /* DIRECTIONS*/
     phrase = config_loader(filepath, "left");
-    add_words(&arbre, phrase, TOK_VERBE, ACT_TURN, COL_NONE, DIR_LEFT);
+    add_words(&arbre, phrase, TOK_DIRECTION, ACT_NONE, COL_NONE, DIR_LEFT);
     free(phrase);
 
-    /* Right */
     phrase = config_loader(filepath, "right");
-    add_words(&arbre, phrase, TOK_VERBE, ACT_TURN, COL_NONE, DIR_RIGHT);
+    add_words(&arbre, phrase, TOK_DIRECTION, ACT_NONE, COL_NONE, DIR_RIGHT);
     free(phrase);
 
-    /*COULEUR*/
-
-    /* Red */
+    /* COULEURS */
     phrase = config_loader(filepath, "red");
     add_words(&arbre, phrase, TOK_COLOR, ACT_NONE, COL_RED, DIR_NONE);
     free(phrase);
 
-    /* Blue */
     phrase = config_loader(filepath, "blue");
     add_words(&arbre, phrase, TOK_COLOR, ACT_NONE, COL_BLUE, DIR_NONE);
     free(phrase);
 
-    /* Green */
     phrase = config_loader(filepath, "green");
     add_words(&arbre, phrase, TOK_COLOR, ACT_NONE, COL_GREEN, DIR_NONE);
     free(phrase);
 
-    /*SEPARATEUR*/
+    /* SEPARATEUR */
     phrase = config_loader(filepath, "separator");
     add_words(&arbre, phrase, TOK_UNKNOWN, ACT_NONE, COL_NONE, DIR_NONE);
     free(phrase);
@@ -154,7 +128,5 @@ token *vocabulary_shearch(TreeMap *vocab, const char *mot)
     {
         return NULL;
     }
-
-    /* vu que la fonction retourne un void* on va cast en token* */
     return (token *)getValue(vocab, mot);
 }

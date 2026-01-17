@@ -45,6 +45,7 @@ int parser(tokenlist *token_list, command_list *cmd_list)
     int i = 0;
     while (i < token_list->count && cmd_list->count < MAX_COMMAND)
     {
+        /*si le token actuelle cest un verbe*/
         if (token_list->tokenTAB[i].type == TOK_VERBE)
         {
             /* initialiser la commande */
@@ -53,7 +54,7 @@ int parser(tokenlist *token_list, command_list *cmd_list)
             /* récupération de l'action */
             cmd_list->cmd[cmd_list->count].action = token_list->tokenTAB[i].data.action;
 
-            /*parcourir toute la liste de token jusquau prochain verbe*/
+            /*parcourir toute la liste de token suivant jusquau prochain verbe*/
             int j = i + 1;
             while (j < token_list->count && token_list->tokenTAB[j].type != TOK_VERBE)
             {
@@ -69,6 +70,14 @@ int parser(tokenlist *token_list, command_list *cmd_list)
                 {
                     cmd_list->cmd[cmd_list->count].color = token_list->tokenTAB[j].data.color;
                 }
+
+                /* Si c'est une direction*/
+                if (token_list->tokenTAB[j].type == TOK_DIRECTION)
+                {
+                    cmd_list->cmd[cmd_list->count].direction = token_list->tokenTAB[j].data.direction;
+                }
+
+                j++;
             }
 
             cmd_list->count++;
