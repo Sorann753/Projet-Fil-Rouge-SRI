@@ -22,6 +22,8 @@ typedef struct Matrix_t {
     bool isValid;
 } Matrix;
 
+#define ERROR_MATRIX (Matrix){NULL, 0, 0, false}
+
 Matrix initMatrix(const size_t lines, const size_t columns, const size_t typeSize);
 
 void freeMatrix(Matrix* matrice);

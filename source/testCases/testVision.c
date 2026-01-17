@@ -1,9 +1,7 @@
 #include "testCases/testVision.h"
 
-void testHeaderParsing(void){
+void testHeaderParsing(const char* testHeader, const size_t expectedLength, const size_t expectedHeight, const uint8_t expectedCanal){
     printf("----- TEST HEADER PARSING -----\n");
-
-    const char* testHeader = "100 200 3";
 
     ImageHeader header = {
         .length = 0,
@@ -15,44 +13,55 @@ void testHeaderParsing(void){
     printf("Test header : %s\n", testHeader);
 
     printf("length : %ld\n", header.length);
-    assert(header.length == 100);
+    assert(header.length == expectedLength);
 
     printf("height : %ld\n", header.height);
-    assert(header.height == 200);
+    assert(header.height == expectedHeight);
 
     printf("canalCount : %d\n", header.canalCount);
-    assert(header.canalCount == 3);
+    assert(header.canalCount == expectedCanal);
 
     printf("----- TEST SUCCESS -----\n\n");
 }
 
-// void testImageLoading(void){
-//     printf("----- TEST IMAGE LOADING -----\n");
+void testImageLoading(const char* testImagePath, ImageFingerPrint info){
+    printf("----- TEST IMAGE LOADING -----\n");
 
-//     const char* testImagePath = "./data/IMG_5389.txt";
-    
-//     printf("Testing on image : %s\n", testImagePath);
-//     Image img = loadImage(testImagePath);
+    printf("Testing on image : %s\n", testImagePath);
+    Image img = loadImage(testImagePath);
 
-//     assert(img.isValid);
-//     printf("LOADED\n");
+    assert(img.isValid);
+    printf("LOADED\n");
 
-//     assert(img.columns == 300);
-//     assert(img.lines == 300);
+    assert(img.columns == info.columns);
+    assert(img.lines == info.lines);
 
-//     // verify the getter
-//     Pixel p = getPixel(&img, 0, 0);
-//     assert(p.R == 93);
-//     assert(p.G == 16);
-//     assert(p.B == 10);
+    // verify the getter
+    Pixel p = getPixel(&img, 0, 0);
+    assert(p.R == info.startPixel.R);
+    assert(p.G == info.startPixel.G);
+    assert(p.B == info.startPixel.B);
+
+    p = getPixel(&img, info.columns-1, info.lines-1);
+    assert(p.R == info.endPixel.R);
+    assert(p.G == info.endPixel.G);
+    assert(p.B == info.endPixel.B);
+
+    // verify that the Y axis is correct
+    p = getPixel(&img, 0, 5);
+    assert(p.R == info.Ypixel.R); 
+    assert(p.G == info.Ypixel.G); 
+    assert(p.B == info.Ypixel.B); 
+
+    // verify that the X axis is correct
+    p = getPixel(&img, 5, 0);
+    assert(p.R == info.Xpixel.R); 
+    assert(p.G == info.Xpixel.G); 
+    assert(p.B == info.Xpixel.B); 
 
 
-//     assert(getPixel(&img, 0, 5).R == 94); // verify that the Y axis is correct
-//     assert(getPixel(&img, 5, 0).R == 95); // verify that the X axis is correct
+    // cleanup
+    freeMatrix(&img);
 
-
-//     //cleanup
-//     freeMatrix(&img);
-
-//     printf("----- TEST SUCCESS -----\n\n");
-// }
+    printf("----- TEST SUCCESS -----\n\n");
+}

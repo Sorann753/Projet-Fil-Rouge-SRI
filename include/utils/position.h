@@ -13,9 +13,14 @@ typedef struct RobotPostion
 
 } RobotPosition;
 
+typedef struct IntCoordinate_t {
+    int x;
+    int y;
+} IntCoordinate;
+
 /*---- CONSTANTES ----*/
 #ifndef PI
-#define PI 3.14159265358979323846
+#define PI 3.1415926535897932
 #endif
 
 /*---- PROTOTYPES ----*/
