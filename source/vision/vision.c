@@ -12,12 +12,14 @@ ColorMasks extractColors(const Image* img, const ColorReferences colorRef){
     Matrix* masks = (Matrix*)malloc(sizeof(Matrix) * colorRef.colorCount);
     if(masks == NULL){
         //TODO : handle error case
+        assert(false);
     }
 
     for(int i = 0; i < colorRef.colorCount; i++){
         Matrix temp = initMatrix(img->lines, img->columns, sizeof(byte));
         if(!temp.isValid){
             // TODO : handle error case
+            assert(false);
         }
         memcpy(&(masks[i]), &temp, sizeof(Matrix));
         /** @note : masks[i] takes ownership of the data from temp */
@@ -51,14 +53,116 @@ ColorMasks extractColors(const Image* img, const ColorReferences colorRef){
             }
         }
     }
+
+    return (ColorMasks){ .masks = masks, .colorCount = colorRef.colorCount};
+}
+
+void flagConnected(int x, int y, Matrix* flagMatrix, const Matrix* const mask){
+    size_t index = matrixGetIndex(mask, x, y);
+    const byte* srcBlocks = (const byte*)mask->content;
+    byte* flags = (byte*)(flagMatrix->content);
+
+    if(flags[index] == 1) return; // already visited
+    if(srcBlocks[index] == 0) return; // outside of the object
+    /** @post we are in the object at an unvisited point */
+
+    flags[index] = 1;
+    for(int i = -1; i < 2; i++){
+        for(int j = -1; j < 2; j++){
+            if(i == 0 && j == 0) continue; // skip yourself
+            
+            // flag the local neighbors
+            flagConnected(x+i, y+j, flagMatrix, mask);
+        }
+    }
+}
+
+bool addObject(Objects* objectList, int X, int Y){
+    if(objectList->count == objectList->capacity){
+        // we need to extend the space in the array
+        IntCoordinate* oldPoints = objectList->points;
+        size_t oldCapacity = objectList->capacity;
+        objectList->capacity *= 2;
+        objectList->points = (IntCoordinate*)malloc(objectList->capacity * sizeof(IntCoordinate));
+        if(objectList->points == NULL){
+            //TODO : handle allocation error
+            free(oldPoints);
+            return false;
+        }
+
+        // copy the oldPoints to the new memory block
+        memcpy(objectList->points, oldPoints, oldCapacity * sizeof(IntCoordinate));
+
+        free(oldPoints);
+        oldPoints = NULL;
+    } /** @post we have enough space to add the new element */
+
+    (objectList->points)[objectList->count] = (IntCoordinate){
+        .x = X,
+        .y = Y,
+    };
+
+    (objectList->count)++;
+    return true;
+}
+
+Objects findObjects(const Matrix* const mask){
+    Matrix flagMatrix = initMatrix(mask->lines, mask->columns, sizeof(byte));
+
+    const byte* srcBlocks = (const byte*)mask->content;
+    byte* flags = (byte*)flagMatrix.content;
+
+    // zero the flag matrix to avoid UB
+    for(int x = 0; x < mask->columns; x++){
+        for(int y = 0; y < mask->lines; y++){
+            size_t index = matrixGetIndex(&flagMatrix, x, y);
+            flags[index] = 0;
+        }
+    } /** @post all elements of the flagMatrix are valid */
+
+    Objects connectedElements = {
+        .points = (IntCoordinate*)malloc(5 * sizeof(IntCoordinate)),
+        .count = 0,
+        .capacity = 5,
+    };
+    if(connectedElements.points == NULL){
+        // memory allocation failed, we abort
+        freeMatrix(&flagMatrix);
+        connectedElements.capacity = 0;
+        return connectedElements;
+    }
+
+    for(int x = 0; x < mask->columns; x++){
+        for(int y = 0; y < mask->lines; y++){
+            size_t index = matrixGetIndex(mask, x, y);
+            // check that this pixel isn't flagged already
+            if(flags[index] == 1) continue; // already known
+            if(srcBlocks[index] == 0) continue; // not in an object
+
+            // flag all the connected pixels
+            flagConnected(x, y, &flagMatrix, mask);
+
+            // commit the object to the array
+            bool success = addObject(&connectedElements, x, y);
+            if(!success){
+                // TODO : handle failure case
+            }
+        }
+    }
+
+    // cleanup
+    freeMatrix(&flagMatrix);
+
+    return connectedElements;
 }
 
 Ball findSphere(const Matrix* colorMask){
-    //fr
+    Objects things = findObjects(colorMask);
+    
 }
 
 Cube findCube(const Matrix* colorMask){
-    //fr
+    // TODO
 }
 
 /**

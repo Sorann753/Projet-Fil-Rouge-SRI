@@ -14,6 +14,12 @@ typedef struct ColorMasks_t{
     uint8_t colorCount;
 } ColorMasks;
 
+typedef struct Objects_t{
+    IntCoordinate* points; // the points on each objects
+    size_t count;
+    size_t capacity;
+} Objects;
+
 typedef struct Ball_t{
     IntCoordinate center;
     uint32_t radius;
@@ -26,6 +32,20 @@ typedef struct Cube_t{
 double colorDistance(Color A, Color B);
 
 ColorMasks extractColors(const Image* img, const ColorReferences colorRef);
+
+/**
+ * @return true if success, false in case of failure
+ */
+bool addObject(Objects* objectList, int X, int Y);
+
+void flagConnected(int x, int y, Matrix* flagMatrix, const Matrix* const mask);
+
+/**
+ * @brief find a point from each of the connected elements
+ * @param mask a byte matrix
+ * @return a list of a point within each of the connected elements
+ */
+Objects findObjects(const Matrix* const mask);
 
 Ball findSphere(const Matrix* colorMask);
 
