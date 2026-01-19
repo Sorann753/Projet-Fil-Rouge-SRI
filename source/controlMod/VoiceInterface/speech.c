@@ -1,34 +1,55 @@
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
-#include "controlMod/VoiceInterface/speech.h"
+#include <string.h>
+#include "controlMod/voiceInterface/speech.h"
+#include "configLoader/configLoader.h"
 
-char *get_speech(void) {
-    // Buffer statique pour stocker la ligne reçue du script Python.
-    // Statique = persiste après la fin de la fonction (nécessaire pour renvoyer un pointeur).
-    static char line[1024];
+#define LINE_BUFFER_SIZE 1024
+#define COMMAND_BUFFER_SIZE 512
 
-    // Exécute le script Python et récupère sa sortie standard (stdout).
-    // "2>/dev/null" permet de masquer les warnings ALSA/JACK générés par Python.
-    FILE *python_file = popen("python3 voice_interpreter.py 2>/dev/null", "r");
+char *get_speech(const char *language) {
+    static char line[LINE_BUFFER_SIZE];
+    char *python_path = NULL;
+    FILE *python_file = NULL;
+    char command[COMMAND_BUFFER_SIZE];
+    const char *script_name;
 
-    // Si popen échoue, on renvoie une chaîne d'erreur simple.
+    // Choix du chemin Python et du script selon la langue
+    if (strcmp(language, "en") == 0) {
+        python_path = config_loader("config/globalConfig.toml", "python_vocal_interpreter_en");
+    } else {
+        python_path = config_loader("config/globalConfig.toml", "python_vocal_interpreter_fr");
+    }
+
+    if (!python_path) {
+        return (char *)"ERROR_CONFIG";  // Impossible de lire le chemin
+    }
+
+    // Construction sécurisée de la commande
+    snprintf(command, sizeof(command), "python3 ../../../../%s 2>/dev/null", python_path);
+ 
+    // Exécute le script Python
+    python_file = popen(command, "r");
+
+    free(python_path);
+
     if (!python_file) {
-        return (char *)"ERROR";
+        return (char *)"ERROR_POPEN";  
     }
 
-    // Lit la première ligne envoyée par le script Python.
-    // Si aucune donnée n'est reçue, on copie "err" dans le buffer.
+    // Lire la première ligne du script Python
     if (fgets(line, sizeof(line), python_file) == NULL) {
-        line[0] = 'e';
-        line[1] = 'r';
-        line[2] = 'r';
-        line[3] = '\0';
+        strncpy(line, "err ", sizeof(line));
+        line[sizeof(line)-1] = '\0';  
+    } else {
+        // Supprimer le retour à la ligne éventuel
+        size_t len = strlen(line);
+        if (len > 0 && (line[len-1] == '\n' || line[len-1] == '\r')) {
+            line[len-1] = '\0';
+        }
     }
 
-    // Ferme le processus Python.
     pclose(python_file);
-
-    // Renvoie la ligne capturée (peut contenir une transcription ou un message d’erreur).
     return line;
 }

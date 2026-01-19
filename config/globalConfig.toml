@@ -5,7 +5,8 @@ langue = fr #fr ou en
 
 [path]
 python_simulation_path = source/actuator/Simulator.py
-python_voice_interpreter = ???
+python_vocal_interpreter_fr = source/controlMod/VoiceInterface/vocalInterpreter_FR.py
+python_vocal_interpreter_en = source/controlMod/VoiceInterface/vocalInterpreter_EN.py
 history_folder = history
 image_folder = data
 

@@ -18,7 +18,9 @@
 #include "testCases/speechTest.h"
 
 int main(void)
-{
+{   
+    history_init();
+
     test_vocabulary();
     printf("\n\n**********************************************\n\n");
 
@@ -52,14 +54,11 @@ int main(void)
     testLoadConfig();
     printf("\n\n**********************************************\n\n");
 
-    testHistory(INFO, "Ecriture sur l'historique");
-    printf("\n\n**********************************************\n\n");
-
-
-    testGetSpeech();
     // keep this one as the last since it require user input
     testMenu();
     printf("\n\n**********************************************\n\n");
 
+    history_close();
+    
     return 0;
 }
