@@ -158,7 +158,7 @@ Objects findObjects(const Matrix* const mask){
 
 Ball findSphere(const Matrix* colorMask){
     Objects things = findObjects(colorMask);
-    
+
 }
 
 Cube findCube(const Matrix* colorMask){
@@ -175,14 +175,14 @@ Cube findCube(const Matrix* colorMask){
  * @note this function is estimating with a single measure and is very crude,
  * more precise estimations will be done later
  */
-int8_t objectDirection(IntCoordinate ObjectCenter, uint32_t delta){
+direction_t objectDirection(IntCoordinate ObjectCenter, uint32_t delta){
     if(ObjectCenter.x < -delta){
-        return -1;
+        return DIR_LEFT;
     }
     else if(ObjectCenter.x > delta){
-        return 1;
+        return DIR_RIGHT;
     }
     else{
-        return 0;
+        return DIR_NONE;
     }
 }

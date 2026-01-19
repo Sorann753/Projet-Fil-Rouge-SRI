@@ -3,6 +3,7 @@
 
 #include "image.h"
 #include "utils/position.h"
+#include "manualPilot/command.h"
 
 typedef struct ColorReferences_t{
     Color* refPoints;
@@ -55,12 +56,12 @@ Cube findCube(const Matrix* colorMask);
  * @brief estimage the direction of the object compared to the robot
  * @param ObjectCenter the estimated coordinates of an object
  * @param delta how far from the center before it's not centered anymore
- * @return -1 if on the left, 0 if centered, 1 if on the right
+ * @return the relative direction of the object, DIR_NONE being used for centered
  * 
  * @note this assume the camera is aligned with the robot
  * @note this function is estimating with a single image and is very crude,
  * more precise estimations will be done later
  */
-int8_t objectDirection(IntCoordinate ObjectCenter, uint32_t delta);
+direction_t objectDirection(IntCoordinate ObjectCenter, uint32_t delta);
 
 #endif
