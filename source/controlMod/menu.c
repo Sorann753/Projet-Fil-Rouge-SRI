@@ -70,6 +70,8 @@ void controlMenu(void)
     char choice;
     bool running = true;
     const char *speechResult;
+    char log_buffer[1024];
+
     while (running) {
         printf("---- Control ----\n");
         printf("| 1.CLI Mode    |\n");
@@ -86,7 +88,10 @@ void controlMenu(void)
                 break;
             case '2':
                 speechResult = get_speech(languageValue);
-                printf("Transcription : %s\n", speechResult);
+                printf("Vocal Input: %s\n", speechResult);
+                
+                snprintf(log_buffer, sizeof(log_buffer), "User Vocal Input: %s", speechResult);
+                history_log(INFO, log_buffer);
                 break;
             case '0':
                 running = false;
@@ -101,7 +106,9 @@ void languagesMenu(void)
 {
    char choice;
    bool running = true;
-   printf(" Language set to : %s\n", languageValue);
+   printf(" ------------------------\n");
+   printf("| Current Language : %s |\n", languageValue);
+   printf(" ------------------------\n\n");
    while (running) {
       printf("-- Languages --\n");
       printf("| 1.Français  |\n");
@@ -133,9 +140,10 @@ void languagesMenu(void)
             default:
                system("clear");
                continue;
-      }
-
-      printf("Language set to : %s\n", languageValue);
+    }
+    printf(" ----------------------\n");
+    printf("| Language set to : %s |\n", languageValue);
+    printf(" ----------------------\n\n");
    }
 }
 
