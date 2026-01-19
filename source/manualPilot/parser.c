@@ -29,7 +29,7 @@ static void init_command(command_list *cmd_list)
 }
 
 /**
- * @brief transformer la liste de tokens en commandes
+ * @brief transformer la liste de tokens en cmds[cmd1=action,value,color,direction, cmd2=action....]
  */
 int parser(tokenlist *token_list, command_list *cmd_list)
 {

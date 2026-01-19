@@ -157,7 +157,7 @@ void forward(float distance, RobotPosition *Position)
  */
 void backward(float distance, RobotPosition *Position)
 {
-
+    /*on prend la valeur absolue*/
     distance = fabsf(distance);
 
     /*conversion de theta en radiant*/

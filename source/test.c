@@ -16,21 +16,17 @@
 #include "testCases/analysistest.h"
 #include "testCases/parsertest.h"
 #include "testCases/speechTest.h"
+#include "testCases/executortest.h"
 
 int main(void)
-{   
+{
+    const char *phrase = "Avance de 100 metres puis tourne a gauche et recule de 30 metres et cherche le cube rouge";
     history_init();
 
     test_vocabulary();
     printf("\n\n**********************************************\n\n");
 
-    test_cutter();
-    printf("\n\n**********************************************\n\n");
-
-    test_analysis();
-    printf("\n\n**********************************************\n\n");
-
-    test_parser();
+    test_executor(phrase);
     printf("\n\n**********************************************\n\n");
 
     testDoubleMatrix();
@@ -48,9 +44,6 @@ int main(void)
     testHeaderParsing();
     printf("\n\n**********************************************\n\n");
 
-    TestAction();
-    printf("\n\n**********************************************\n\n");
-
     testLoadConfig();
     printf("\n\n**********************************************\n\n");
 
@@ -59,6 +52,6 @@ int main(void)
     printf("\n\n**********************************************\n\n");
 
     history_close();
-    
+
     return 0;
 }
