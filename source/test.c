@@ -20,7 +20,7 @@
 
 int main(void)
 {
-    const char *phrase = "Avance de 100 metres puis tourne a gauche et recule de 30 metres et cherche le cube rouge";
+    const char *phrase = "Avance de 100 metres puis tourne a gauche et recule de 30 metres puis tourne de 45 puis go de 200 et tourne de 60 puis va tout de roit de 100 et cherche le cube rouge";
     history_init();
 
     test_vocabulary();
