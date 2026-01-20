@@ -1,7 +1,7 @@
 # Mouvement
-forward = ["avance", "marche", "go", "avancer", "roule","va"]
-backward = ["recule", "arriere", "back", "reculer"]
-turn = ["tourne", "tourner", "pivote"]
+forward = ["avance", "avancer", "marche", "marcher", "go", "roule", "rouler", "va", "aller", "continue", "continuer", "fonce", "foncer", "progresse", "progresser", "deplace", "deplacer", "bouge", "bouger", "file", "filer", "demarre", "demarrer", "pars", "partir", "direction"]
+backward = ["recule", "reculer", "arriere", "back", "reviens", "revenir", "retourne", "retourner", "inverse", "inverser", "retrograde", "retrograder"]
+turn = ["tourne", "tourner", "pivote", "pivoter", "oriente", "orienter", "vire", "virer", "rotation", "rotate", "bifurque", "bifurquer", "devie", "devier"]
 stop = ["stop", "arrete", "arreter", "halte"]
 search = ["cherche", "trouve", "scan", "detecte"]
 
