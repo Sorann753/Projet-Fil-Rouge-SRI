@@ -28,12 +28,11 @@ void execut_cmd(command_list *cmd_list, RobotPosition *robot)
             /* Déterminer l'angle selon la direction */
             if (cmd_list->cmd[i].direction == DIR_LEFT)
             {
-                turn(-90, robot); /* gauche cest angle négatif */
+                turn(90, robot); /* gauche cest angle négatif */
             }
             else if (cmd_list->cmd[i].direction == DIR_RIGHT)
             {
-                printf("EXEC: turn(90) [RIGHT]\n");
-                turn(90, robot); /* droite cest angle positif */
+                turn(-90, robot); /* droite cest angle positif */
             }
             else
             {
