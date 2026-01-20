@@ -31,6 +31,6 @@ TreeMap *vocabulary_load(const char *path);
  * @param mot Le mot à chercher
  * @return token* avec les infos du mot et NULL si erreur
  */
-token *vocabulary_shearch(TreeMap *vocab, const char *mot);
+token *vocabulary_search(TreeMap *vocab, const char *mot);
 
 #endif

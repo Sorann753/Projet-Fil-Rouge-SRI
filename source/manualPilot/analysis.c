@@ -70,7 +70,7 @@ int analyze(TreeMap *arbre, tokenlist *tok_list)
     for (int i = 0; i < tok_list->count; i++)
     {
         /* chercher le mot dans le vocabulaire */
-        token *found = vocabulary_shearch(arbre, tok_list->tokenTAB[i].texte);
+        token *found = vocabulary_search(arbre, tok_list->tokenTAB[i].texte);
 
         if (found != NULL)
         {

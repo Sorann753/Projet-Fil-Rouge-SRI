@@ -27,7 +27,7 @@ void test_vocabulary(void)
     }
 
     /*chhercher le mot "avance" */
-    token *result = vocabulary_shearch(vocab, "avance");
+    token *result = vocabulary_search(vocab, "avance");
     if (result != NULL)
     {
         printf("(trouver!) type:%d, action:%d\n", result->type, result->data.action);
@@ -38,7 +38,7 @@ void test_vocabulary(void)
     }
 
     /*cherche le mot "rouge" */
-    result = vocabulary_shearch(vocab, "rouge");
+    result = vocabulary_search(vocab, "rouge");
     if (result != NULL)
     {
         printf("(trouver!) type:%d, action:%d\n", result->type, result->data.action);

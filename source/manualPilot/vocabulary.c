@@ -122,7 +122,7 @@ TreeMap *vocabulary_load(const char *filepath)
 /**
  * @brief pour chercher un mot dans larbre de vocabulaire
  */
-token *vocabulary_shearch(TreeMap *vocab, const char *mot)
+token *vocabulary_search(TreeMap *vocab, const char *mot)
 {
     if (vocab == NULL || mot == NULL)
     {

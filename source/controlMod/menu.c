@@ -12,6 +12,7 @@
 
 char *languageValue = NULL;
 
+
 /* Lecture sécurisée d’un choix utilisateur */
 char selectMenu(void)
 {
@@ -146,7 +147,6 @@ void languagesMenu(void)
     printf(" ----------------------\n\n");
    }
 }
-
 
 void WORKING_PROGRESS(void)
 {
