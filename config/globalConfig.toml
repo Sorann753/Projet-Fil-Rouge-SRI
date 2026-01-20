@@ -1,7 +1,10 @@
 # CONFIGURATION GENERALE PROJET PFR
 
 [language]
-langue = fr #fr ou en
+langue = fr # fr or en
+
+[simulation]
+simulation = on # on or off
 
 [path]
 python_simulation_path = source/actuator/Simulator.py

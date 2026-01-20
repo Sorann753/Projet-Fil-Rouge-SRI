@@ -9,99 +9,211 @@
 #include "history/history.h"
 #include "controlMod/voiceInterface/speech.h"
 
+#include "manualPilot/vocabulary.h"
+#include "utils/position.h"
+#include "actuator/SimulatorController.h"
+#include "manualPilot/cutter.h"
+#include "manualPilot/analysis.h"
+#include "manualPilot/parser.h"
+#include "manualPilot/executor.h"
 
 char *languageValue = NULL;
+char *python_path = NULL;
+char *simulationEnabled = NULL;
+RobotPosition my_robot;
 
-
-/* Lecture sécurisée d’un choix utilisateur */
 char selectMenu(void)
 {
-    int c;
-    do {
-        c = getchar();
-    } while (c == '\n' || c == '\r');
+    char buffer[16];
+    if (!fgets(buffer, sizeof(buffer), stdin)) {
+        return '\0'; 
+    }
 
-    return (char)c;
+    return buffer[0];
 }
+
 
 void homeMenu(void)
 {
-   char choice;
-   bool running = true;
+    char choice;
+    bool running = true;
 
-   history_log(INFO,"homeMenu opening");
-   languageValue = config_loader("config/globalConfig.toml", "langue");
+    languageValue = config_loader("config/globalConfig.toml", "langue");
+    python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
+    simulationEnabled = config_loader("config/globalConfig.toml","simulation");
+    
 
-   if (!languageValue) {
-      languageValue = malloc(strlen("en") + 1);
-      strcpy(languageValue, "en");
-   }
+    history_log(INFO,"homeMenu opening");
 
-    while (running) {
-        printf("------ HOME ------\n");
-        printf("| 1.Control Mode |\n");
-        printf("| 2.Languages    |\n");
-        printf("| q.Quit         |\n");
-        printf("------------------\n\n");
-
-        choice = selectMenu();
-
-        switch (choice) {
-            case '1':
-                controlMenu();
-                break;
-            case '2':
-                languagesMenu();
-                break;
-            case 'q':
-                printf("--- EXIT ---\n");
-                running = false;
-                break;
-            default:
-                system("clear");
-        }
+    if (!languageValue) {
+        languageValue = malloc(strlen("en") + 1);
+        strcpy(languageValue, "en");
     }
-    history_close();
-    free(languageValue);
-    languageValue = NULL;
+
+        while (running) {
+            printf("------ HOME ------\n");
+            printf("| 1.Control Mode |\n");
+            printf("| 2.Languages    |\n");
+            printf("| q.Quit         |\n");
+            printf("------------------\n\n");
+
+            choice = selectMenu();
+
+            switch (choice) {
+                case '1': //Control Mode
+                    controlMenu();
+                    break;
+                case '2': //Languages
+                    languagesMenu();
+                    break;
+                case 'q': //Quit
+                    printf("--- EXIT ---\n");
+                    running = false;
+                    break;
+                default:
+                    system("clear");
+            }
+        }
+        history_close();
+        free(languageValue);
+        languageValue = NULL;
 }
 
 void controlMenu(void)
 {
+    // Déclarations
     char choice;
     bool running = true;
-    const char *speechResult;
+
+    char userCommand[256] = {0}; // buffer pour CLI et vocal
+    char *speechInput = NULL;
     char log_buffer[1024];
 
+    TreeMap *vocab = NULL;
+    init_Simulator(&my_robot);
+    command_list cmd_list;
+    tokenlist liste;
+
+    // Boucle principale du menu
     while (running) {
+        // Affichage du menu
         printf("---- Control ----\n");
         printf("| 1.CLI Mode    |\n");
         printf("| 2.Vocal Mode  |\n");
+        printf("| 3.Reset Robot |\n");
         printf("| 0.Return      |\n");
         printf("-----------------\n\n");
 
         choice = selectMenu();
 
+        // Chargement du vocabulaire
+        if (strcmp(languageValue, "en") == 0) 
+        {
+            vocab = vocabulary_load("config/vocabulary/en.toml");
+        } 
+        else 
+        {
+            vocab = vocabulary_load("config/vocabulary/fr.toml");
+        }
+        
         switch (choice) {
-            case '1':
-                printf("CLI MODE WORKING PROGRESS\n");
-                WORKING_PROGRESS();
-                break;
-            case '2':
-                speechResult = get_speech(languageValue);
-                printf("Vocal Input: %s\n", speechResult);
-                
-                snprintf(log_buffer, sizeof(log_buffer), "User Vocal Input: %s", speechResult);
+            case '1': // CLI Mode
+                printf("Enter command: ");
+                if (!fgets(userCommand, sizeof(userCommand), stdin)) {
+                    break;
+                }
+                userCommand[strcspn(userCommand, "\n")] = '\0'; 
+
+                snprintf(log_buffer, sizeof(log_buffer), "User Text Input: %s", userCommand);
                 history_log(INFO, log_buffer);
                 break;
-            case '0':
-                running = false;
+
+            case '2': // Vocal Mode
+                printf("Give your command.\n");
+                speechInput = get_speech(languageValue);
+
+                strncpy(userCommand, speechInput, sizeof(userCommand) - 1);
+
+                userCommand[sizeof(userCommand) - 1] = '\0';
+
+                printf("Vocal Input: %s\n", userCommand);
+
+                snprintf(log_buffer, sizeof(log_buffer), "User Vocal Input: %s", userCommand);
+                history_log(INFO, log_buffer);
                 break;
+            
+            case '3': // Reset Robot
+                init_Simulator(&my_robot);
+                history_log(INFO,"Reinitialisation du robot");
+                continue;
+            case '0': // Retour
+                running = false;
+                continue;
+
             default:
                 system("clear");
+                continue;
         }
+
+        // Vérification de la commande
+        if (strlen(userCommand) == 0) {
+            history_log(WARNING, "Aucune commande reçue");
+            break;
+        }
+
+        if (!vocab) {
+            printf("ERREUR: impossible de charger le vocabulaire\n");
+            history_log(ERROR, "Impossible de charger le dictionnaire");
+            break;
+        }
+
+        // Initialisation des structures pour l'analyse
+        cmd_list = init_command_list();
+        liste = init_cutter();
+
+        // Analyse de la commande
+        cutter(userCommand, &liste);
+        analyze(vocab, &liste);
+
+        printf("---------- Analyse ------------\n");
+        print_analysis(&liste);
+        printf("-------------------------------\n");
+
+        // Parsing des commandes
+        int nb_cmd = parser(&liste, &cmd_list);
+        printf("------- Liste Commandes --------\n");
+        printf("Nombre de commandes: %d\n", nb_cmd);
+        for (int i = 0; i < cmd_list.count; i++) {
+            printf("  cmd[%d]: action=%d, value=%.2f, color=%d, direction=%d\n",
+                   i, cmd_list.cmd[i].action, cmd_list.cmd[i].value,
+                   cmd_list.cmd[i].color, cmd_list.cmd[i].direction);
+        }
+        printf("-------------------------------\n");
+        
+
+        if (strcmp(simulationEnabled, "on") == 0) 
+        {
+            
+            execut_cmd(&cmd_list, &my_robot);
+
+            char full_simu_path[512];
+            snprintf(full_simu_path, sizeof(full_simu_path), "../../../../%s", python_path);
+
+            char commande[600];
+            snprintf(commande, sizeof(commande), "python3 %s", full_simu_path);
+
+            printf("------- Mouvement Robot -------\n");
+            system(commande);
+            printf("-------------------------------\n");
+        }
+
+        freeTreeMap(&vocab);
+        
     }
 }
+
+
+
 
 void languagesMenu(void)
 {

@@ -13,7 +13,7 @@ def init_bot():
     robot.speed(1)
     robot.width(5)
 
-    print("\ncreation du robot reussit\n\n")
+    #print("\ncreation du robot reussit\n\n")
     return robot
     
 
@@ -43,12 +43,11 @@ def navigation(action, value, robot, value2):
         robot.up()
         robot.goto(x, y)
         robot.down()
-        print(f"position initial({x}, {y})\n") 
+        #print(f"position initial({x}, {y})\n") 
         
 
     else:
         print("\nERREUR (python): unknown action !\n")
-        return
 
 
 
@@ -88,7 +87,7 @@ def ReadAction(robot):
 
                 #apelle de la fonction de navigation
                 navigation(action, value, robot, value2)
-                print("lecture ligne")
+                #print("lecture ligne")
 
     except(turtle.Terminator, tkinter.TclError):
         print("ERREUR (python): simulation interompu !")
@@ -101,4 +100,4 @@ if __name__ == "__main__":
     bot = init_bot()
     ReadAction(bot)
 
-    print("\n\n(python) navigation reussi !\n\n")
+    #print("\n\n(python) navigation reussi !\n\n")

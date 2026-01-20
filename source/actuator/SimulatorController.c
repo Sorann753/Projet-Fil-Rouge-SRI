@@ -48,7 +48,7 @@ void read_sim_config(RobotPosition *Position)
     free(x_str);
     free(y_str);
 
-    printf("Robot initial position: x=%.2f, y=%.2f\n", Position->x, Position->y);
+    //printf("Robot initial position: x=%.2f, y=%.2f\n", Position->x, Position->y);
 
     /* Initialisation du fichier de simulation */
     FILE *action_file = fopen(SIM_FILE, "w");
@@ -81,8 +81,8 @@ void init_Simulator(RobotPosition *Position)
     Position->theta = 0.0f;
 
     fclose(action_file);
-    printf("\nle fichier SimulatorContoller.txt a été vidé !\n");
-
+    //printf("\nle fichier SimulatorContoller.txt a été vidé !\n");
+    
     read_sim_config(Position);
 }
 
