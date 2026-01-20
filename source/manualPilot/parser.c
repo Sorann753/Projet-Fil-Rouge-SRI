@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "manualPilot/parser.h"
 
+#define DEFAULT_DISTANCE 50.0
+#define DEFAULT_DIRECTION DIR_RIGHT
 /**
  * @brief Initialise une liste de commandes vide
  */
@@ -80,10 +82,30 @@ int parser(tokenlist *token_list, command_list *cmd_list)
                 j++;
             }
 
+            /* si le verbe est FORWARD ou BACKWARD avec une direction mais sans distance on le change en turn*/
+            if ((cmd_list->cmd[cmd_list->count].action == ACT_FORWARD || cmd_list->cmd[cmd_list->count].action == ACT_BACKWARD) && cmd_list->cmd[cmd_list->count].direction != DIR_NONE)
+            {
+                cmd_list->cmd[cmd_list->count].action = ACT_TURN; /*exemple; avance a droite*/
+                cmd_list->cmd[cmd_list->count].value = 0.0;
+            }
+
+            /*ajout des valeur par defeault*/
+
+            /* si FORWARD ou BACKWARD sans valeur*/
+            if ((cmd_list->cmd[cmd_list->count].action == ACT_FORWARD || cmd_list->cmd[cmd_list->count].action == ACT_BACKWARD) && cmd_list->cmd[cmd_list->count].value < 0.001) /*0.001 pour eviter lerreur float ==0 */
+            {
+                cmd_list->cmd[cmd_list->count].value = DEFAULT_DISTANCE;
+            }
+
+            /* Si TURN sans direction*/
+            if (cmd_list->cmd[cmd_list->count].action == ACT_TURN && cmd_list->cmd[cmd_list->count].direction == DIR_NONE)
+            {
+                cmd_list->cmd[cmd_list->count].direction = DEFAULT_DIRECTION;
+            }
+
             cmd_list->count++;
-            i = j; /*on continue a partir de i+1*/
+            i = j;
         }
-        /*si ce nest pas un verbe on passe a la suivante*/
         else
         {
             i++;
