@@ -7,6 +7,7 @@
 
 #include "manualPilot/vocabulary.h"
 #include "configLoader/configLoader.h"
+#include "history/history.h"
 
 /**
  * @brief ajoute plusieurs mots avec les mêmes toks
@@ -27,6 +28,7 @@ void add_words(TreeMap **arbre, char *toml_phrase, tokentype type, action_t acti
         if (tok == NULL)
         {
             fprintf(stderr, "vocabulary: erreur malloc fonction add_word\n");
+            history_log(WARNING, "vocabulary: erreur malloc fonction add_word");
             return;
         }
 
@@ -62,6 +64,7 @@ TreeMap *vocabulary_load(const char *filepath)
     if (arbre == NULL)
     {
         fprintf(stderr, "vocabulary: erreur initTreeMap\n");
+        history_log(WARNING, "vocabulary: erreur initTreeMap");
         return NULL;
     }
 

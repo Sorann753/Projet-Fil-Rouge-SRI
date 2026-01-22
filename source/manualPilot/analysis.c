@@ -4,6 +4,7 @@
 
 #include "manualPilot/analysis.h"
 #include "manualPilot/vocabulary.h"
+#include "history/history.h"
 
 /**
  * @brief pour savoir si le texte est un nombre
@@ -63,6 +64,7 @@ int analyze(TreeMap *arbre, tokenlist *tok_list)
     if (arbre == NULL || tok_list == NULL)
     {
         fprintf(stderr, "analysis: erreur paramètres NULL\n");
+        history_log(WARNING, "analysis: erreur paramètres NULL");
         return -1;
     }
 
@@ -97,6 +99,7 @@ void print_analysis(tokenlist *tok_list)
     if (tok_list == NULL)
     {
         fprintf(stderr, "analysis: ERREUR print NULL\n");
+        history_log(WARNING, "analysis: ERREUR print NULL");
         return;
     }
 

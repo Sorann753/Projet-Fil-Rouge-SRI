@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "manualPilot/parser.h"
+#include "history/history.h"
 
 #define DEFAULT_DISTANCE 50.0
 #define DEFAULT_DIRECTION DIR_RIGHT
@@ -39,6 +40,7 @@ int parser(tokenlist *token_list, command_list *cmd_list)
     if (token_list == NULL || cmd_list == NULL)
     {
         fprintf(stderr, "parser: ERREUR pointeur null\n");
+        history_log(WARNING, "parser: ERREUR pointeur null");
         return -1;
     }
 

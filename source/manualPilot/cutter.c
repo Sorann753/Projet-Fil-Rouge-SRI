@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h> /*pour strncpy et strtok */
+#include "history/history.h"
 
 /**
  * @brief initialise la liste de token
@@ -43,6 +44,8 @@ int cutter(const char *phrase, tokenlist *result)
     if (phrase == NULL || result == NULL)
     {
         fprintf(stderr, "cutter: ERREUR lecture phrase\n");
+        history_log(WARNING, "cutter: ERREUR lecture phrase");
+
         return -1;
     }
 
@@ -71,7 +74,7 @@ int cutter(const char *phrase, tokenlist *result)
 
         result->count++;
 
-        mot = strtok(NULL, " \t\n,.;:!?");
+        mot = strtok(NULL, " \t\n,.;:!?'");
     }
 
     return result->count;
@@ -85,6 +88,8 @@ void print_tokenlist(tokenlist *ptr_list)
     if (ptr_list == NULL)
     {
         fprintf(stderr, "cutter: ERROR affichage tokenlist\n");
+        history_log(WARNING, "cutter: ERROR affichage tokenlist");
+
         return;
     }
 
