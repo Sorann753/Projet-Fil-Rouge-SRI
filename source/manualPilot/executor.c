@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "manualPilot/executor.h"
+#include "history/history.h"
 
 /**
  * TODO: execute les commandes avec les fonction de simullatorController
@@ -9,6 +10,7 @@ void execut_cmd(command_list *cmd_list, RobotPosition *robot)
     if (cmd_list == NULL || robot == NULL)
     {
         fprintf(stderr, "executor: ERREUR execut_cmd()\n");
+        history_log(WARNING, "executor: ERREUR execut_cmd()");
         return;
     }
     int i;
@@ -56,6 +58,7 @@ void execut_cmd(command_list *cmd_list, RobotPosition *robot)
 
         default:
             fprintf(stderr, "executor: ERREUR executor() UNKNOWN ACTION : %d\n", cmd_list->cmd[i].action);
+            history_log(WARNING, "executor: ERREUR executor() UNKNOWN ACTION ");
             return;
         }
     }
