@@ -3,6 +3,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "manualPilot/parser.h"
 
 #define DEFAULT_DISTANCE 50.0
@@ -27,7 +28,7 @@ static void init_command(command_list *cmd_list)
     cmd_list->cmd[cmd_list->count].color = COL_NONE;
     cmd_list->cmd[cmd_list->count].object = OBJ_NONE;
     cmd_list->cmd[cmd_list->count].direction = DIR_NONE;
-    cmd_list->cmd[cmd_list->count].negated = 0;
+    cmd_list->cmd[cmd_list->count].negation = 0;
 }
 
 /**
@@ -58,8 +59,19 @@ int parser(tokenlist *token_list, command_list *cmd_list)
 
             /*parcourir toute la liste de token suivant jusquau prochain verbe*/
             int j = i + 1;
+
+            /*initialisation de la negation a 0*/
+            int negation = 0;
+            if (i > 0 && (strcmp(token_list->tokenTAB[i - 1].texte, "ne") == 0 || strcmp(token_list->tokenTAB[i - 1].texte, "n") == 0))
+            {
+                negation = 1;
+            }
+
+            /*mettre la negation a 1 ou 0*/
+            cmd_list->cmd[cmd_list->count].negation = negation;
             while (j < token_list->count && token_list->tokenTAB[j].type != TOK_VERBE)
             {
+
                 /* si c'est un nombre */
                 if (token_list->tokenTAB[j].type == TOK_NUM)
                 {
@@ -79,7 +91,21 @@ int parser(tokenlist *token_list, command_list *cmd_list)
                     cmd_list->cmd[cmd_list->count].direction = token_list->tokenTAB[j].data.direction;
                 }
 
+                /*negation si on as les mot "ne" avant ou "pas" ou "plus" apres*/
+                if (strcmp(token_list->tokenTAB[j].texte, "pas") == 0 || strcmp(token_list->tokenTAB[j].texte, "plus") == 0) /*sassurer que il y as un i-1*/
+                {
+                    negation = 1;
+                }
+
                 j++;
+            }
+
+            /*verifier la negation*/
+            if (negation)
+            {
+                printf("commande[ %d ] (negation) !\n", cmd_list->count + 1);
+                i = j;
+                continue; /*on va sauter la commande pour eviter davoir une valeur par default*/
             }
 
             /* si le verbe est FORWARD ou BACKWARD avec une direction mais sans distance on le change en turn*/
@@ -105,6 +131,18 @@ int parser(tokenlist *token_list, command_list *cmd_list)
 
             cmd_list->count++;
             i = j;
+        }
+        /*le cas ou on met un NUM sans verbe avant*/
+        else if (token_list->tokenTAB[i].type == TOK_NUM)
+        {
+            init_command(cmd_list);
+
+            /*on va mettre forward par default*/
+            cmd_list->cmd[cmd_list->count].action = ACT_FORWARD;
+            cmd_list->cmd[cmd_list->count].value = token_list->tokenTAB[i].data.value;
+
+            cmd_list->count++;
+            i++;
         }
         else
         {
