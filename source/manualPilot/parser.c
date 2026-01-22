@@ -3,6 +3,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "manualPilot/parser.h"
 
 #define DEFAULT_DISTANCE 50.0
@@ -27,7 +28,7 @@ static void init_command(command_list *cmd_list)
     cmd_list->cmd[cmd_list->count].color = COL_NONE;
     cmd_list->cmd[cmd_list->count].object = OBJ_NONE;
     cmd_list->cmd[cmd_list->count].direction = DIR_NONE;
-    cmd_list->cmd[cmd_list->count].negated = 0;
+    cmd_list->cmd[cmd_list->count].negation = 0;
 }
 
 /**
@@ -58,8 +59,15 @@ int parser(tokenlist *token_list, command_list *cmd_list)
 
             /*parcourir toute la liste de token suivant jusquau prochain verbe*/
             int j = i + 1;
+
+            /*initialisation de la negation a 0*/
+            int negation = 0;
+
+            /*mettre la negation a 1 ou 0*/
+            cmd_list->cmd[cmd_list->count].negation = negation;
             while (j < token_list->count && token_list->tokenTAB[j].type != TOK_VERBE)
             {
+
                 /* si c'est un nombre */
                 if (token_list->tokenTAB[j].type == TOK_NUM)
                 {
@@ -77,6 +85,15 @@ int parser(tokenlist *token_list, command_list *cmd_list)
                 if (token_list->tokenTAB[j].type == TOK_DIRECTION)
                 {
                     cmd_list->cmd[cmd_list->count].direction = token_list->tokenTAB[j].data.direction;
+                }
+
+                /*negation si on as les mot "ne" avant ou "pas" ou "plus" apres*/
+                if (strcmp(token_list->tokenTAB[j + 1].texte, "pas") == 0 || strcmp(token_list->tokenTAB[j + 1].texte, "plus") == 0 || (i > 0 && strcmp(token_list->tokenTAB[i - 1].texte, "ne") == 0)) /*sassurer que il y as un i-1*/
+                {
+                    negation = 1;
+                    printf("commande[ %d ] (negation) !\n", cmd_list->count);
+                    cmd_list->cmd[cmd_list->count].value = 0;
+                    cmd_list->cmd[cmd_list->count].negation = negation; /*on passe le .negation de la commande a 1*/
                 }
 
                 j++;

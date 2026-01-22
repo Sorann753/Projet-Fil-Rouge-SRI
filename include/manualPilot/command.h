@@ -49,7 +49,7 @@ typedef struct command
     color_t color;
     object_t object;
     direction_t direction;
-    int negated;
+    int negation; /*pour prendre en compte la negation (0 ou 1)*/
 } command;
 
 /**
