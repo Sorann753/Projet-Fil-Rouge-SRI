@@ -51,11 +51,11 @@ def ReadAction(robot, last_index):
             action = commande[0]
             value = commande[1]
             value2 = commande[2] if action == "INIT" and len(commande) > 2 else 0
-
+            
             if action == "CLOSE":
                 isRunning = False
-            elif action == "START":
-                isRunning = True
+                return len(lines) 
+            
             elif action in ["FORWARD", "BACKWARD", "TURN", "INIT"]:
                 navigation(action, value, robot, value2)
         return len(lines)  # mettre à jour l'index de dernière ligne lue
@@ -70,7 +70,9 @@ if __name__ == "__main__":
     last_read_index = 0
 
     while isRunning:
-        last_read_index = ReadAction(bot, last_read_index)
-        screen.update()  
-        time.sleep(1)  
-    turtle.bye()
+        try:
+            last_read_index = ReadAction(bot, last_read_index)
+            screen.update()
+        except turtle.Terminator:
+            isRunning = False
+        time.sleep(0.1)

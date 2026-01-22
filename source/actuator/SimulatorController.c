@@ -102,18 +102,15 @@ void init_Simulator(RobotPosition *Position)
  * @param value la valuer associer a laction
  */
 
-void startSimu()
-{
-    closeSimu();
-    FILE *action_file = fopen(SIM_FILE, "a");
-    history_log(INFO,"Simulation Started");
-    fprintf(action_file, "START\n");
-}
 
 void closeSimu()
 {
     FILE *action_file = fopen(SIM_FILE, "a");
+
     fprintf(action_file, "CLOSE 0\n");
+    fflush(action_file);
+    
+    fclose(action_file);
 }
 
 void WriteAction(action_t act, float value)

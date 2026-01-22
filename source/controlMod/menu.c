@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "controlMod/menu.h"
 #include "configLoader/configLoader.h"
@@ -18,7 +19,7 @@
 #include "manualPilot/executor.h"
 
 char *languageValue = NULL;
-
+char *simuOpen = NULL;
 
 RobotPosition my_robot;
 
@@ -39,7 +40,7 @@ void homeMenu(void)
     bool running = true;
 
     languageValue = config_loader("config/globalConfig.toml", "langue");
-    
+    simuOpen = config_loader("config/globalConfig.toml","simulation_open_on_start");
     init_Simulator(&my_robot);
     
 
@@ -54,6 +55,7 @@ void homeMenu(void)
             printf("\n------ HOME ------\n");
             printf("| 1.Control Mode |\n");
             printf("| 2.Languages    |\n");
+            printf("| 3.Sim Window   |\n");
             printf("| q.Quit         |\n");
             printf("------------------\n\n");
 
@@ -65,6 +67,9 @@ void homeMenu(void)
                     break;
                 case '2': //Languages
                     languagesMenu();
+                    break;
+                case '3': //Simulation Window
+                    simulationMenu();
                     break;
                 case 'q': //Quit
                     printf("--- EXIT ---\n");
@@ -189,10 +194,7 @@ void controlMenu(void)
                    i, cmd_list.cmd[i].action, cmd_list.cmd[i].value,
                    cmd_list.cmd[i].color, cmd_list.cmd[i].direction);
         }
-
         
-        startSimu();
-            
         execut_cmd(&cmd_list, &my_robot);
 
         freeTreeMap(&vocab);
@@ -247,18 +249,52 @@ void languagesMenu(void)
    }
 }
 
-void WORKING_PROGRESS(void)
+void simulationMenu(void)
 {
     char choice;
     bool running = true;
 
     while (running) {
-        printf("WORKING_PROGRESS\n");
-        printf("press q for exit\n");
+        printf("-- Simulation Window --\n");
+        printf("| 1.New window        |\n");
+        printf("| 2.Close window      |\n");
+        printf("| 0.Return            |\n");
+        printf("----------------------\n\n");
 
         choice = selectMenu();
-        if (choice == 'q') {
-            running = false;
+        
+        switch (choice) {
+                case '1':
+                    if (strcmp(simuOpen, "on") == 0) 
+                    {
+                        printf("Previous window still open, close it before creating a new one.\n");
+                        history_log(WARNING,"Failed to create new simulation window");
+                    }
+                    else 
+                    {
+                        free(simuOpen);
+                        simuOpen = malloc(strlen("on") + 1);
+                        strcpy(simuOpen, "on");
+                        init_Simulator(&my_robot);
+                        history_log(INFO,"Creating new simulation window ");
+                    }
+                    break;
+
+                case '2':
+                    free(simuOpen);
+                    simuOpen = malloc(strlen("off") + 1);
+                    strcpy(simuOpen, "off");
+                    closeSimu();
+                    history_log(INFO,"Closing simulation window ");
+                    break;
+
+                case '0':
+                running = false;
+                continue;
+
+                default:
+                system("clear");
+                continue;
         }
     }
 }
