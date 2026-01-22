@@ -1,0 +1,12 @@
+=== Historique UPSSIBOT ===
+Démarrage : 22/1/2026 22:30
+
+[22:30:24] [INFO] homeMenu opening
+[22:30:47] [INFO] User Text Input: avance de 100 m
+[22:30:47] [INFO] Simulation Started
+[22:31:02] [INFO] User Text Input: tourne a droite
+[22:31:02] [INFO] Simulation Started
+[22:31:30] [INFO] User Text Input: avance de 100 m puis tourne a droite puis avance de 100 m
+[22:31:30] [INFO] Simulation Started
+
+=== Fin de l'exécution ===

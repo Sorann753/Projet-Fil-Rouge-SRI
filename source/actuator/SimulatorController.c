@@ -76,9 +76,8 @@ void init_Simulator(RobotPosition *Position)
     char commande[600];
     snprintf(commande, sizeof(commande), "python3 %s &", full_simu_path);
 
-    printf("------- Mouvement Robot -------\n");
     system(commande);
-    printf("-------------------------------\n");
+    
     FILE *action_file = fopen(SIM_FILE, "w");
     if (action_file == NULL)
     {

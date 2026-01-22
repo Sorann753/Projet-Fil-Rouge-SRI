@@ -117,8 +117,27 @@ void history_log(HistoryLevel level, const char *message)
 void history_close(void)
 {
     if (!history_file) return;
-    
-    fprintf(history_file, "\n=== Fin de l'exécution ===\n");
+
+    time_t now = time(NULL);
+    struct tm *tm_info = localtime(&now);
+    struct tm tm_backup;
+
+    if (!tm_info) {
+        // créer une vraie structure locale pour ne pas pointer sur une temporaire
+        tm_backup = (struct tm){0};
+        tm_info = &tm_backup;
+    }
+
+    fprintf(history_file, "\nFin : %d/%d/%d %d:%d\n",
+            tm_info->tm_mday,
+            tm_info->tm_mon + 1,
+            tm_info->tm_year + 1900,
+            tm_info->tm_hour,
+            tm_info->tm_min);
+
+    fprintf(history_file, "=== Fin de l'exécution ===\n");
+
+    fflush(history_file);
     fclose(history_file);
     printf("Fichier historique fermé\n");
     history_file = NULL;

@@ -1,0 +1,28 @@
+=== Historique UPSSIBOT ===
+Démarrage : 22/1/2026 22:39
+
+[22:39:29] [INFO] homeMenu opening
+[22:39:37] [INFO] User Text Input: avance de 100 m
+[22:39:37] [INFO] Simulation Started
+[22:39:46] [INFO] User Text Input: stop
+[22:39:46] [INFO] Simulation Started
+[22:39:50] [INFO] Reinitialisation du robot
+[22:40:14] [INFO] Language set to 'en' 
+[22:40:21] [INFO] User Text Input: go forward
+[22:40:21] [INFO] Simulation Started
+[22:40:35] [INFO] Reinitialisation du robot
+[22:40:44] [INFO] User Text Input: go forward
+[22:40:44] [INFO] Simulation Started
+[22:40:55] [INFO] Reinitialisation du robot
+[22:41:30] [INFO] Reinitialisation du robot
+[22:41:44] [INFO] User Text Input: go 
+[22:41:44] [INFO] Simulation Started
+[22:41:48] [INFO] Reinitialisation du robot
+[22:41:53] [INFO] User Text Input: forward
+[22:41:53] [INFO] Simulation Started
+[22:41:57] [INFO] User Text Input: go
+[22:41:57] [INFO] Simulation Started
+Fin : 22/1/2026 22:42
+
+
+=== Fin de l'exécution ===

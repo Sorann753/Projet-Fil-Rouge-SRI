@@ -51,7 +51,7 @@ void homeMenu(void)
     }
 
         while (running) {
-            printf("------ HOME ------\n");
+            printf("\n------ HOME ------\n");
             printf("| 1.Control Mode |\n");
             printf("| 2.Languages    |\n");
             printf("| q.Quit         |\n");
@@ -97,7 +97,7 @@ void controlMenu(void)
     // Boucle principale du menu
     while (running) {
         // Affichage du menu
-        printf("---- Control ----\n");
+        printf("\n---- Control ----\n");
         printf("| 1.CLI Mode    |\n");
         printf("| 2.Vocal Mode  |\n");
         printf("| 3.Reset Robot |\n");

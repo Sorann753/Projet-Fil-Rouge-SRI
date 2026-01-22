@@ -19,15 +19,12 @@ def init_bot():
 def navigation(action, value, robot, value2):
     value_float = float(value)
     if action == "FORWARD":
-        print(f"NAV_FORWARD: {value_float} m")
         robot.forward(value_float)
         time.sleep(1)
     elif action == "BACKWARD":
-        print(f"NAV_BACKWARD: {value_float} m")
         robot.forward(-value_float)
         time.sleep(1)
     elif action == "TURN":
-        print(f"NAV_TURN: {value_float}°")
         robot.left(value_float)
         time.sleep(1)
     elif action == "INIT":
@@ -36,8 +33,6 @@ def navigation(action, value, robot, value2):
         robot.up()
         robot.goto(x, y)
         robot.down()
-    else:
-        print(f"ERREUR: unknown action {action}")
 
 # fonction pour lire les nouvelles commandes
 def ReadAction(robot, last_index):
@@ -65,7 +60,6 @@ def ReadAction(robot, last_index):
                 navigation(action, value, robot, value2)
         return len(lines)  # mettre à jour l'index de dernière ligne lue
     except (turtle.Terminator, tkinter.TclError):
-        print("Simulation interrompue !")
         isRunning = False
         return last_index
 
