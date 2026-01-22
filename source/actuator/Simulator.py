@@ -1,103 +1,82 @@
 import turtle
 import os
-import time #pour utiliser time.sleep()
+import time
 import tkinter
 
 PATH = "SimulatorController.txt"
+isRunning = True
 
-#creation du Robot
+# création du Robot
 def init_bot():
     robot = turtle.Turtle()
     robot.color("orange")
     robot.shape("square")
     robot.speed(1)
     robot.width(5)
-
-    #print("\ncreation du robot reussit\n\n")
     return robot
-    
 
-
-#la fonction de navigation    
+# fonction de navigation
 def navigation(action, value, robot, value2):
     value_float = float(value)
-    #naviger en fonction de laction
     if action == "FORWARD":
-        print(f"NAV_FORWARD: {value_float} metre")
+        print(f"NAV_FORWARD: {value_float} m")
         robot.forward(value_float)
-        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
-
+        time.sleep(1)
     elif action == "BACKWARD":
-        print(f"NAV_BACKWARD {value_float} metre")
+        print(f"NAV_BACKWARD: {value_float} m")
         robot.forward(-value_float)
-        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
-
+        time.sleep(1)
     elif action == "TURN":
         print(f"NAV_TURN: {value_float}°")
         robot.left(value_float)
-        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
-
+        time.sleep(1)
     elif action == "INIT":
         x = value_float
         y = float(value2)
         robot.up()
         robot.goto(x, y)
         robot.down()
-        #print(f"position initial({x}, {y})\n") 
-        
-
     else:
-        print("\nERREUR (python): unknown action !\n")
+        print(f"ERREUR: unknown action {action}")
 
-
-
-
-def ReadAction(robot):
-    if not (os.path.exists(PATH)):
-        print(f"ERREUR (FILE_SIM): {PATH} hase note been opend in Simulator.py")
-        return
+# fonction pour lire les nouvelles commandes
+def ReadAction(robot, last_index):
+    global isRunning
+    if not os.path.exists(PATH):
+        return last_index
     try:
-        #ouvrire et lire le fichier SimulatorController.txt
-        with open(PATH, "r") as my_file:
-            
-            #on recupére toutes les ligne du fichier
-            lines = my_file.readlines()
+        with open(PATH, "r") as f:
+            lines = f.readlines()
+        new_lines = lines[last_index:]  # lire uniquement les lignes nouvelles
+        for line in new_lines:
+            line = line.strip()
+            commande = line.split(" ")
+            if len(commande) < 2:
+                continue
+            action = commande[0]
+            value = commande[1]
+            value2 = commande[2] if action == "INIT" and len(commande) > 2 else 0
 
-            #on parcours chaque ligne
-            for line in lines:
-                #on va retirer les espace et les retour a la ligne
-                line = line.strip() 
-
-                #on separe [action, valeur] dans un tablaux 
-                commande = line.split(" ")
-
-                #on test si on as bien action et valeur 
-                if (len(commande) < 2):
-                    print(f"FILE_SIM : the line : {line} is not valide ")
-                    continue 
-                
-                #recuperer action et valeur
-                action = commande[0]
-                value = commande[1]
-                value2 = 0
-
-                #lire la position initial
-                if (action == "INIT"):
-                    value2 = commande[2]
-
-                #apelle de la fonction de navigation
+            if action == "CLOSE":
+                isRunning = False
+            elif action == "START":
+                isRunning = True
+            elif action in ["FORWARD", "BACKWARD", "TURN", "INIT"]:
                 navigation(action, value, robot, value2)
-                #print("lecture ligne")
-
-    except(turtle.Terminator, tkinter.TclError):
-        print("ERREUR (python): simulation interompu !")
-        return
-        
-
-
+        return len(lines)  # mettre à jour l'index de dernière ligne lue
+    except (turtle.Terminator, tkinter.TclError):
+        print("Simulation interrompue !")
+        isRunning = False
+        return last_index
 
 if __name__ == "__main__":
     bot = init_bot()
-    ReadAction(bot)
+    screen = turtle.Screen()
+    #screen.tracer(0)  
+    last_read_index = 0
 
-    #print("\n\n(python) navigation reussi !\n\n")
+    while isRunning:
+        last_read_index = ReadAction(bot, last_read_index)
+        screen.update()  
+        time.sleep(1)  
+    turtle.bye()

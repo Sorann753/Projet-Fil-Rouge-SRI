@@ -1,3 +1,7 @@
+/**
+ * @author CHALUMEAUX Victor
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,7 +33,7 @@ static void trim(char *str)
 
     // décaler la chaîne si nécessaire
     if (start != str)
-        memmove(str, start, end - start + 2); // +1 pour '\0'
+        memmove(str, start, end - start + 2); 
 }
 
 /**
@@ -54,14 +58,14 @@ char *config_loader(const char *filename, const char *key)
 
     char line[LINE_MAX_LEN];
 
-    // lire le fichier ligne par ligne
     while (fgets(line, sizeof(line), file)) {
+
         // ignorer les commentaires commençant par #
         char *comment_pos = strchr(line, '#');
         if (comment_pos) *comment_pos = '\0';
 
-        trim(line);  // supprimer espaces en début/fin
-        if (strlen(line) == 0) continue; // ligne vide ou commentaire
+        trim(line);  
+        if (strlen(line) == 0) continue; 
 
         // chercher le caractère '=' pour identifier clé = valeur
         char *equal_pos = strchr(line, '=');

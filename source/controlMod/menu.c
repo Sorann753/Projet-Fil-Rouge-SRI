@@ -18,8 +18,8 @@
 #include "manualPilot/executor.h"
 
 char *languageValue = NULL;
-char *python_path = NULL;
-char *simulationEnabled = NULL;
+
+
 RobotPosition my_robot;
 
 char selectMenu(void)
@@ -39,8 +39,8 @@ void homeMenu(void)
     bool running = true;
 
     languageValue = config_loader("config/globalConfig.toml", "langue");
-    python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
-    simulationEnabled = config_loader("config/globalConfig.toml","simulation");
+    
+    init_Simulator(&my_robot);
     
 
     history_log(INFO,"homeMenu opening");
@@ -90,7 +90,7 @@ void controlMenu(void)
     char log_buffer[1024];
 
     TreeMap *vocab = NULL;
-    init_Simulator(&my_robot);
+    
     command_list cmd_list;
     tokenlist liste;
 
@@ -143,6 +143,7 @@ void controlMenu(void)
                 break;
             
             case '3': // Reset Robot
+                closeSimu();
                 init_Simulator(&my_robot);
                 history_log(INFO,"Reinitialisation du robot");
                 continue;
@@ -181,34 +182,20 @@ void controlMenu(void)
 
         // Parsing des commandes
         int nb_cmd = parser(&liste, &cmd_list);
-        printf("------- Liste Commandes --------\n");
+
         printf("Nombre de commandes: %d\n", nb_cmd);
         for (int i = 0; i < cmd_list.count; i++) {
             printf("  cmd[%d]: action=%d, value=%.2f, color=%d, direction=%d\n",
                    i, cmd_list.cmd[i].action, cmd_list.cmd[i].value,
                    cmd_list.cmd[i].color, cmd_list.cmd[i].direction);
         }
-        printf("-------------------------------\n");
+
         
-
-        if (strcmp(simulationEnabled, "on") == 0) 
-        {
+        startSimu();
             
-            execut_cmd(&cmd_list, &my_robot);
-
-            char full_simu_path[512];
-            snprintf(full_simu_path, sizeof(full_simu_path), "../../../../%s", python_path);
-
-            char commande[600];
-            snprintf(commande, sizeof(commande), "python3 %s", full_simu_path);
-
-            printf("------- Mouvement Robot -------\n");
-            system(commande);
-            printf("-------------------------------\n");
-        }
+        execut_cmd(&cmd_list, &my_robot);
 
         freeTreeMap(&vocab);
-        
     }
 }
 
