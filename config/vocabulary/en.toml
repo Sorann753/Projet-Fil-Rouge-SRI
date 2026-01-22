@@ -1,0 +1,30 @@
+# Movement
+forward = ["forward", "advance", "move", "walk", "go", "roll", "drive", "continue", "progress", "move ahead", "start", "depart", "head", "direction"]
+backward = ["backward", "reverse", "back", "retreat", "return", "invert", "retrograde"]
+turn = ["turn", "rotate", "pivot", "orient", "veer", "swerve", "rotation", "bifurcate", "deviate"]
+stop = ["stop", "halt", "freeze"]
+
+search = ["search", "find", "scan", "detect"]
+
+# Vision
+search = ["search", "find", "scan", "detect", "see"]
+
+# Separators
+separator = ["and", "then", "after", "afterwards", "next"]
+
+# Directions
+left = ["left"]
+right = ["right"]
+
+# Colors
+red = ["red"]
+blue = ["blue"]
+green = ["green"]
+yellow = ["yellow"]
+orange = ["orange"]
+black = ["black"]
+white = ["white"]
+
+# Objects (optional)
+cube = ["cube", "box"]
+ball = ["ball", "sphere"]

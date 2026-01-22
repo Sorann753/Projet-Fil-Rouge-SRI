@@ -7,6 +7,7 @@
 
 #include "actuator/SimulatorController.h"
 #include "configLoader/configLoader.h"
+#include "history/history.h"
 #include "utils/position.h"
 #include <assert.h>
 #include <stdbool.h>
@@ -24,7 +25,7 @@
 
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
-
+const char * python_path = NULL;
 /**
  * @brief ouverture et lecture de la position initial (config)
  */
@@ -68,6 +69,16 @@ void read_sim_config(RobotPosition *Position)
 void init_Simulator(RobotPosition *Position)
 {
     /*ouvrire le fichier simulatorcontroller.txtt */
+    python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
+    char full_simu_path[512];
+    snprintf(full_simu_path, sizeof(full_simu_path), "../../../../%s & 2>/dev/null", python_path);
+
+    char commande[600];
+    snprintf(commande, sizeof(commande), "python3 %s &", full_simu_path);
+
+    printf("------- Mouvement Robot -------\n");
+    system(commande);
+    printf("-------------------------------\n");
     FILE *action_file = fopen(SIM_FILE, "w");
     if (action_file == NULL)
     {
@@ -91,6 +102,21 @@ void init_Simulator(RobotPosition *Position)
  * @param act laction enumerer dans le .h
  * @param value la valuer associer a laction
  */
+
+void startSimu()
+{
+    closeSimu();
+    FILE *action_file = fopen(SIM_FILE, "a");
+    history_log(INFO,"Simulation Started");
+    fprintf(action_file, "START\n");
+}
+
+void closeSimu()
+{
+    FILE *action_file = fopen(SIM_FILE, "a");
+    fprintf(action_file, "CLOSE 0\n");
+}
+
 void WriteAction(action_t act, float value)
 { /*le char (pointeur = string) est en const (appliquer sur le char on ne le modifie pas dans la fonction) */
 

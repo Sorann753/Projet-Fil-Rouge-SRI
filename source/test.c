@@ -20,14 +20,11 @@
 
 int main(void)
 {
-    const char *phrase = "avance de 100 puis va a gauche de 50 et tourne puis continue tout droit de 100 et enuisuite tourne a droite et avance";
     history_init();
 
     test_vocabulary();
     printf("\n\n**********************************************\n\n");
 
-    test_executor(phrase);
-    printf("\n\n**********************************************\n\n");
 
     testDoubleMatrix();
     printf("\n\n**********************************************\n\n");
