@@ -55,7 +55,7 @@ int cutter(const char *phrase, tokenlist *result)
     copie[255] = '\0';
 
     /* decouper la phrase */
-    char *mot = strtok(copie, " \t\n,.;:!?");
+    char *mot = strtok(copie, " \t\n,.;:!?'");
 
     /* mettre les mots dans tokenlist */
     while (mot != NULL && result->count < MAX_TOKENS)

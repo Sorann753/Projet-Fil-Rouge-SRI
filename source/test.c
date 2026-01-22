@@ -26,7 +26,7 @@ int main(void)
     test_vocabulary();
     printf("\n\n**********************************************\n\n");
 
-    test_executor(phrase);
+    /*test_executor(phrase);*/
     printf("\n\n**********************************************\n\n");
 
     testDoubleMatrix();

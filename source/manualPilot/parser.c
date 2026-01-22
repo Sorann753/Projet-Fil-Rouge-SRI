@@ -62,6 +62,10 @@ int parser(tokenlist *token_list, command_list *cmd_list)
 
             /*initialisation de la negation a 0*/
             int negation = 0;
+            if (i > 0 && (strcmp(token_list->tokenTAB[i - 1].texte, "ne") == 0 || strcmp(token_list->tokenTAB[i - 1].texte, "n") == 0))
+            {
+                negation = 1;
+            }
 
             /*mettre la negation a 1 ou 0*/
             cmd_list->cmd[cmd_list->count].negation = negation;
@@ -88,15 +92,20 @@ int parser(tokenlist *token_list, command_list *cmd_list)
                 }
 
                 /*negation si on as les mot "ne" avant ou "pas" ou "plus" apres*/
-                if (strcmp(token_list->tokenTAB[j + 1].texte, "pas") == 0 || strcmp(token_list->tokenTAB[j + 1].texte, "plus") == 0 || (i > 0 && strcmp(token_list->tokenTAB[i - 1].texte, "ne") == 0)) /*sassurer que il y as un i-1*/
+                if (strcmp(token_list->tokenTAB[j].texte, "pas") == 0 || strcmp(token_list->tokenTAB[j].texte, "plus") == 0) /*sassurer que il y as un i-1*/
                 {
                     negation = 1;
-                    printf("commande[ %d ] (negation) !\n", cmd_list->count);
-                    cmd_list->cmd[cmd_list->count].value = 0;
-                    cmd_list->cmd[cmd_list->count].negation = negation; /*on passe le .negation de la commande a 1*/
                 }
 
                 j++;
+            }
+
+            /*verifier la negation*/
+            if (negation)
+            {
+                printf("commande[ %d ] (negation) !\n", cmd_list->count + 1);
+                i = j;
+                continue; /*on va sauter la commande pour eviter davoir une valeur par default*/
             }
 
             /* si le verbe est FORWARD ou BACKWARD avec une direction mais sans distance on le change en turn*/
@@ -122,6 +131,18 @@ int parser(tokenlist *token_list, command_list *cmd_list)
 
             cmd_list->count++;
             i = j;
+        }
+        /*le cas ou on met un NUM sans verbe avant*/
+        else if (token_list->tokenTAB[i].type == TOK_NUM)
+        {
+            init_command(cmd_list);
+
+            /*on va mettre forward par default*/
+            cmd_list->cmd[cmd_list->count].action = ACT_FORWARD;
+            cmd_list->cmd[cmd_list->count].value = token_list->tokenTAB[i].data.value;
+
+            cmd_list->count++;
+            i++;
         }
         else
         {
