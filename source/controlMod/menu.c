@@ -41,6 +41,11 @@ void homeMenu(void)
 
     languageValue = config_loader("config/globalConfig.toml", "langue");
     simuOpen = config_loader("config/globalConfig.toml","simulation_open_on_start");
+    if (strcmp(simuOpen, "on") == 0)
+    {
+        startSimu();
+        
+    }
     init_Simulator(&my_robot);
     
 
@@ -79,7 +84,9 @@ void homeMenu(void)
                     system("clear");
             }
         }
+        closeSimu();
         history_close();
+        
         free(languageValue);
         languageValue = NULL;
 }
@@ -148,10 +155,12 @@ void controlMenu(void)
                 break;
             
             case '3': // Reset Robot
-                closeSimu();
                 init_Simulator(&my_robot);
-                history_log(INFO,"Reinitialisation du robot");
+
+                history_log(INFO,"Reinitialisation de la position du robot");
                 continue;
+            
+
             case '0': // Retour
                 running = false;
                 continue;
@@ -275,6 +284,7 @@ void simulationMenu(void)
                         free(simuOpen);
                         simuOpen = malloc(strlen("on") + 1);
                         strcpy(simuOpen, "on");
+                        startSimu();
                         init_Simulator(&my_robot);
                         history_log(INFO,"Creating new simulation window ");
                     }

@@ -32,7 +32,9 @@ def navigation(action, value, robot, value2):
         y = float(value2)
         robot.up()
         robot.goto(x, y)
+        robot.clear()
         robot.down()
+        
 
 # fonction pour lire les nouvelles commandes
 def ReadAction(robot, last_index):
@@ -42,6 +44,8 @@ def ReadAction(robot, last_index):
     try:
         with open(PATH, "r") as f:
             lines = f.readlines()
+        if last_index > len(lines):
+            last_index = 0
         new_lines = lines[last_index:]  # lire uniquement les lignes nouvelles
         for line in new_lines:
             line = line.strip()
@@ -64,14 +68,15 @@ def ReadAction(robot, last_index):
         return last_index
 
 if __name__ == "__main__":
-    bot = init_bot()
+    robot = init_bot()
+    turtle.hideturtle()
     screen = turtle.Screen()
     #screen.tracer(0)  
     last_read_index = 0
 
     while isRunning:
         try:
-            last_read_index = ReadAction(bot, last_read_index)
+            last_read_index = ReadAction(robot, last_read_index)
             screen.update()
         except turtle.Terminator:
             isRunning = False

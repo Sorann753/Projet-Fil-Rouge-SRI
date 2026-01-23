@@ -63,37 +63,23 @@ void read_sim_config(RobotPosition *Position)
     fclose(action_file);
 }
 
+
 /**
  * @brief initialiser SimulatorContorller.txt et lecture de la config
  */
 void init_Simulator(RobotPosition *Position)
 {
-    /*ouvrire le fichier simulatorcontroller.txtt */
-    python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
-    char full_simu_path[512];
-    snprintf(full_simu_path, sizeof(full_simu_path), "../../../../%s & 2>/dev/null", python_path);
+    // lire la config pour avoir la position initiale
+    read_sim_config(Position);  // récupère x et y du TOML
 
-    char commande[600];
-    snprintf(commande, sizeof(commande), "python3 %s &", full_simu_path);
+    FILE *f = fopen(SIM_FILE, "w");  // écrase l'ancien fichier
+    if (!f) return;
 
-    system(commande);
-    
-    FILE *action_file = fopen(SIM_FILE, "w");
-    if (action_file == NULL)
-    {
-        fprintf(stderr, "\nSIM_FILE: the SimulationController hase note been initalisated\n\n");
-        return;
-    }
+    fprintf(f, "INIT %f %f\n", Position->x, Position->y);
+    fclose(f);
 
-    /*reset de la position*/
-    Position->x = 0.0f;
-    Position->y = 0.0f;
-    Position->theta = 0.0f;
-
-    fclose(action_file);
-    //printf("\nle fichier SimulatorContoller.txt a été vidé !\n");
-    
-    read_sim_config(Position);
+    printf("Robot position reset to initial coordinates (%.2f, %.2f)\n", Position->x, Position->y);
+    history_log(INFO, "Robot position reset to initial coordinates");
 }
 
 /**
@@ -102,6 +88,17 @@ void init_Simulator(RobotPosition *Position)
  * @param value la valuer associer a laction
  */
 
+void startSimu()
+{
+    python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
+    char full_simu_path[512];
+    snprintf(full_simu_path, sizeof(full_simu_path), "../../../../%s & 2>/dev/null", python_path);
+
+    char commande[600];
+    snprintf(commande, sizeof(commande), "python3 %s &", full_simu_path);
+
+    system(commande);
+}
 
 void closeSimu()
 {

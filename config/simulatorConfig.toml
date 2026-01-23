@@ -5,5 +5,5 @@ height = 600
 background_color = "white"
 
 [robot]
-initial_x = 0
+initial_x = 100
 initial_y = 0
