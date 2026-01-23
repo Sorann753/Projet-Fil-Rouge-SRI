@@ -13,31 +13,13 @@
 #include <stdbool.h>
 #include <math.h>
 
-/**
- * TODO: lecture du json (config) pour avoir la position initial du robot
- * TODO: normalisation de langle dans trun() pour quil ne sort pas de lintervalle
- * TODO: limiter la fenétre de simulation pour que le robot ne sort pas
- * TODO: creation et lecture du .map
- * TODO: dessiner le .map dans la simulation
- * TODO: ajouter linteraction avec les obstacles
- * TODO: ecriture dans historique
- * */
-
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
 const char *python_path = NULL;
 
-/**
- * @brief fonction pour limiter une valeur entre min et max
- */
-static float clamp(float value, float min, float max)
-{
-    if (value < min)
-        return min;
-    if (value > max)
-        return max;
-    return value;
-}
+/* Variables pour stocker la taille fenetre*/
+static float halfwidth = 0.0f;
+static float halfheight = 0.0f;
 
 /**
  * @brief ouverture et lecture de la position initial (config)
@@ -50,6 +32,7 @@ void read_sim_config(RobotPosition *Position)
     if (!x_str || !y_str)
     {
         fprintf(stderr, "SimulatorController.c : ERROR cannot read INITIAL position from TOML\n");
+        history_log(WARNING, "SimulatorController.c : ERROR cannot read INITIAL position from TOML");
         free(x_str);
         free(y_str);
         return;
@@ -61,6 +44,17 @@ void read_sim_config(RobotPosition *Position)
 
     free(x_str);
     free(y_str);
+
+    /* Lecture des dimensions de la carte une seule fois au demarrage */
+    char *width = config_loader("config/simulatorConfig.toml", "width");
+    char *height = config_loader("config/simulatorConfig.toml", "height");
+    if (width && height)
+    {
+        halfwidth = atof(width) / 2.0f;
+        halfheight = atof(height) / 2.0f;
+        free(width);
+        free(height);
+    }
 
     // printf("Robot initial position: x=%.2f, y=%.2f\n", Position->x, Position->y);
 
@@ -133,7 +127,8 @@ void WriteAction(action_t act, float value)
     /*test de louverture du fichier*/
     if (action_file == NULL)
     {
-        printf("\n\nERREUR (SIM_FILE): the SimulationControler.txt hase note been able to open\n\n");
+        fprintf(stderr, "\n\nERREUR (SIM_FILE): the SimulationControler.txt hase note been able to open\n\n");
+        history_log(WARNING, "ERREUR (SIM_FILE): the SimulationControler.txt hase note been able to open");
         return;
     }
 
@@ -166,24 +161,6 @@ void WriteAction(action_t act, float value)
  */
 void forward(float distance, RobotPosition *Position)
 {
-    /*lire width et height depuis le toml de config*/
-    char *width = config_loader("config/simulatorConfig.toml", "width");
-    char *height = config_loader("config/simulatorConfig.toml", "height");
-    if (!width || !height)
-    {
-        fprintf(stderr, "SimulatorController.c : ERROR cannot read config from TOML\n");
-        free(width);
-        free(height);
-        return;
-    }
-
-    /*dans turtle (0,0) est au centre donc les limites sont [-width/2, +width/2]*/
-    float half_width = atof(width) / 2.0f;
-    float half_height = atof(height) / 2.0f;
-
-    free(width);
-    free(height);
-
     /*si la distance est negatif*/
     if (distance < 0)
     {
@@ -199,15 +176,15 @@ void forward(float distance, RobotPosition *Position)
     float new_y = Position->y + distance * sinf(theta_rad);
 
     /*si on depasse la dimention de la fentre*/
-    if (new_x < -half_width)
-        new_x = -half_width;
-    if (new_x > half_width)
-        new_x = half_width;
+    if (new_x < -halfwidth)
+        new_x = -halfwidth;
+    if (new_x > halfwidth)
+        new_x = halfwidth;
 
-    if (new_y < -half_height)
-        new_y = -half_height;
-    if (new_y > half_height)
-        new_y = half_height;
+    if (new_y < -halfheight)
+        new_y = -halfheight;
+    if (new_y > halfheight)
+        new_y = halfheight;
 
     /*calculer la distance reellement parcourue (pour le simulateur)*/
     float dx = new_x - Position->x;
@@ -229,24 +206,6 @@ void forward(float distance, RobotPosition *Position)
  */
 void backward(float distance, RobotPosition *Position)
 {
-    /*lire width et height depuis le toml de config*/
-    char *width = config_loader("config/simulatorConfig.toml", "width");
-    char *height = config_loader("config/simulatorConfig.toml", "height");
-    if (!width || !height)
-    {
-        fprintf(stderr, "SimulatorController.c : ERROR cannot read config from TOML\n");
-        free(width);
-        free(height);
-        return;
-    }
-
-    /*dans turtle (0,0) est au centre donc les limites sont [-width/2, +width/2]*/
-    float half_width = atof(width) / 2.0f;
-    float half_height = atof(height) / 2.0f;
-
-    free(width);
-    free(height);
-
     /*on prend la valeur absolue*/
     distance = fabsf(distance);
 
@@ -258,15 +217,15 @@ void backward(float distance, RobotPosition *Position)
     float new_y = Position->y - distance * sinf(theta_rad);
 
     /*si on depasse la dimention de la fentre*/
-    if (new_x < -half_width)
-        new_x = -half_width;
-    if (new_x > half_width)
-        new_x = half_width;
+    if (new_x < -halfwidth)
+        new_x = -halfwidth;
+    if (new_x > halfwidth)
+        new_x = halfwidth;
 
-    if (new_y < -half_height)
-        new_y = -half_height;
-    if (new_y > half_height)
-        new_y = half_height;
+    if (new_y < -halfheight)
+        new_y = -halfheight;
+    if (new_y > halfheight)
+        new_y = halfheight;
 
     /*calculer la distance reellement parcourue*/
     float dx = Position->x - new_x;
