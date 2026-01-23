@@ -33,7 +33,6 @@ char selectMenu(void)
     return buffer[0];
 }
 
-
 void homeMenu(void)
 {
     char choice;
@@ -41,14 +40,13 @@ void homeMenu(void)
 
     languageValue = config_loader("config/globalConfig.toml", "langue");
     simuOpen = config_loader("config/globalConfig.toml","simulation_open_on_start");
+
     if (strcmp(simuOpen, "on") == 0)
     {
         startSimu();
-        
     }
-    init_Simulator(&my_robot);
-    
 
+    init_Simulator(&my_robot);
     history_log(INFO,"homeMenu opening");
 
     if (!languageValue) {
@@ -56,59 +54,60 @@ void homeMenu(void)
         strcpy(languageValue, "en");
     }
 
-        while (running) {
-            printf("\n------ HOME ------\n");
-            printf("| 1.Control Mode |\n");
-            printf("| 2.Languages    |\n");
-            printf("| 3.Sim Window   |\n");
-            printf("| q.Quit         |\n");
-            printf("------------------\n\n");
+    while (running) {
+        printf("\n------ HOME ------\n");
+        printf("| 1.Control Mode |\n");
+        printf("| 2.Languages    |\n");
+        printf("| 3.Sim Window   |\n");
+        printf("| q.Quit         |\n");
+        printf("------------------\n\n");
 
-            choice = selectMenu();
+        choice = selectMenu();
 
-            switch (choice) {
-                case '1': //Control Mode
-                    controlMenu();
-                    break;
-                case '2': //Languages
-                    languagesMenu();
-                    break;
-                case '3': //Simulation Window
-                    simulationMenu();
-                    break;
-                case 'q': //Quit
-                    printf("--- EXIT ---\n");
-                    running = false;
-                    break;
-                default:
-                    system("clear");
-            }
+        switch (choice) {
+            case '1':
+                controlMenu();
+                break;
+            case '2':
+                languagesMenu();
+                break;
+            case '3':
+                simulationMenu();
+                break;
+            case 'q':
+                printf("--- EXIT ---\n");
+                running = false;
+                break;
+            default:
+                system("clear");
         }
-        closeSimu();
-        history_close();
-        
-        free(languageValue);
-        languageValue = NULL;
+    }
+
+    closeSimu();
+    history_close();
+
+    free(languageValue);
+    languageValue = NULL;
+
+    free(simuOpen);
+    simuOpen = NULL;
 }
 
 void controlMenu(void)
 {
-    // Déclarations
     char choice;
     bool running = true;
 
-    char userCommand[256] = {0}; // buffer pour CLI et vocal
+    char userCommand[256] = {0};
     char *speechInput = NULL;
     char log_buffer[1024];
 
     TreeMap *vocab = NULL;
-    
+
     command_list cmd_list;
     tokenlist liste;
 
-    // Boucle principale du menu
     while (running) {
-        // Affichage du menu
         printf("\n---- Control ----\n");
         printf("| 1.CLI Mode    |\n");
         printf("| 2.Vocal Mode  |\n");
@@ -118,61 +117,60 @@ void controlMenu(void)
 
         choice = selectMenu();
 
-        // Chargement du vocabulaire
-        if (strcmp(languageValue, "en") == 0) 
-        {
+        if (strcmp(languageValue, "en") == 0) {
             vocab = vocabulary_load("config/vocabulary/en.toml");
-        } 
-        else 
-        {
+        } else {
             vocab = vocabulary_load("config/vocabulary/fr.toml");
         }
-        
+
         switch (choice) {
-            case '1': // CLI Mode
+            case '1':
                 printf("Enter command: ");
                 if (!fgets(userCommand, sizeof(userCommand), stdin)) {
                     break;
                 }
-                userCommand[strcspn(userCommand, "\n")] = '\0'; 
+                userCommand[strcspn(userCommand, "\n")] = '\0';
 
                 snprintf(log_buffer, sizeof(log_buffer), "User Text Input: %s", userCommand);
                 history_log(INFO, log_buffer);
                 break;
 
-            case '2': // Vocal Mode
+            case '2':
                 printf("Give your command.\n");
                 speechInput = get_speech(languageValue);
 
                 strncpy(userCommand, speechInput, sizeof(userCommand) - 1);
-
                 userCommand[sizeof(userCommand) - 1] = '\0';
+
+                free(speechInput);
+                speechInput = NULL;
 
                 printf("Vocal Input: %s\n", userCommand);
 
                 snprintf(log_buffer, sizeof(log_buffer), "User Vocal Input: %s", userCommand);
                 history_log(INFO, log_buffer);
                 break;
-            
-            case '3': // Reset Robot
+
+            case '3':
                 init_Simulator(&my_robot);
-
                 history_log(INFO,"Reinitialisation de la position du robot");
+                freeTreeMap(&vocab);
                 continue;
-            
 
-            case '0': // Retour
+            case '0':
+                freeTreeMap(&vocab);
                 running = false;
                 continue;
 
             default:
                 system("clear");
+                freeTreeMap(&vocab);
                 continue;
         }
 
-        // Vérification de la commande
         if (strlen(userCommand) == 0) {
             history_log(WARNING, "Aucune commande reçue");
+            freeTreeMap(&vocab);
             break;
         }
 
@@ -182,11 +180,9 @@ void controlMenu(void)
             break;
         }
 
-        // Initialisation des structures pour l'analyse
         cmd_list = init_command_list();
         liste = init_cutter();
 
-        // Analyse de la commande
         cutter(userCommand, &liste);
         analyze(vocab, &liste);
 
@@ -194,7 +190,6 @@ void controlMenu(void)
         print_analysis(&liste);
         printf("-------------------------------\n");
 
-        // Parsing des commandes
         int nb_cmd = parser(&liste, &cmd_list);
 
         printf("Nombre de commandes: %d\n", nb_cmd);
@@ -203,59 +198,59 @@ void controlMenu(void)
                    i, cmd_list.cmd[i].action, cmd_list.cmd[i].value,
                    cmd_list.cmd[i].color, cmd_list.cmd[i].direction);
         }
-        
+
         execut_cmd(&cmd_list, &my_robot);
 
         freeTreeMap(&vocab);
     }
 }
 
-
-
-
 void languagesMenu(void)
 {
-   char choice;
-   bool running = true;
-   printf(" ------------------------\n");
-   printf("| Current Language : %s |\n", languageValue);
-   printf(" ------------------------\n\n");
-   while (running) {
-      printf("-- Languages --\n");
-      printf("| 1.Français  |\n");
-      printf("| 2.English   |\n");
-      printf("| 0.Return    |\n");
-      printf("---------------\n\n");
+    char choice;
+    bool running = true;
 
-      choice = selectMenu();
-      
-      switch (choice) {
+    printf(" ------------------------\n");
+    printf("| Current Language : %s |\n", languageValue);
+    printf(" ------------------------\n\n");
+
+    while (running) {
+        printf("-- Languages --\n");
+        printf("| 1.Français  |\n");
+        printf("| 2.English   |\n");
+        printf("| 0.Return    |\n");
+        printf("---------------\n\n");
+
+        choice = selectMenu();
+
+        switch (choice) {
             case '1':
-               free(languageValue);
-               languageValue = malloc(strlen("fr") + 1);
-               strcpy(languageValue, "fr");
-               history_log(INFO,"Language set to 'fr' ");
-               break;
+                free(languageValue);
+                languageValue = malloc(strlen("fr") + 1);
+                strcpy(languageValue, "fr");
+                history_log(INFO,"Language set to 'fr' ");
+                break;
 
             case '2':
-               free(languageValue);
-               languageValue = malloc(strlen("en") + 1);
-               strcpy(languageValue, "en");
-               history_log(INFO,"Language set to 'en' ");
-               break;
+                free(languageValue);
+                languageValue = malloc(strlen("en") + 1);
+                strcpy(languageValue, "en");
+                history_log(INFO,"Language set to 'en' ");
+                break;
 
             case '0':
-               running = false;
-               continue;
+                running = false;
+                continue;
 
             default:
-               system("clear");
-               continue;
+                system("clear");
+                continue;
+        }
+
+        printf(" ----------------------\n");
+        printf("| Language set to : %s |\n", languageValue);
+        printf(" ----------------------\n\n");
     }
-    printf(" ----------------------\n");
-    printf("| Language set to : %s |\n", languageValue);
-    printf(" ----------------------\n\n");
-   }
 }
 
 void simulationMenu(void)
@@ -271,38 +266,35 @@ void simulationMenu(void)
         printf("----------------------\n\n");
 
         choice = selectMenu();
-        
+
         switch (choice) {
-                case '1':
-                    if (strcmp(simuOpen, "on") == 0) 
-                    {
-                        printf("Previous window still open, close it before creating a new one.\n");
-                        history_log(WARNING,"Failed to create new simulation window");
-                    }
-                    else 
-                    {
-                        free(simuOpen);
-                        simuOpen = malloc(strlen("on") + 1);
-                        strcpy(simuOpen, "on");
-                        startSimu();
-                        init_Simulator(&my_robot);
-                        history_log(INFO,"Creating new simulation window ");
-                    }
-                    break;
-
-                case '2':
+            case '1':
+                if (strcmp(simuOpen, "on") == 0) {
+                    printf("Previous window still open, close it before creating a new one.\n");
+                    history_log(WARNING,"Failed to create new simulation window");
+                } else {
                     free(simuOpen);
-                    simuOpen = malloc(strlen("off") + 1);
-                    strcpy(simuOpen, "off");
-                    closeSimu();
-                    history_log(INFO,"Closing simulation window ");
-                    break;
+                    simuOpen = malloc(strlen("on") + 1);
+                    strcpy(simuOpen, "on");
+                    startSimu();
+                    init_Simulator(&my_robot);
+                    history_log(INFO,"Creating new simulation window ");
+                }
+                break;
 
-                case '0':
+            case '2':
+                free(simuOpen);
+                simuOpen = malloc(strlen("off") + 1);
+                strcpy(simuOpen, "off");
+                closeSimu();
+                history_log(INFO,"Closing simulation window ");
+                break;
+
+            case '0':
                 running = false;
                 continue;
 
-                default:
+            default:
                 system("clear");
                 continue;
         }
