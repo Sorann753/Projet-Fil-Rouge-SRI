@@ -25,7 +25,7 @@
 
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
-const char * python_path = NULL;
+const char *python_path = NULL;
 /**
  * @brief ouverture et lecture de la position initial (config)
  */
@@ -49,13 +49,14 @@ void read_sim_config(RobotPosition *Position)
     free(x_str);
     free(y_str);
 
-    //printf("Robot initial position: x=%.2f, y=%.2f\n", Position->x, Position->y);
+    // printf("Robot initial position: x=%.2f, y=%.2f\n", Position->x, Position->y);
 
     /* Initialisation du fichier de simulation */
     FILE *action_file = fopen(SIM_FILE, "w");
     if (!action_file)
     {
         fprintf(stderr, "ERROR: could not open %s\n", SIM_FILE);
+        history_log(WARNING, "SimulatorController.c : ERROR SIM_FILE could not open");
         return;
     }
 
@@ -63,17 +64,17 @@ void read_sim_config(RobotPosition *Position)
     fclose(action_file);
 }
 
-
 /**
  * @brief initialiser SimulatorContorller.txt et lecture de la config
  */
 void init_Simulator(RobotPosition *Position)
 {
     // lire la config pour avoir la position initiale
-    read_sim_config(Position);  // récupère x et y du TOML
+    read_sim_config(Position); // récupère x et y du TOML
 
-    FILE *f = fopen(SIM_FILE, "w");  // écrase l'ancien fichier
-    if (!f) return;
+    FILE *f = fopen(SIM_FILE, "w"); // écrase l'ancien fichier
+    if (!f)
+        return;
 
     fprintf(f, "INIT %f %f\n", Position->x, Position->y);
     fclose(f);
@@ -106,7 +107,7 @@ void closeSimu()
 
     fprintf(action_file, "CLOSE 0\n");
     fflush(action_file);
-    
+
     fclose(action_file);
 }
 

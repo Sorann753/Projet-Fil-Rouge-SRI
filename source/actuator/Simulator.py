@@ -4,6 +4,7 @@ import time
 import tkinter
 
 PATH = "SimulatorController.txt"
+CONFIG_PATH = "../../../../config/simulatorConfig.toml"
 isRunning = True
 
 # création du Robot
@@ -14,6 +15,46 @@ def init_bot():
     robot.speed(1)
     robot.width(5)
     return robot
+
+
+def ReadScreenConfig(screen):
+    # Valeurs par défaut si jamais le fichier n'existe pas
+    width = 800
+    height = 600
+    bg_color = "white"
+    
+    if not os.path.exists(CONFIG_PATH):
+        print("Simulator.py: ERREUR config could not been found (fenetre par default)\n")
+    else:
+        with open(CONFIG_PATH, "r") as f:
+            for line in f:
+                line = line.strip()
+                
+                # ignorer les lignes vides et les commentaires
+                if not line or line.startswith("[") or line.startswith("#"):
+                    continue
+                
+                # chercher les valeurs"
+                if "=" in line:
+                    key, value = line.split("=")
+                    key = key.strip()
+                    value = value.strip().strip('"')  # enlever espaces et guillemets
+                    
+                    if key == "width":
+                        width = int(value)
+                    elif key == "height":
+                        height = int(value)
+                    elif key == "background_color":
+                        bg_color = value
+    
+    # Appliquer la configuration
+    screen.setup(width=width, height=height)
+    screen.bgcolor(bg_color)
+    
+    return width, height
+    
+
+
 
 # fonction de navigation
 def navigation(action, value, robot, value2):
@@ -68,9 +109,14 @@ def ReadAction(robot, last_index):
         return last_index
 
 if __name__ == "__main__":
+
+    # configuration de la fentre
+    screen = turtle.Screen()
+    window_size = ReadScreenConfig(screen)
+
     robot = init_bot()
     turtle.hideturtle()
-    screen = turtle.Screen()
+
     #screen.tracer(0)  
     last_read_index = 0
 
