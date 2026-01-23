@@ -2,14 +2,13 @@ import turtle
 import os
 import time
 import tkinter
+import random 
 
 PATH = "SimulatorController.txt"
 CONFIG_PATH = "../../../../config/simulatorConfig.toml"
 isRunning = True
 
-# configuration des coordonnée de la balle
-BALL_X = 100
-BALL_Y = 100
+# initialisation de la collision
 TOUCHED = False
 
 # creation du Robot
@@ -22,16 +21,27 @@ def init_bot():
     return robot
 
 #fonction pour dessiner la balle
-def draw_target():
+def draw_ball(width, height):
+    #utilisation de variable globale
+    global BALL_X, BALL_Y
+
     target = turtle.Turtle()
     target.hideturtle() # On cache le curseur pour juste voir le dessin
     target.color("red")
     target.penup()
 
+
     # On se deplace vers les coordonnée de lbstacle
-    target.goto(BALL_X, BALL_Y - 20) 
+    limit_x = (width // 2) - 50
+    limit_y = (height// 2) - 50
+    #on met a jour la position de la balle aleatoiremenet 
+    BALL_X = random.randint(-limit_x, limit_x)
+    BALL_Y = random.randint(-limit_y, limit_y)
+
+
+    target.goto(BALL_X,BALL_Y) 
     target.begin_fill()
-    target.circle(20)
+    target.circle(25)
     target.end_fill()
 
 #fonction de détection de collision
@@ -45,7 +55,7 @@ def check_collision(robot):
     dist = robot.distance(BALL_X, BALL_Y)
     
     # si distance < rayon
-    if dist < (30): 
+    if dist < (60): 
         print(f"\nBalle trouver : ({BALL_X}, {BALL_Y})\n")
         
         # On écrit sur l'écran
@@ -102,7 +112,7 @@ def navigation(action, value, robot, value2):
         time.sleep(1)
         
     elif action == "BACKWARD":
-        robot.forward(-value_float) # Astuce : backward marche aussi
+        robot.forward(-value_float)
         
         #on verifie la collision
         check_collision(robot)
@@ -126,16 +136,18 @@ def navigation(action, value, robot, value2):
         TOUCHED = False 
 
 # fonction pour lire les nouvelles commandes
-def ReadAction(robot, last_index):
+def ReadAction(robot, last_i):
     global isRunning
+
+    #on ouvre le fichier de config en mode lecture
     if not os.path.exists(PATH):
-        return last_index
+        return last_i
     try:
         with open(PATH, "r") as f:
             lines = f.readlines()
-        if last_index > len(lines):
-            last_index = 0
-        new_lines = lines[last_index:]
+        if last_i > len(lines):
+            last_i = 0
+        new_lines = lines[last_i:]
         for line in new_lines:
             line = line.strip()
             commande = line.split(" ")
@@ -152,15 +164,17 @@ def ReadAction(robot, last_index):
         return len(lines)
     except (turtle.Terminator, tkinter.TclError):
         isRunning = False
-        return last_index
+        return last_i
 
 if __name__ == "__main__":
 
     screen = turtle.Screen()
-    window_size = ReadScreenConfig(screen)
+
+    #intialisation de la taille de la fenetre
+    width, height = ReadScreenConfig(screen)
     
-    # On dessine la balle rouge
-    draw_target()
+    #dessiner la balle
+    draw_ball(width, height)
 
     #on creer le robot
     robot = init_bot()

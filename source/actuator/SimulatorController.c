@@ -15,7 +15,6 @@
 
 /*chemin du fichier de sortie*/
 #define SIM_FILE "./SimulatorController.txt"
-const char *python_path = NULL;
 
 /* Variables pour stocker la taille fenetre*/
 static float halfwidth = 0.0f;
@@ -98,7 +97,11 @@ void init_Simulator(RobotPosition *Position)
 
 void startSimu()
 {
-    python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
+    char *python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
+
+    if (python_path == NULL)
+        return;
+
     char full_simu_path[512];
     snprintf(full_simu_path, sizeof(full_simu_path), "../../../../%s & 2>/dev/null", python_path);
 
@@ -106,6 +109,7 @@ void startSimu()
     snprintf(commande, sizeof(commande), "python3 %s &", full_simu_path);
 
     system(commande);
+    free(python_path);
 }
 
 void closeSimu()

@@ -1,0 +1,14 @@
+=== Historique UPSSIBOT ===
+Démarrage : 24/1/2026 0:18
+
+[00:18:20] [INFO] Robot position reset to initial coordinates
+[00:18:20] [INFO] homeMenu opening
+[00:18:44] [INFO] User Text Input: avance de 50
+[00:20:24] [INFO] User Text Input: tourne a gauche puis avance de 30 puis tourne a gauche ensuite avance de 200 et tourne a gauche et ensuite tu va de 100
+[00:20:49] [INFO] User Text Input: avance de 100 puis tourne a droite puis 200
+[00:21:14] [INFO] User Text Input: avance 
+[00:21:31] [INFO] User Text Input: avance de 200 puis tourne a gauche et avance
+[00:21:43] [INFO] User Text Input: tourne a droite et avance 
+[00:21:53] [INFO] User Text Input: avance 
+[00:22:09] [INFO] User Text Input: tourne a gauche puis tourne a gauche puis avance de 10
+[00:22:17] [INFO] User Text Input: avance de 20
