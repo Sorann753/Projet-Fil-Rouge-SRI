@@ -6,7 +6,22 @@ Ce repository utilise Lizard analysis pour analyser la qualité du code d'un poi
 
 D'autres outils de vérifications seront sans doute ajoutés plus tard tel que clang-tidy et cppcheck
 
-## Étapes pour créer l’environnement Python
+## Compilation et execution
+
+* Avec makefile
+
+ ```bash
+  make PFR-test
+  make run-test
+  ```
+
+* Avec xmake
+
+ ```bash
+  xmake -b PFR-test
+  xmake r PFR-test
+  ```
+## Étapes pour créer l’environnement Python pour l'interface vocale
 
 ### 1. Installer Miniconda
 
