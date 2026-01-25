@@ -14,7 +14,6 @@ char *get_speech(const char *language)
     char *python_path = NULL;
     FILE *python_file = NULL;
     char command[COMMAND_BUFFER_SIZE];
-    const char *script_name;
 
     // Choix du chemin Python et du script selon la langue
     if (strcmp(language, "en") == 0)
