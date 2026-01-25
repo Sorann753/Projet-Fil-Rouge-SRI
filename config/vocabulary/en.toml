@@ -1,5 +1,5 @@
 # Movement
-forward = ["advance", "move", "walk", "go", "roll", "drive", "continue", "progress", "move ahead", "start", "depart", "head", "direction"]
+forward = ["advance", "move", "walk", "forward", "roll", "drive", "continue", "progress", "move ahead", "start", "depart", "head", "direction"]
 backward = ["backward", "reverse", "back", "retreat", "return", "invert", "retrograde"]
 turn = ["turn", "rotate", "pivot", "orient", "veer", "swerve", "rotation", "bifurcate", "deviate"]
 stop = ["stop", "halt", "freeze"]

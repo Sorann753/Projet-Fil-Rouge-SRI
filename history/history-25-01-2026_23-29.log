@@ -1,0 +1,20 @@
+=== Historique UPSSIBOT ===
+Démarrage : 25/1/2026 23:29
+
+[23:29:48] [INFO] Robot position reset to initial coordinates
+[23:29:48] [INFO] homeMenu opening
+[23:30:06] [INFO] User Text Input: avance de 100
+[23:30:06] [INFO] FORWARD -> position x=100.00 y=0.00 theta=0.00
+[23:30:06] [INFO] Action: ACT_FORWARD executed
+[23:30:06] [INFO] All commands in command_list executed
+[23:30:22] [INFO] User Text Input: tourne de 90
+[23:30:22] [INFO] Action: ACT_TURN executed with specific angle
+[23:30:22] [INFO] All commands in command_list executed
+[23:31:02] [INFO] User Text Input: turn left
+[23:31:02] [INFO] All commands in command_list executed
+[23:31:06] [INFO] User Text Input: tourne a gauche
+[23:31:06] [INFO] Action: ACT_TURN executed to left (90°)
+[23:31:06] [INFO] All commands in command_list executed
+
+Fin : 25/1/2026 23:31
+=== Fin de l'exécution ===

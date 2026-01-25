@@ -214,10 +214,17 @@ void forward(float distance, RobotPosition *Position)
     /*mise a jour de la position*/
     Position->x = new_x;
     Position->y = new_y;
+    
 
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_FORWARD, actual_distance);
     printf("FORWARD: position(%.0f,%.0f) \n", Position->x, Position->y);
+
+    char log_msg[128];
+    snprintf(log_msg, sizeof(log_msg),
+            "FORWARD -> New position x=%.2f y=%.2f theta=%.2f",
+            Position->x, Position->y, Position->theta);
+    history_log(INFO, log_msg);
 }
 
 /**
@@ -259,6 +266,12 @@ void backward(float distance, RobotPosition *Position)
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_BACKWARD, actual_distance);
     printf("BACKWARD: position(%.0f,%.0f) \n", Position->x, Position->y);
+
+    char log_msg[128];
+    snprintf(log_msg, sizeof(log_msg),
+            "BACKWARD -> New position x=%.2f y=%.2f theta=%.2f",
+            Position->x, Position->y, Position->theta);
+    history_log(INFO, log_msg);
 }
 
 /**
@@ -279,4 +292,9 @@ void turn(float angle, RobotPosition *Position)
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_TURN, angle);
     printf("TURN: theta= %.0f\n", Position->theta);
+    char log_msg[128];
+    snprintf(log_msg, sizeof(log_msg),
+            "TURN -> New position x=%.2f y=%.2f theta=%.2f",
+            Position->x, Position->y, Position->theta);
+    history_log(INFO, log_msg);
 }

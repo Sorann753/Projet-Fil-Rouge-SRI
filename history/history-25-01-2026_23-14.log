@@ -1,0 +1,47 @@
+=== Historique UPSSIBOT ===
+Démarrage : 25/1/2026 23:14
+
+[23:14:40] [INFO] Robot position reset to initial coordinates
+[23:14:40] [INFO] homeMenu opening
+[23:15:02] [INFO] User Text Input: fonce de 50
+[23:15:02] [INFO] Executing cmd[0]: action=0, value=50.00, color=7, direction=2
+[23:15:02] [INFO] Action: ACT_FORWARD executed
+[23:15:02] [INFO] All commands in command_list executed
+[23:15:18] [INFO] User Text Input: demi tour
+[23:15:18] [INFO] Executing cmd[0]: action=2, value=180.00, color=7, direction=2
+[23:15:18] [INFO] Action: ACT_TURN executed with specific angle
+[23:15:18] [INFO] All commands in command_list executed
+[23:15:49] [INFO] User Text Input: fait une rotation de 90
+[23:15:49] [INFO] Executing cmd[0]: action=2, value=90.00, color=7, direction=2
+[23:15:49] [INFO] Action: ACT_TURN executed with specific angle
+[23:15:49] [INFO] All commands in command_list executed
+[23:16:05] [INFO] User Text Input: fais une rotation de 70
+[23:16:05] [INFO] Executing cmd[0]: action=2, value=70.00, color=7, direction=2
+[23:16:05] [INFO] Action: ACT_TURN executed with specific angle
+[23:16:05] [INFO] All commands in command_list executed
+[23:17:02] [INFO] User Text Input: roule de 100 puis pivote de 90 et recule de 200
+[23:17:02] [INFO] Executing cmd[0]: action=0, value=100.00, color=7, direction=2
+[23:17:02] [INFO] Action: ACT_FORWARD executed
+[23:17:02] [INFO] Executing cmd[1]: action=2, value=90.00, color=7, direction=2
+[23:17:02] [INFO] Action: ACT_TURN executed with specific angle
+[23:17:02] [INFO] Executing cmd[2]: action=1, value=200.00, color=7, direction=2
+[23:17:02] [INFO] Action: ACT_BACKWARD executed
+[23:17:02] [INFO] All commands in command_list executed
+[23:17:55] [INFO] Language set to 'en' 
+[23:18:05] [INFO] User Text Input: move forward
+[23:18:05] [INFO] Executing cmd[0]: action=0, value=50.00, color=7, direction=2
+[23:18:05] [INFO] Action: ACT_FORWARD executed
+[23:18:05] [INFO] All commands in command_list executed
+[23:18:10] [INFO] User Text Input: turn left
+[23:18:10] [INFO] Executing cmd[0]: action=2, value=0.00, color=7, direction=1
+[23:18:10] [INFO] Action: ACT_TURN executed to left (90°)
+[23:18:10] [INFO] All commands in command_list executed
+[23:19:08] [INFO] User Text Input: go backward
+[23:19:08] [INFO] Executing cmd[0]: action=0, value=50.00, color=7, direction=2
+[23:19:08] [INFO] Action: ACT_FORWARD executed
+[23:19:08] [INFO] Executing cmd[1]: action=1, value=50.00, color=7, direction=2
+[23:19:08] [INFO] Action: ACT_BACKWARD executed
+[23:19:08] [INFO] All commands in command_list executed
+
+Fin : 25/1/2026 23:19
+=== Fin de l'exécution ===

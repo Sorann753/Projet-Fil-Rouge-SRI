@@ -1,0 +1,14 @@
+=== Historique UPSSIBOT ===
+Démarrage : 25/1/2026 23:33
+
+[23:33:04] [INFO] Robot position reset to initial coordinates
+[23:33:04] [INFO] homeMenu opening
+[23:33:29] [INFO] User Text Input: avance de 100 puis avance de 50
+[23:33:29] [INFO] FORWARD -> New position x=100.00 y=0.00 theta=0.00
+[23:33:29] [INFO] Action: ACT_FORWARD executed
+[23:33:29] [INFO] FORWARD -> New position x=150.00 y=0.00 theta=0.00
+[23:33:29] [INFO] Action: ACT_FORWARD executed
+[23:33:29] [INFO] All commands in command_list executed
+
+Fin : 25/1/2026 23:33
+=== Fin de l'exécution ===

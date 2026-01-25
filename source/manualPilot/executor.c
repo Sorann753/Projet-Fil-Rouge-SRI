@@ -17,12 +17,7 @@ void execut_cmd(command_list *cmd_list, RobotPosition *robot)
     int i;
     for (i = 0; i < cmd_list->count; i++)
     {
-        char log_buffer[128];
-        snprintf(log_buffer, sizeof(log_buffer),
-                 "Executing cmd[%d]: action=%d, value=%.2f, color=%d, direction=%d",
-                 i, cmd_list->cmd[i].action, cmd_list->cmd[i].value,
-                 cmd_list->cmd[i].color, cmd_list->cmd[i].direction);
-        history_log(INFO, log_buffer);
+
 
         switch (cmd_list->cmd[i].action)
         {

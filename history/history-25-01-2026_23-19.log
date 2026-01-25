@@ -1,0 +1,38 @@
+=== Historique UPSSIBOT ===
+Démarrage : 25/1/2026 23:19
+
+[23:19:16] [INFO] Robot position reset to initial coordinates
+[23:19:16] [INFO] homeMenu opening
+[23:19:30] [INFO] User Text Input: go
+[23:19:30] [INFO] Executing cmd[0]: action=0, value=50.00, color=7, direction=2
+[23:19:30] [INFO] Action: ACT_FORWARD executed
+[23:19:30] [INFO] All commands in command_list executed
+[23:19:31] [INFO] User Vocal Input: err 
+[23:19:31] [INFO] All commands in command_list executed
+[23:19:38] [INFO] Language set to 'en' 
+[23:19:44] [INFO] User Text Input: go
+[23:19:44] [INFO] All commands in command_list executed
+[23:19:48] [INFO] User Text Input: go forward
+[23:19:48] [INFO] Executing cmd[0]: action=0, value=50.00, color=7, direction=2
+[23:19:48] [INFO] Action: ACT_FORWARD executed
+[23:19:48] [INFO] All commands in command_list executed
+[23:20:03] [INFO] Language set to 'en' 
+[23:21:19] [INFO] User Text Input: turn left
+[23:21:19] [INFO] Executing cmd[0]: action=2, value=0.00, color=7, direction=1
+[23:21:19] [INFO] Action: ACT_TURN executed to left (90°)
+[23:21:19] [INFO] All commands in command_list executed
+[23:21:31] [INFO] User Text Input: go back 40
+[23:21:31] [INFO] Executing cmd[0]: action=1, value=40.00, color=7, direction=2
+[23:21:31] [INFO] Action: ACT_BACKWARD executed
+[23:21:31] [INFO] All commands in command_list executed
+[23:23:11] [INFO] User Text Input: Can you move of 100 then turn 90 degree and go forward 200 
+[23:23:11] [INFO] Executing cmd[0]: action=0, value=100.00, color=7, direction=2
+[23:23:11] [INFO] Action: ACT_FORWARD executed
+[23:23:11] [INFO] Executing cmd[1]: action=2, value=90.00, color=7, direction=2
+[23:23:11] [INFO] Action: ACT_TURN executed with specific angle
+[23:23:11] [INFO] Executing cmd[2]: action=0, value=200.00, color=7, direction=2
+[23:23:11] [INFO] Action: ACT_FORWARD executed
+[23:23:11] [INFO] All commands in command_list executed
+
+Fin : 25/1/2026 23:24
+=== Fin de l'exécution ===
