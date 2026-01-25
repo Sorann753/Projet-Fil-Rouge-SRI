@@ -174,7 +174,6 @@ void controlMenu(void)
 
         case '3':
             init_Simulator(&my_robot);
-            history_log(INFO, "Reinitialisation de la position du robot");
             freeTreeMap(&vocab);
             continue;
 
