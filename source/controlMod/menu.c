@@ -1,4 +1,8 @@
-#include <stdio.h>
+/**
+ * @author CHALUMEAUX Victor et BELUSCA Joan
+ */
+
+ #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -58,6 +62,12 @@ void homeMenu(void)
 
     while (running)
     {
+        printf("\n _   _______  _____      _ _           _  \n");
+        printf("| | | | ___ \\/  ___|    (_) |         | | \n");
+        printf("| | | | |_/ /\\ `--.  ___ _| |__   ___ | |_\n");
+        printf("| | | |  __/  `--. \\/ __| | '_ \\ / _ \\| __|\n");
+        printf("| |_| | |    /\\__/ /\\__ \\ | |_) | (_) | |_ \n");
+        printf(" \\___/\\_|    \\____/ |___/_|_.__/ \\___/ \\__|");
         printf("\n------ HOME ------\n");
         printf("| 1.Control Mode |\n");
         printf("| 2.Languages    |\n");
@@ -137,6 +147,7 @@ void controlMenu(void)
             printf("Enter command: ");
             if (!fgets(userCommand, sizeof(userCommand), stdin))
             {
+                history_log(WARNING, "No CLI input received");
                 break;
             }
             userCommand[strcspn(userCommand, "\n")] = '\0';

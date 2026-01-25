@@ -4,7 +4,7 @@
 langue = fr # fr or en
 
 [simulation]
-simulation_open_on_start = off # on or off
+simulation_open_on_start = on # on or off
 
 [path]
 python_simulation_path = source/actuator/Simulator.py

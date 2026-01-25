@@ -2,8 +2,8 @@
 
 width = 800
 height = 800
-background_color = "pink"
+background_color = "white"
 
 [robot]
-initial_x = 300
-initial_y = -200
+initial_x = 0
+initial_y = 0

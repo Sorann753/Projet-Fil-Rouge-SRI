@@ -20,6 +20,7 @@
 
 int main(void)
 {
+    printf("\n\n\n\n\n\n");
     history_init();
 
     homeMenu();
