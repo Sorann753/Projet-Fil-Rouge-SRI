@@ -15,7 +15,8 @@ TOUCHED = False
 def init_bot():
     robot = turtle.Turtle()
     robot.color("orange")
-    robot.shape("square")
+    robot.shape("triangle")
+    robot.shapesize(stretch_wid=1.5, stretch_len=1.5)
     robot.speed(1)
     robot.width(5)
     return robot
@@ -41,7 +42,7 @@ def draw_ball(width, height):
 
     target.goto(BALL_X,BALL_Y) 
     target.begin_fill()
-    target.circle(25)
+    target.circle(35)
     target.end_fill()
 
 #fonction de détection de collision

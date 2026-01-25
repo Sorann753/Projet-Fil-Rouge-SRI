@@ -50,6 +50,19 @@ int parser(tokenlist *token_list, command_list *cmd_list)
     int i = 0;
     while (i < token_list->count && cmd_list->count < MAX_COMMAND)
     {
+
+        /*ajout du demi tour*/
+        if (i + 1 < token_list->count && strcmp(token_list->tokenTAB[i].texte, "demi") == 0 && strcmp(token_list->tokenTAB[i + 1].texte, "tour") == 0)
+        {
+            init_command(cmd_list);
+            cmd_list->cmd[cmd_list->count].action = ACT_TURN;
+            cmd_list->cmd[cmd_list->count].value = 180.0;
+            cmd_list->count++;
+
+            i += 2; /*on saute les deux tokens "demi" et "tour"*/
+            continue;
+        }
+
         /*si le token actuelle cest un verbe*/
         if (token_list->tokenTAB[i].type == TOK_VERBE)
         {
@@ -125,8 +138,8 @@ int parser(tokenlist *token_list, command_list *cmd_list)
                 cmd_list->cmd[cmd_list->count].value = DEFAULT_DISTANCE;
             }
 
-            /* Si TURN sans direction*/
-            if (cmd_list->cmd[cmd_list->count].action == ACT_TURN && cmd_list->cmd[cmd_list->count].direction == DIR_NONE)
+            /* Si TURN sans direction on met la direction par default*/
+            if (cmd_list->cmd[cmd_list->count].action == ACT_TURN && cmd_list->cmd[cmd_list->count].direction == DIR_NONE && cmd_list->cmd[cmd_list->count].value < 0.001)
             {
                 cmd_list->cmd[cmd_list->count].direction = DEFAULT_DIRECTION;
             }

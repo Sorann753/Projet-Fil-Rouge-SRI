@@ -27,19 +27,27 @@ void execut_cmd(command_list *cmd_list, RobotPosition *robot)
             break;
 
         case ACT_TURN:
-            /* Déterminer l'angle selon la direction */
-            if (cmd_list->cmd[i].direction == DIR_LEFT)
+            if (cmd_list->cmd[i].value > 0.001)
             {
-                turn(90, robot); /* gauche cest angle négatif */
+                /* si une valeur est spécifiée par l'utiliser */
+                float angle = cmd_list->cmd[i].value;
+                if (cmd_list->cmd[i].direction == DIR_RIGHT)
+                {
+                    angle = -angle; /* droite = angle négatif */
+                }
+                turn(angle, robot);
+            }
+            else if (cmd_list->cmd[i].direction == DIR_LEFT)
+            {
+                turn(90, robot);
             }
             else if (cmd_list->cmd[i].direction == DIR_RIGHT)
             {
-                turn(-90, robot); /* droite cest angle positif */
+                turn(-90, robot);
             }
             else
             {
-                /* si pas de direction on utilise directement la valeur*/
-                turn(cmd_list->cmd[i].value, robot);
+                turn(90, robot); /*par default on tourne a gauche */
             }
             break;
 

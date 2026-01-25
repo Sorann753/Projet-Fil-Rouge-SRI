@@ -181,19 +181,35 @@ void forward(float distance, RobotPosition *Position)
 
     /*si on depasse la dimention de la fentre*/
     if (new_x < -halfwidth)
+    {
+        printf("colistion ! (mur gauche)\n");
         new_x = -halfwidth;
+    }
+
     if (new_x > halfwidth)
+    {
+        printf("colistion ! (mur droite)\n");
         new_x = halfwidth;
+    }
 
     if (new_y < -halfheight)
+    {
+        printf("colistion ! (mur bas)\n");
         new_y = -halfheight;
-    if (new_y > halfheight)
-        new_y = halfheight;
+    }
 
-    /*calculer la distance reellement parcourue (pour le simulateur)*/
+    if (new_y > halfheight)
+    {
+        printf("colistion ! (mur haut)\n");
+        new_y = halfheight;
+    }
+
+    /*calculer la distance reellement parcourue*/
     float dx = new_x - Position->x;
     float dy = new_y - Position->y;
-    float actual_distance = sqrtf(dx * dx + dy * dy);
+
+    /*on utilise pythagore pour trouver la vrai distance parcouru en x et y*/
+    float actual_distance = sqrtf(dx * dx + dy * dy); /*dx² + dy²*/
 
     /*mise a jour de la position*/
     Position->x = new_x;
