@@ -1,0 +1,64 @@
+TRAME DEMONSTRATION PROJET PFR (~12 MINUTES)
+
+0:00 - 0:30
+Lancer le binaire depuis la racine avec make run-test
+Home menu apparaît
+------ HOME ------
+| 1.Control Mode |
+| 2.Languages    |
+| 3.Sim Window   |
+| q.Quit         |
+------------------
+
+Montrer Historique généré
+Historique/log indique homeMenu opening
+Observer rapidement le menu principal et les options disponibles
+
+0:30 - 1:30
+Option 2 pour Languages
+Montre la langue actuelle: Current Language : fr
+Entrer quelques phrases inutiles: bonjour, test
+Observer que rien ne se passe
+Option 0 pour revenir au Home menu
+
+1:30 - 2:00
+Option 3 pour Sim Window
+Choisir 1 pour New window
+Lancement rapide de la simulation, robot initialisé à (100,0)
+Afficher Creating new simulation window
+Option 0 pour revenir au Home menu
+
+2:00 - 5:00
+Option 1 Control Mode
+Menu Control apparaît
+Choisir 1 pour CLI Mode
+Entrer des commandes simple : avance, tourne a droite, recule
+Entrer des commandes complexes en français: roule de 100 puis pivote a droite et recule de 200
+Observer l'analyse et l'ordre des actions affichées
+Test de la négation en français: ne pas avancer, ne pas tourner à gauche
+Observer que le robot n’exécute pas ces actions
+Historique/log indique les commandes et la négation correctement interprétée
+
+5:00 - 6:00
+Changer la langue en anglais via Option 2 Languages
+Entrer des commandes simples en anglais: move forward, turn left, stop
+Observer que le robot reconnaît et exécute les commandes en anglais
+Option 0 pour revenir au Home menu
+
+6:00 - 7:00
+Option 2 Vocal Mode
+Simuler une commande vocale complexe en français: avance puis tourne droite puis recule
+Observer l'analyse et les actions exécutées
+Historique/log indique User Vocal Input
+Dites quelques phrases aléatoires qui ne font rien: chouette, oh, test
+
+7:00 - 7:30
+Reset Robot
+Option 3 Reset Robot
+Robot repositionné à (100,0)
+Historique/log indique Reinitialisation de la position du robot
+
+7:30 - 10
+Changement des valeurs de config 
+(position robot) (couleur fenetre) (ouvrir la fenetre au demarrage) (langue de demarrage) (ajout d'un mot (ex forward pour en.toml))
+

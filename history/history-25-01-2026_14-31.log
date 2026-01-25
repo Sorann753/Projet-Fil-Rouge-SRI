@@ -1,0 +1,31 @@
+=== Historique UPSSIBOT ===
+Démarrage : 25/1/2026 14:31
+
+[14:31:08] [INFO] Robot position reset to initial coordinates
+[14:31:08] [INFO] homeMenu opening
+[14:31:10] [INFO] Robot position reset to initial coordinates
+[14:31:10] [INFO] Creating new simulation window 
+[14:31:14] [WARNING] Failed to create new simulation window
+[14:33:05] [INFO] User Text Input: n'avance pas
+[14:40:30] [INFO] User Text Input: n'avance pas et roule a droite puis recule de 40
+[14:43:41] [INFO] Closing simulation window 
+[14:43:41] [INFO] Robot position reset to initial coordinates
+[14:43:41] [INFO] Creating new simulation window 
+[14:43:50] [INFO] Robot position reset to initial coordinates
+[14:43:50] [INFO] Reinitialisation de la position du robot
+[14:44:05] [INFO] User Vocal Input: tourner à droite puis recule de 50 puis tourner à gauche puis avance de 100
+[14:44:18] [INFO] Robot position reset to initial coordinates
+[14:44:18] [INFO] Reinitialisation de la position du robot
+[14:44:53] [INFO] Closing simulation window 
+[14:44:54] [INFO] Robot position reset to initial coordinates
+[14:44:54] [INFO] Creating new simulation window 
+[14:45:30] [WARNING] Failed to create new simulation window
+[14:45:31] [INFO] Closing simulation window 
+[14:45:31] [INFO] Robot position reset to initial coordinates
+[14:45:31] [INFO] Creating new simulation window 
+[14:45:47] [INFO] Closing simulation window 
+[14:45:49] [INFO] Robot position reset to initial coordinates
+[14:45:49] [INFO] Creating new simulation window 
+[14:45:59] [INFO] Language set to 'en' 
+[14:46:12] [INFO] User Vocal Input: turn left then turn left then forward
+[14:46:26] [INFO] User Text Input: go

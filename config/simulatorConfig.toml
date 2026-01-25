@@ -1,9 +1,9 @@
 [window]
 
-width = 1024
-height = 760
-background_color = "gray"
+width = 800
+height = 800
+background_color = "pink"
 
 [robot]
-initial_x = 100
-initial_y = 0
+initial_x = 300
+initial_y = -200
