@@ -9,7 +9,7 @@ ImageHeader parseHeader(const char* rawHeader){
     int fieldCaracterCounter = 0;
     bool done = false;
 
-    for(int i = 0, last = 0; i < HEADER_LENGTH || !done; i++){
+    for(int i = 0; i < HEADER_LENGTH || !done; i++){
         if(rawHeader[i] == ' ' || rawHeader[i] == '\n'){
             if(fieldCaracterCounter == 0){
                 continue; // if the field buffer is still empty we just keep parsing
