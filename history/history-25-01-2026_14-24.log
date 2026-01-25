@@ -1,0 +1,17 @@
+=== Historique UPSSIBOT ===
+Démarrage : 25/1/2026 14:24
+
+[14:24:02] [INFO] Robot position reset to initial coordinates
+[14:24:02] [INFO] homeMenu opening
+[14:24:24] [INFO] User Text Input: avance 
+[14:24:38] [INFO] User Vocal Input: err
+[14:24:45] [INFO] User Vocal Input: demi-tour
+[14:25:06] [INFO] User Vocal Input: err
+[14:25:21] [INFO] User Vocal Input: err
+[14:25:27] [INFO] User Text Input: avance de 200
+[14:25:35] [INFO] User Vocal Input: n'avance pas
+[14:25:48] [INFO] User Text Input:  ne tourne pas 
+[14:26:00] [INFO] User Text Input: avance puis tourne a gauche et continue
+[14:26:19] [INFO] User Text Input: tourne de 30 puis avance de 300
+[14:26:28] [INFO] User Text Input: avance 
+[14:26:35] [INFO] User Text Input: avance 

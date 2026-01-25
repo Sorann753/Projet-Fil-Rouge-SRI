@@ -62,6 +62,15 @@ int parser(tokenlist *token_list, command_list *cmd_list)
             i += 2; /*on saute les deux tokens "demi" et "tour"*/
             continue;
         }
+        else if (strcmp(token_list->tokenTAB[i].texte, "demi-tour") == 0)
+        {
+            init_command(cmd_list);
+            cmd_list->cmd[cmd_list->count].action = ACT_TURN;
+            cmd_list->cmd[cmd_list->count].value = 180.0;
+            cmd_list->count++;
+            i++;
+            continue;
+        }
 
         /*si le token actuelle cest un verbe*/
         if (token_list->tokenTAB[i].type == TOK_VERBE)
