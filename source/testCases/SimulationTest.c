@@ -44,7 +44,7 @@ void TestAction(void)
     char commande[600];
 
     /*ecrire dans commande*/
-    sprintf(commande, "python3 %s", full_python_path);
+    snprintf(commande, sizeof(commande), "python3 %512s", full_python_path);
 
     /*lancer la simulation*/
     system(commande);

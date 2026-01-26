@@ -69,6 +69,7 @@ const char* makeKey(const char* stackText) {
     char* buffer = (char*)malloc(sizeof(char) * length);
 
     strncpy(buffer, stackText, length);
+    buffer[length-1] = '\0'; // extra safety to make sure it is always null terminated
 
     return buffer;
 }
