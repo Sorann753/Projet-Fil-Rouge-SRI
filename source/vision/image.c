@@ -231,7 +231,7 @@ void readImage(FILE* source, Image* img){
 }
 
 
-
+#include <malloc.h>
 /**
  * @brief load an image in RBG-txt format
  * @param sourcePath a valid path to the file we need to read

@@ -1,4 +1,5 @@
 #include "testCases/testVision.h"
+#include <malloc.h>
 
 void testHeaderParsing(const char* testHeader, const size_t expectedLength, const size_t expectedHeight, const uint8_t expectedCanal){
     printf("----- TEST HEADER PARSING -----\n");

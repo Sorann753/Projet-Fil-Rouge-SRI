@@ -66,7 +66,7 @@ bool addObject(Objects* objectList, long X, long Y, size_t surface);
 
 void flagConnected(long x, long y, Matrix* flagMatrix, const Matrix* const mask);
 
-size_t getObjectSurface(long x, long y, const Matrix* mask, Matrix* flagMatrix);
+size_t getObjectSurface(long x, long y, const Matrix* mask, Matrix* flagMatrix, size_t depthLimit);
 
 /**
  * @brief find a point from each of the connected elements

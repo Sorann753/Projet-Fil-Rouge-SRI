@@ -28,7 +28,7 @@ void flagConnected(long x, long y, Matrix* flagMatrix, const Matrix* const mask)
     }
 }
 
-size_t getObjectSurface(long x, long y, const Matrix* mask, Matrix* flagMatrix){
+size_t getObjectSurface(long x, long y, const Matrix* mask, Matrix* flagMatrix, size_t depthLimit){
     if(mask == NULL) return 0;
     assert(mask->isValid);
     
@@ -60,6 +60,11 @@ size_t getObjectSurface(long x, long y, const Matrix* mask, Matrix* flagMatrix){
 
     byte_matrixSet(flagMatrix, x, y, 1);
 
+    if(depthLimit == 0){
+        assert(!isFlagOwner); //would be weird
+        return 1; 
+    }
+
     size_t surface = 1;
     for(int8_t i = -1; i < 2; i++){
         for(int8_t j = -1; j < 2; j++){
@@ -68,7 +73,7 @@ size_t getObjectSurface(long x, long y, const Matrix* mask, Matrix* flagMatrix){
             if(!isValidAccess(mask, x+i, y+j)) continue; 
             
             // add the uncounted neighbors
-            surface += getObjectSurface(x+i, y+j, mask, flagMatrix);
+            surface += getObjectSurface(x+i, y+j, mask, flagMatrix, depthLimit-1);
         }
     }
 
@@ -147,7 +152,7 @@ Objects findObjects(const Matrix* const mask){
 
             // flag all the connected pixels
             // flagConnected(x, y, &flagMatrix, mask);
-            size_t objectSurface = getObjectSurface(x, y, mask, &flagMatrix);
+            size_t objectSurface = getObjectSurface(x, y, mask, &flagMatrix, 3000);
             if(objectSurface < OBJECT_MIN_SURFACE){
                 // the object is too small so we ignore it
                 continue;
@@ -395,13 +400,26 @@ BallArray findSpheres(const Matrix* colorMask){
         if(Ydirection != 0){
             Ydirection = Ydirection / abs(Ydirection);
         }
+        if(Xdirection == 0 && Ydirection == 0){
+            Xdirection = 1;
+        }
 
         // we sample points along the line
         IntCoordinate it = seedPoint;
-        while(byte_matrixGet(colorMask, it.x, it.y) == 1){
-            // TODO : handle out of bond case
+        bool broken = false;
+        while(byte_matrixGet(colorMask, it.x, it.y) == 1 && !broken){
             it.x += Xdirection;
             it.y += Ydirection;
+
+            // handle edge cases
+            if((size_t)it.x >= colorMask->columns){
+                it.x = colorMask->columns-1;
+                broken = true;
+            }
+            if((size_t)it.y >= colorMask->lines){
+                it.y = colorMask->lines-1;
+                broken = true;
+            }
         } /** @post it is now the index of the first 0 in that direction */
         IntCoordinate delta = {
             .x = (it.x - seedPoint.x) / (SAMPLE_POINT_COUNT + 1),

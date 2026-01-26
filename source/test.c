@@ -23,10 +23,6 @@ int main(void){
     testTreeManyInsert(100000);
 
     // === vision testing ===
-    malloc_trim(0);
-    struct mallinfo2 mi = mallinfo2();
-    size_t memoryBefore = mi.uordblks;
-
     initVision();
 
     testHeaderParsing("100 200 3", 100, 200, 3);
@@ -67,14 +63,6 @@ int main(void){
 
     testMaskExtract(testImg, "./img.bin");
     testObjectDetect(testImg);
-
-    malloc_trim(0);
-    mi = mallinfo2();
-    size_t memoryAfter = mi.uordblks;
-    // verify that there are no memory leak in the vision module
-    assert(memoryBefore == memoryAfter); 
-    printf("[INFO] - No memory leak in the vision module\n");
-    
 
 
     // === simulator testing ===

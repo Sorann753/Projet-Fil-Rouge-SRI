@@ -12,7 +12,7 @@
 #include <assert.h>
 
 /**
- * @brief This is a RedBlack tree over string keys which may contain any type.
+ * @brief This is a binary tree over string keys which may contain any type.
  * This behave just like a dictionary over string key.
  * since the content are void* it is recommended that you precise the type in the name
  */
@@ -61,7 +61,7 @@ void insertValue(TreeMap** map, const char* key, void* value, bool freeOnOverrid
 void* getValue(const TreeMap* map, const char* key);
 
 /**
- * @brief //TODO
+ * @brief 
  * @param origin the node which must be replaced
  * @return ...
  *
