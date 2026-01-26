@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
+#include <malloc.h>
 
 /**
  * @brief This is a binary tree over string keys which may contain any type.
@@ -24,7 +25,6 @@ typedef struct TreeMap_t{
     const char* key;
 } TreeMap;
 
-#include <malloc.h>
 void printMallocStat(void);
 
 /**
