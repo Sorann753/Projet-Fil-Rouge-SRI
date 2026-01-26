@@ -11,6 +11,8 @@ void controlMenu(void);
 
 void languagesMenu(void);
 
+void simulationMenu(void);
+
 void WORKING_PROGRESS(void);
 
 #endif

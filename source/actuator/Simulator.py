@@ -1,104 +1,194 @@
 import turtle
 import os
-import time #pour utiliser time.sleep()
+import time
 import tkinter
+import random 
 
 PATH = "SimulatorController.txt"
+CONFIG_PATH = "../../../../config/simulatorConfig.toml"
+isRunning = True
 
-#creation du Robot
+# initialisation de la collision
+TOUCHED = False
+
+# creation du Robot
 def init_bot():
     robot = turtle.Turtle()
     robot.color("orange")
-    robot.shape("square")
+    robot.shape("triangle")
+    robot.shapesize(stretch_wid=1.5, stretch_len=1.5)
     robot.speed(1)
     robot.width(5)
-
-    print("\ncreation du robot reussit\n\n")
     return robot
+
+#fonction pour dessiner la balle
+def draw_ball(width, height):
+    #utilisation de variable globale
+    global BALL_X, BALL_Y
+
+    target = turtle.Turtle()
+    target.hideturtle() # On cache le curseur pour juste voir le dessin
+    target.color("red")
+    target.penup()
+
+
+    # On se deplace vers les coordonnée de lbstacle
+    limit_x = (width // 2) - 50
+    limit_y = (height// 2) - 50
+    #on met a jour la position de la balle aleatoiremenet 
+    BALL_X = random.randint(-limit_x, limit_x)
+    BALL_Y = random.randint(-limit_y, limit_y)
+
+
+    target.goto(BALL_X,BALL_Y) 
+    target.begin_fill()
+    target.circle(35)
+    target.end_fill()
+
+#fonction de détection de collision
+def check_collision(robot):
+    global TOUCHED
     
+    # si on a déjà toucher alors on ne fait rien
+    if TOUCHED: return
+
+    # on calcule la distance (fonction de turtle)
+    dist = robot.distance(BALL_X, BALL_Y)
+    
+    # si distance < rayon
+    if dist < (60): 
+        print(f"\nBalle trouver : ({BALL_X}, {BALL_Y})\n")
+        
+        # On écrit sur l'écran
+        writer = turtle.Turtle()
+        writer.hideturtle()
+        writer.color("red")
+        writer.penup()
+        writer.goto(0, 0) # Au centre de l'écran
+        writer.write("bravo ! BALLE TROUVER!", align="center", font=("Arial", 40, "bold"))
+        
+        TOUCHED = True #mettre a jour trouver
+
+def ReadScreenConfig(screen):
+    #valeur par default su screensize
+    width = 800
+    height = 600
+    bg_color = "white"
+    
+    #ouverture du fichier pour lire la taille du screen
+    if not os.path.exists(CONFIG_PATH):
+        print("Simulator.py: ERREUR config could not been found (fenetre par default)\n")
+    else:
+        with open(CONFIG_PATH, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("[") or line.startswith("#"): continue
+                if "=" in line:
+                    key, value = line.split("=")
+                    key = key.strip()
+                    value = value.strip().strip('"')
+                    if key == "width": width = int(value)
+                    elif key == "height": height = int(value)
+                    elif key == "background_color": bg_color = value
 
 
-#la fonction de navigation    
+    #modifier la taille de la fenetre
+    screen.setup(width=width, height=height)
+
+    #modifier la couleur du bg de la fenetre
+    screen.bgcolor(bg_color)
+
+    return width, height
+
+# fonction de navigation
 def navigation(action, value, robot, value2):
     value_float = float(value)
-    #naviger en fonction de laction
+    
+    #si lit FORWARD apelle la fonction forward de turtle
     if action == "FORWARD":
-        print(f"NAV_FORWARD: {value_float} metre")
         robot.forward(value_float)
-        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
 
+        #on verifie la collision
+        check_collision(robot) 
+        time.sleep(1)
+        
     elif action == "BACKWARD":
-        print(f"NAV_BACKWARD {value_float} metre")
         robot.forward(-value_float)
-        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
-
+        
+        #on verifie la collision
+        check_collision(robot)
+        time.sleep(1)
+        
     elif action == "TURN":
-        print(f"NAV_TURN: {value_float}°")
         robot.left(value_float)
-        time.sleep(1) #faire un delay de 1sec entre chaque mouvement
-
+        time.sleep(1)
+        
+    #si il lit INIT alors il initialise la position du robot
     elif action == "INIT":
         x = value_float
         y = float(value2)
         robot.up()
         robot.goto(x, y)
+        robot.clear()
         robot.down()
-        print(f"position initial({x}, {y})\n") 
-        
 
-    else:
-        print("\nERREUR (python): unknown action !\n")
-        return
+        # on fait lactualisation de la balle
+        global TOUCHED
+        TOUCHED = False 
 
+# fonction pour lire les nouvelles commandes
+def ReadAction(robot, last_i):
+    global isRunning
 
-
-
-def ReadAction(robot):
-    if not (os.path.exists(PATH)):
-        print(f"ERREUR (FILE_SIM): {PATH} hase note been opend in Simulator.py")
-        return
+    #on ouvre le fichier de config en mode lecture
+    if not os.path.exists(PATH):
+        return last_i
     try:
-        #ouvrire et lire le fichier SimulatorController.txt
-        with open(PATH, "r") as my_file:
+        with open(PATH, "r") as f:
+            lines = f.readlines()
+        if last_i > len(lines):
+            last_i = 0
+        new_lines = lines[last_i:]
+        for line in new_lines:
+            line = line.strip()
+            commande = line.split(" ")
+            if len(commande) < 2: continue
+            action = commande[0]
+            value = commande[1]
+            value2 = commande[2] if action == "INIT" and len(commande) > 2 else 0
             
-            #on recupére toutes les ligne du fichier
-            lines = my_file.readlines()
-
-            #on parcours chaque ligne
-            for line in lines:
-                #on va retirer les espace et les retour a la ligne
-                line = line.strip() 
-
-                #on separe [action, valeur] dans un tablaux 
-                commande = line.split(" ")
-
-                #on test si on as bien action et valeur 
-                if (len(commande) < 2):
-                    print(f"FILE_SIM : the line : {line} is not valide ")
-                    continue 
-                
-                #recuperer action et valeur
-                action = commande[0]
-                value = commande[1]
-                value2 = 0
-
-                #lire la position initial
-                if (action == "INIT"):
-                    value2 = commande[2]
-
-                #apelle de la fonction de navigation
+            if action == "CLOSE":
+                isRunning = False
+                return len(lines) 
+            elif action in ["FORWARD", "BACKWARD", "TURN", "INIT"]:
                 navigation(action, value, robot, value2)
-                print("lecture ligne")
-
-    except(turtle.Terminator, tkinter.TclError):
-        print("ERREUR (python): simulation interompu !")
-        return
-        
-
-
+        return len(lines)
+    except (turtle.Terminator, tkinter.TclError):
+        isRunning = False
+        return last_i
 
 if __name__ == "__main__":
-    bot = init_bot()
-    ReadAction(bot)
 
-    print("\n\n(python) navigation reussi !\n\n")
+    screen = turtle.Screen()
+
+    #intialisation de la taille de la fenetre
+    width, height = ReadScreenConfig(screen)
+    
+    #dessiner la balle
+    draw_ball(width, height)
+
+    #on creer le robot
+    robot = init_bot()
+    turtle.hideturtle() # Cache le curseur par défaut
+
+
+    last_read = 0
+
+    while isRunning:
+        try:
+
+            last_read = ReadAction(robot, last_read)
+            screen.update()
+        except turtle.Terminator:
+            isRunning = False
+        time.sleep(0.1)

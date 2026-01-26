@@ -1,0 +1,57 @@
+TRAME DEMONSTRATION PROJET PFR (~12 MINUTES)
+
+0:00 - 0:30
+Lancer le binaire depuis la racine avec make run-test
+Home menu apparaît (fermé la fenetre pour l'instant)
+------ HOME ------
+| 1.Control Mode |
+| 2.Languages    |
+| 3.Sim Window   |
+| q.Quit         |
+------------------
+
+Montrer Historique généré
+Historique/log indique homeMenu opening
+Observer rapidement le menu principal et les options disponibles
+
+0:30 - 2
+Option 2 pour Languages
+Montre la langue actuelle: Current Language : fr
+Option 3 pour Sim Window
+Choisir 1 pour New window
+Entrer quelques phrases inutiles: bonjour, test
+Observer que rien ne se passe
+
+2:00 - 5:00
+
+Entrer des commandes simple : avance, tourne a droite, recule
+Entrer des commandes complexes en français: 
+fonce de 50
+demi tour
+fait une rotation de 90 ( test avec un autre angle possible)
+avance de 100 puis tourne a gacueh
+roule de 100 puis pivote de 90 et recule de 200
+Observer l'analyse et l'ordre des actions affichées
+Test de la négation en français: n' avance pas
+Observer que le robot n’exécute pas ces actions
+Historique/log indique les commandes et la négation correctement interprétée
+
+5:00 - 6:00
+Changer la langue en anglais via Option 2 Languages
+Entrer des commandes simples en anglais: move forward, turn left, go back 40
+Observer que le robot reconnaît et exécute les commandes en anglais
+Test commande complexe, Can you move of 100 then turn 90 degree and go forward 200 
+Option 0 pour revenir au Home menu
+
+6:00 - 7:00
+Option 2 Vocal Mode
+Dites quelques phrases aléatoires qui ne font rien: test micro
+Simuler une commande vocale complexe en français: avance puis tourne droite puis recule
+Observer l'analyse et les actions exécutées
+Historique/log indique User Vocal Input
+
+
+7 - 10
+Changement des valeurs de config 
+(position robot) (couleur fenetre) (ouvrir la fenetre au demarrage) (langue de demarrage) (ajout d'un mot (ex forward pour en.toml))
+

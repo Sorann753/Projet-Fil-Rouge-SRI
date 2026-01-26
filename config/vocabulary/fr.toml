@@ -1,0 +1,29 @@
+# Mouvement
+forward = ["avance", "avancer", "marche", "marcher", "go", "roule", "rouler", "va", "aller", "continue", "continuer", "fonce", "foncer", "progresse", "progresser", "deplace", "deplacer", "bouge", "bouger", "file", "filer", "demarre", "demarrer", "pars", "partir", "direction"]
+backward = ["recule", "reculer", "arriere", "back", "reviens", "revenir", "retourne", "retourner", "inverse", "inverser", "retrograde", "retrograder"]
+turn = ["tourne", "tourner", "pivote", "pivoter", "oriente", "orienter", "vire", "virer", "rotation", "rotate", "bifurque", "bifurquer", "devie", "devier"]
+stop = ["stop", "arrete", "arreter", "halte"]
+search = ["cherche", "trouve", "scan", "detecte"]
+
+# Vision
+search = ["cherche", "trouve", "scan", "detecte", "voir"]
+
+# Séparateurs
+separator = ["et", "puis", "ensuite", "alors"]
+
+# Directions
+left = ["gauche"]
+right = ["droite"]
+
+# Couleurs
+red = ["rouge"]
+blue = ["bleu", "bleue"]
+green = ["vert", "verte"]
+yellow = ["jaune"]
+orange = ["orange"]
+black = ["noir", "noire"]
+white = ["blanc", "blanche"]
+
+# Objets (optionnel)
+cube = ["cube", "boite"]
+ball = ["balle", "boule"]

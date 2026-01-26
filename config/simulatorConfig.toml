@@ -1,14 +1,9 @@
 [window]
+
 width = 800
-height = 600
+height = 800
 background_color = "white"
 
 [robot]
-initial_x = -200
-initial_y = -200
-line_width = 2
-line_color = "black"
-
-[draw]
-show_path = true
-path_color = "blue"
+initial_x = 0
+initial_y = 0

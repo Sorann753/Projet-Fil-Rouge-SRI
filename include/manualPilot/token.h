@@ -1,3 +1,7 @@
+/**
+ * @author GHOUILEM ABDELHAFIDH
+ */
+
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
@@ -15,6 +19,7 @@ typedef enum tokentype
     TOK_NUM,
     TOK_COLOR,
     TOK_OBJECT,
+    TOK_DIRECTION,
     TOK_UNKNOWN,
     TOK_NONE
 } tokentype;
@@ -34,7 +39,7 @@ typedef struct token
         float value;           // pour TOK_NUM
         color_t color;         // pour TOK_COLOR
         object_t object;       // pour TOK_OBJECT
-        direction_t direction; // pour la direction
+        direction_t direction; // pour TOK_DIRECTION
     } data;
 } token;
 

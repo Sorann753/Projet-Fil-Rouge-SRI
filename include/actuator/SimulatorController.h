@@ -12,6 +12,9 @@
  */
 void read_sim_config(RobotPosition *Position);
 
+void startSimu(void);
+
+void closeSimu(void);
 /**
  * @brief procédure pour efacer le contenue de SimulatorContorller.txt
  */

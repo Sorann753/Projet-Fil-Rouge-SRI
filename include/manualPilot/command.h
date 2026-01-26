@@ -1,12 +1,7 @@
 #ifndef __COMMAND_H__
 #define __COMMAND_H__
 
-/*le maximum de commande dans command_list*/
 #define MAX_COMMAND 20
-
-/**
- * TODO: ajout des unitées
- */
 
 typedef enum action_t
 {
@@ -14,7 +9,7 @@ typedef enum action_t
     ACT_BACKWARD,
     ACT_TURN,
     ACT_STOP,
-    ACT_SEARCH, // (Vision)
+    ACT_SEARCH,
     ACT_NONE
 } action_t;
 
@@ -45,28 +40,25 @@ typedef enum object_t
 } object_t;
 
 /**
- * @brief commande[n] = {action, value, color, object, direction, unit}
+ * @brief Une commande = action + paramètres
  */
 typedef struct command
 {
     action_t action;
     float value;
-    // TODO: ajouter la conidtion valeur null
     color_t color;
     object_t object;
     direction_t direction;
-
-    int negated; // =1 si "Ne pas" sinon =0
+    int negation; /*pour prendre en compte la negation (0 ou 1)*/
 } command;
 
 /**
- * @brief liste de command
+ * @brief Liste de commandes
  */
 typedef struct command_list
 {
-    command cmd[MAX_COMMAND];
+    command cmd[MAX_COMMAND]; /* ← Tableau de structures, PAS de pointeurs */
     int count;
-
 } command_list;
 
 #endif

@@ -38,9 +38,11 @@ void TestAction(void)
 
     /* creation d'une variable pour trouver le chemin du script python a executer*/
     char full_python_path[512];
-    snprintf(full_python_path, sizeof(full_python_path), "../../../../%499s", python_path);
+    snprintf(full_python_path, sizeof(full_python_path), "../../../../%s", python_path);
+
     /*definir la commande a executer dans le terminale*/
     char commande[600];
+
     /*ecrire dans commande*/
     snprintf(commande, sizeof(commande), "python3 %512s", full_python_path);
 
