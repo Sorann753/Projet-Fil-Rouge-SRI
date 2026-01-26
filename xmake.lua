@@ -10,7 +10,7 @@ target("PFR-simulator")
     set_kind("binary")
     add_includedirs("include/")
     add_files("source/**.c")
-    remove_files("source/test.c", "source/testCases/**c") --les trucs a ne pas compiler
+    remove_files("source/test.c", "source/unitTest.c", "source/testCases/**c") --les trucs a ne pas compiler
 
 
 
@@ -28,4 +28,4 @@ target("PFR-test")
     set_kind("binary")
     add_includedirs("include/")
     add_files("source/**.c")
-    remove_files("source/main.c") --on ne compile pas le main vus qu'on compile les test
+    remove_files("source/main.c", "source/unitTest.c") --on ne compile pas le main vus qu'on compile les test

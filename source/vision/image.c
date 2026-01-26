@@ -9,10 +9,25 @@ ImageHeader parseHeader(const char* rawHeader){
     int fieldCaracterCounter = 0;
     ParsingState state = IMG_STATE_READ;
 
-    for(int i = 0; i < HEADER_LENGTH || !done; i++){
-        if(rawHeader[i] == ' ' || rawHeader[i] == '\n'){
-            if(fieldCaracterCounter == 0){
-                continue; // if the field buffer is still empty we just keep parsing
+    for(int i = 0; i < HEADER_MAX_LENGTH && state != IMG_STATE_STOP; i++){
+        if(rawHeader[i] == '\n' || rawHeader[i] == '\0'){ // end of the header
+            if(state == IMG_STATE_CUT){
+                //commit the buffer
+                field[fieldCaracterCounter] = '\0';
+                switch(fieldID){
+                    case 0:
+                        head.length = strtoul(field, NULL, 10);
+                        break;
+                    case 1:
+                        head.height = strtoul(field, NULL, 10);
+                        break;
+                    case 2:
+                        head.canalCount = strtoul(field, NULL, 10);
+                        break;
+                }
+                
+                fieldID++;
+                fieldCaracterCounter = 0;
             }
             // terminate
             state = IMG_STATE_STOP;
