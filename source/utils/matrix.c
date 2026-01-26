@@ -25,6 +25,24 @@ Matrix initMatrix(const size_t lines, const size_t columns, const size_t typeSiz
     return newMat;
 }
 
+Matrix* initMatrixPtr(const size_t lines, const size_t columns, const size_t typeSize){
+    // the third one is here to check for very weird integer overflow
+    assert(lines > 0 && columns > 0 && typeSize*lines*columns != 0);
+
+    Matrix* matPtr = (Matrix*)malloc(sizeof(Matrix));
+    Matrix newMat = initMatrix(lines, columns, typeSize);
+    if(!newMat.isValid){
+        free(matPtr);
+        return NULL;
+    }
+
+    // copy the newMat to the containing pointer
+    // memcpy is necessary because of the const fields
+    memcpy(matPtr, &newMat, sizeof(Matrix)); 
+
+    return matPtr;
+}
+
 void freeMatrix(Matrix* M){
     free(M->content);
     M->content = NULL;
@@ -39,4 +57,18 @@ size_t matrixGetIndex(const Matrix* const mat, const size_t x, const size_t y){
     assert(index < mat->lines * mat->columns);
 
     return index;
+}
+
+bool isValidAccess(const Matrix* const mat, const size_t x, const size_t y){
+    if(mat == NULL) return false;
+    if(!mat->isValid) return false;
+
+    if(y >= mat->lines) return false;
+    if(x >= mat->columns) return false;
+    assert(y < mat->lines);
+    
+    if(y*mat->columns + x > mat->lines * mat->columns) return false;
+
+    // all verifications cleared, it's valid
+    return true;
 }

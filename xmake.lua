@@ -2,7 +2,7 @@ add_rules("mode.debug", "mode.release")
 add_cflags("-Wall", "-Wextra", "-pedantic", "-Wfloat-equal", "-Wshadow")
 add_cflags("-Wpointer-arith", "-Wcast-align", "-Wstrict-prototypes", "-Wstrict-overflow=3")
 add_cflags("-Wwrite-strings", "-Wformat=2")
-add_cflags("-Wno-unused-result", "-Wno-unused-variable", "-Wno-unused-parameter")
+add_cflags("-Wno-unused-result", "-Wno-unused-variable", "-Wno-unused-parameter", "-Wno-float-equal")
 set_warnings("all", "error")
 set_languages("c11")
 

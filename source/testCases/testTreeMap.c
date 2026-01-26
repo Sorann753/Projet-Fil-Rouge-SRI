@@ -14,7 +14,7 @@ void testTreeMap(void){
     assert(isInTree(dict, "testWord") == true);
     assert(isInTree(dict, "otherTest") == false);
 
-    testObject* recover = getValue(dict, "testWord");
+    const testObject* recover = getValue(dict, "testWord");
 
     // both should be pointing to the same address
     assert(recover == someTestObject);

@@ -18,7 +18,7 @@ int main(void){
     testDoubleMatrix();
     testByteMatrix();
 
-    // === TreeMap testing ===
+    // === treemap testing ===
     testTreeMap();
     testTreeManyInsert(100000);
 
@@ -26,6 +26,8 @@ int main(void){
     malloc_trim(0);
     struct mallinfo2 mi = mallinfo2();
     size_t memoryBefore = mi.uordblks;
+
+    initVision();
 
     testHeaderParsing("100 200 3", 100, 200, 3);
     testHeaderParsing("1000 50 3\n", 1000, 50, 3);
@@ -60,6 +62,11 @@ int main(void){
         .Ypixel = {29, 34, 40}
     };
     testImageLoading("./../../../../data/IMG_5400.txt", img3_info);
+
+    const char* testImg = "./../../../../data/IMG_5408.txt";
+
+    testMaskExtract(testImg, "./img.bin");
+    testObjectDetect(testImg);
 
     malloc_trim(0);
     mi = mallinfo2();

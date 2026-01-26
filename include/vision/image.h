@@ -25,8 +25,6 @@ typedef struct ImageHeader_t{
     uint8_t canalCount;
 } ImageHeader;
 
-typedef Pixel Color; // cuz they are basically the same thing
-
 // the type for a Matrix of Pixel
 typedef Matrix Image;
 

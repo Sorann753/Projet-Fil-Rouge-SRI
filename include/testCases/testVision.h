@@ -2,6 +2,7 @@
 #define TEST_VISION_H
 
 #include "vision/image.h"
+#include "vision/vision.h"
 
 typedef struct ImageFingerPint_t {
     size_t lines;
@@ -17,5 +18,9 @@ typedef struct ImageFingerPint_t {
 void testHeaderParsing(const char* testHeader, const size_t expectedLength, const size_t expectedHeight, const uint8_t expectedCanal);
 
 void testImageLoading(const char* testImagePath, const ImageFingerPrint info);
+
+void testMaskExtract(const char* testFilePath, const char* outPath);
+
+void testObjectDetect(const char* imgPath);
 
 #endif

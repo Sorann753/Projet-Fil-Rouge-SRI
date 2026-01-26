@@ -65,3 +65,169 @@ void testImageLoading(const char* testImagePath, ImageFingerPrint info){
 
     printf("----- TEST SUCCESS -----\n\n");
 }
+
+void testMaskExtract(const char* testFilePath, const char* outPath){
+    printf("----- TEST MASK EXTRACTION -----\n");
+
+    Image img = loadImage(testFilePath);
+    assert(img.isValid);
+
+    const int colorCount = 8;
+    ColorReferences ref = {
+        .colorCount = colorCount,
+        .refPoints = (Color*)malloc(sizeof(Color) * colorCount),
+    };
+    if(ref.refPoints == NULL){
+        freeMatrix(&img);
+        exit(EXIT_FAILURE);
+    }
+
+    ref.refPoints[0] = (Color){ //RED
+        .R = 255,
+        .G = 0,
+        .B = 0,
+    };
+    ref.refPoints[1] = (Color){ //GREEN
+        .R = 0,
+        .G = 255,
+        .B = 0,
+    };
+    ref.refPoints[2] = (Color){ //BLUE
+        .R = 0,
+        .G = 0,
+        .B = 255,
+    };
+    ref.refPoints[3] = (Color){ //YELLOW
+        .R = 255,
+        .G = 255,
+        .B = 0,
+    };
+    ref.refPoints[4] = (Color){ //PURPLE
+        .R = 255,
+        .G = 0,
+        .B = 255,
+    };
+    ref.refPoints[5] = (Color){ //BLACK
+        .R = 0,
+        .G = 0,
+        .B = 0,
+    };
+    ref.refPoints[6] = (Color){ //WHITE
+        .R = 255,
+        .G = 255,
+        .B = 255,
+    };
+    ref.refPoints[7] = (Color){ //GRAY
+        .R = 64,
+        .G = 64,
+        .B = 64,
+    };
+
+    ColorMasks masks = extractColors(&img, ref);
+
+    for(uint8_t i = 0; i < masks.colorCount; i++){
+        const Matrix* M = &(masks.masks[i]);
+        M++;
+    }
+
+    exportMasks(outPath, masks, ref);
+
+    freeColorMasks(&masks);
+    free(ref.refPoints);
+    freeMatrix(&img);
+
+    printf("----- TEST SUCCESS -----\n\n");
+}
+
+void testObjectDetect(const char* imgPath){
+    printf("----- TEST OBJECT DETECTION -----\n");
+
+    Image img = loadImage(imgPath);
+    assert(img.isValid);
+
+    const int colorCount = 8;
+    ColorReferences ref = {
+        .colorCount = colorCount,
+        .refPoints = (Color*)malloc(sizeof(Color) * colorCount),
+    };
+    if(ref.refPoints == NULL){
+        freeMatrix(&img);
+        exit(EXIT_FAILURE);
+    }
+
+    ref.refPoints[0] = (Color){ //RED
+        .R = 255,
+        .G = 0,
+        .B = 0,
+    };
+    ref.refPoints[1] = (Color){ //GREEN
+        .R = 0,
+        .G = 255,
+        .B = 0,
+    };
+    ref.refPoints[2] = (Color){ //BLUE
+        .R = 0,
+        .G = 0,
+        .B = 255,
+    };
+    ref.refPoints[3] = (Color){ //YELLOW
+        .R = 255,
+        .G = 255,
+        .B = 0,
+    };
+    ref.refPoints[4] = (Color){ //PURPLE
+        .R = 255,
+        .G = 0,
+        .B = 255,
+    };
+    ref.refPoints[5] = (Color){ //BLACK
+        .R = 0,
+        .G = 0,
+        .B = 0,
+    };
+    ref.refPoints[6] = (Color){ //WHITE
+        .R = 255,
+        .G = 255,
+        .B = 255,
+    };
+    ref.refPoints[7] = (Color){ //GRAY
+        .R = 64,
+        .G = 64,
+        .B = 64,
+    };
+
+    ColorMasks masks = extractColors(&img, ref);
+
+    BallArray redBall = findSpheres(&(masks.masks[0]));
+    BallArray greenBall = findSpheres(&(masks.masks[1]));
+    BallArray blueBall = findSpheres(&(masks.masks[2]));
+    BallArray yellowBall = findSpheres(&(masks.masks[3]));
+    BallArray purpleBall = findSpheres(&(masks.masks[4]));
+    BallArray blackBall = findSpheres(&(masks.masks[5]));
+    BallArray whiteBall = findSpheres(&(masks.masks[6]));
+    BallArray grayBall = findSpheres(&(masks.masks[7]));
+
+    exportBallsToFile("./red.bin", redBall);
+    exportBallsToFile("./green.bin", greenBall);
+    exportBallsToFile("./blue.bin", blueBall);
+    exportBallsToFile("./yellow.bin", yellowBall);
+    exportBallsToFile("./purple.bin", purpleBall);
+    exportBallsToFile("./black.bin", blackBall);
+    exportBallsToFile("./white.bin", whiteBall);
+    exportBallsToFile("./gray.bin", grayBall );
+
+    free(redBall.balls);
+    free(greenBall.balls);
+    free(blueBall.balls);
+    free(yellowBall.balls);
+    free(purpleBall.balls);
+    free(blackBall.balls);
+    free(whiteBall.balls);
+    free(grayBall.balls);
+
+    freeColorMasks(&masks);
+    free(ref.refPoints);
+    freeMatrix(&img);
+
+    printf("----- TEST SUCCESS -----\n\n");
+}
