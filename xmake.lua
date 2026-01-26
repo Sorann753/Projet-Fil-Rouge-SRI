@@ -29,3 +29,11 @@ target("PFR-test")
     add_includedirs("include/")
     add_files("source/**.c")
     remove_files("source/main.c", "source/unitTest.c") --on ne compile pas le main vus qu'on compile les test
+
+target("PFR-unit")    
+    set_default(false)
+    set_rules("mode.debug")
+    set_kind("binary")
+    add_includedirs("include/")
+    add_files("source/**.c")
+    remove_files("source/main.c", "source/test.c") --on ne compile pas le main vus qu'on compile les test

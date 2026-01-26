@@ -18,6 +18,8 @@
 #include "testCases/speechTest.h"
 #include "testCases/executortest.h"
 
+#include "configLoader/configLoader.h"
+
 int main(void)
 {
     printf("\n\n\n\n\n\n");
@@ -68,23 +70,13 @@ int main(void)
     };
     testImageLoading("./../../../../data/IMG_5400.txt", img3_info);
 
-    const char* testImg = "./../../../../data/IMG_5408.txt";
+    
+    const char* testImg = config_loader("config/visionConfig.toml", "file");
 
     testMaskExtract(testImg, "./img.bin");
     testObjectDetect(testImg);
 
 
-    // === simulator testing ===
-    TestAction();
-    
-    // === config loader testing ===
-    testLoadConfig();
-
-    // === history testing ===
-    testHistory(INFO,"Ecriture sur l'historique");
-
-
-    
     homeMenu();
 
     history_close();
