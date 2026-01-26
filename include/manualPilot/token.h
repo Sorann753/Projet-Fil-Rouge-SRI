@@ -39,7 +39,7 @@ typedef struct token
         float value;           // pour TOK_NUM
         color_t color;         // pour TOK_COLOR
         object_t object;       // pour TOK_OBJECT
-        direction_t direction; // pour la direction
+        direction_t direction; // pour TOK_DIRECTION
     } data;
 } token;
 
