@@ -1,3 +1,21 @@
+/**
+ * @file speech.c
+ * @brief Ce module fournit l'interface pour récupérer des commandes vocales via un script Python.
+ *        Il lit la configuration pour déterminer le script Python à utiliser selon la langue,
+ *        exécute le script et récupère la première ligne de sortie correspondant à la commande vocale.
+ * @author Victor CHALUMEAUX
+ * @remarks Dépend des modules configLoader et du script Python externe.
+ */
+
+/**
+ * @brief Récupère une commande vocale en fonction de la langue spécifiée.
+ *        Exécute le script Python correspondant et retourne la première ligne lue.
+ * @param language Chaîne de caractères ("fr" ou "en") déterminant la langue du script Python
+ * @return Pointeur vers une chaîne de caractères contenant la commande vocale
+ *         ou un message d'erreur ("ERROR_CONFIG", "ERROR_POPEN", "err ")
+ * @remarks La chaîne retournée est statique, elle ne doit pas être libérée.
+ */
+
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +38,7 @@ char *get_speech(const char *language)
     {
         python_path = config_loader("config/globalConfig.toml", "python_vocal_interpreter_en");
     }
-    else
+    else // Par défaut, on utilise le français
     {
         python_path = config_loader("config/globalConfig.toml", "python_vocal_interpreter_fr");
     }

@@ -1,5 +1,10 @@
 /**
- * @author CHALUMEAUX Victor
+ * @file history.c
+ * @brief Module de gestion de l'historique des événements d'UPSSIBOT.
+ *        Permet d'initialiser un fichier d'historique, d'y écrire des messages
+ *        avec différents niveaux (INFO, WARNING, ERROR) et de le fermer correctement.
+ * @author Victor CHALUMEAUX
+ * @remarks Dépend du module configLoader pour récupérer le chemin du dossier historique.
  */
 
 #include <stdio.h>
@@ -12,7 +17,7 @@
 
 /**
  * @brief Convertit un niveau d'historique en chaîne lisible
- * @param level Niveau de l'événement
+ * @param level Niveau de l'événement (INFO, WARNING, ERROR)
  * @return Chaîne correspondant au niveau
  */
 static const char *history_level_to_string(HistoryLevel level)
@@ -29,13 +34,15 @@ static const char *history_level_to_string(HistoryLevel level)
     }
 }
 
+// Pointeur vers le fichier d'historique courant
 static FILE *history_file = NULL;
 
 /**
  * @brief Initialise un fichier d'historique
- *        Le nom du fichier est généré à partir de la date et de l'heure
- *        de lancement du programme
+ *        Le nom du fichier est généré à partir de la date et de l'heure de lancement
+ *        du programme et placé dans le dossier spécifié dans la configuration.
  * @return 0 si succès, -1 en cas d'erreur
+ * @remarks Écrit un en-tête dans le fichier avec la date et l'heure de démarrage.
  */
 int history_init(void)
 {
@@ -72,7 +79,7 @@ int history_init(void)
 
     printf("Fichier historique initialisé dans %s\n", fullpath);
 
-    // En tete du fichier .log
+    // En-tête du fichier .log
     fprintf(history_file, "=== Historique UPSSIBOT ===\n");
     fprintf(history_file, "Démarrage : %d/%d/%d %d:%d\n\n",
             tm_info->tm_mday,
@@ -85,11 +92,11 @@ int history_init(void)
     return 0;
 }
 
-
 /**
  * @brief Écrit une ligne dans l'historique en cours
  * @param level Niveau de l'événement (INFO, WARNING, ERROR)
  * @param message Message descriptif à enregistrer
+ * @remarks Ajoute un timestamp et le niveau dans chaque ligne.
  */
 void history_log(HistoryLevel level, const char *message)
 {
@@ -113,6 +120,7 @@ void history_log(HistoryLevel level, const char *message)
 
 /**
  * @brief Ferme le fichier d'historique en cours
+ * @remarks Écrit la date et l'heure de fin dans le fichier et ferme le flux.
  */
 void history_close(void)
 {
@@ -123,7 +131,7 @@ void history_close(void)
     struct tm tm_backup;
 
     if (!tm_info) {
-        // créer une vraie structure locale pour ne pas pointer sur une temporaire
+        // créer une structure locale pour ne pas pointer sur une temporaire
         tm_backup = (struct tm){0};
         tm_info = &tm_backup;
     }

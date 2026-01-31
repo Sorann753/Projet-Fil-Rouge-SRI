@@ -1,19 +1,23 @@
 /**
- * @author CHALUMEAUX Victor
+ * @file configLoader.c
+ * @brief Module pour lire des valeurs de configuration dans des fichiers TOML.
+ *        Permet de récupérer la valeur d'une clé spécifique dans un fichier de configuration.
+ * @author Victor CHALUMEAUX
+ * @remarks Les sections [xxx] sont ignorées, seules les clés globales sont lues.
+ *          La chaîne retournée doit être libérée par l'appelant.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "configLoader/configLoader.h"
 
-#define LINE_MAX_LEN 512  // longueur maximale d'une ligne lue depuis le fichier
+#define LINE_MAX_LEN 512  /**< Longueur maximale d'une ligne lue depuis le fichier */
 
 /**
  * @brief Supprime les espaces, tabulations et retours à la ligne
- *        au début et à la fin d'une chaîne
- * @param str La chaîne à nettoyer (modifiée en place)
+ *        au début et à la fin d'une chaîne (modification en place)
+ * @param str La chaîne à nettoyer
  */
 static void trim(char *str)
 {
@@ -37,11 +41,12 @@ static void trim(char *str)
 }
 
 /**
- * @brief Lit la valeur d'une clé dans un fichier TOML (chemin relatif depuis la racine du prjet (PROJET-FIL-ROUGE-SRI))
- *        La section [xxx] est ignorée, on cherche juste la clé globale
- * @param filename Chemin vers le fichier TOML (relatif depuis la racine du projet (PROJET-FIL-ROUGE-SRI/))
+ * @brief Lit la valeur d'une clé dans un fichier TOML
+ * @param filename Chemin vers le fichier TOML (relatif depuis la racine du projet)
  * @param key Clé à chercher dans le fichier (ex: "python_simulation_path")
- * @return Chaîne mallocée contenant la valeur (à libérer par l'appelant), ou NULL si non trouvée
+ * @return Chaîne mallocée contenant la valeur (à libérer par l'appelant), ou NULL si non trouvée ou erreur
+ * @remarks Les sections [xxx] sont ignorées, seules les clés globales sont lues.
+ *          Les commentaires (#) en fin de ligne sont également ignorés.
  */
 char *config_loader(const char *filename, const char *key)
 {

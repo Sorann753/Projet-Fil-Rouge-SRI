@@ -1,8 +1,12 @@
 /**
- * @author CHALUMEAUX Victor et BELUSCA Joan
+ * @file menu.c
+ * @brief Module de gestion des menus d'UPSSIBOT : menu principal, contrôle, langue et simulation.
+ *        Permet la navigation entre différents modes et gère les entrées utilisateur (CLI ou vocale).
+ * @authors Victor CHALUMEAUX, Joan BELUSCA
+ * @remarks Dépend des modules : configLoader, history, speech, vocabulary, manualPilot et SimulatorController.
  */
 
- #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -22,11 +26,15 @@
 #include "manualPilot/parser.h"
 #include "manualPilot/executor.h"
 
+// Variables globales pour la langue et l'état de la simulation
 char *languageValue = NULL;
 char *simuOpen = NULL;
-
 RobotPosition my_robot;
 
+/**
+ * @brief Sélectionne un caractère depuis l'entrée standard
+ * @return Premier caractère lu, ou '\0' si aucune entrée
+ */
 char selectMenu(void)
 {
     char buffer[16];
@@ -38,6 +46,11 @@ char selectMenu(void)
     return buffer[0];
 }
 
+/**
+ * @brief Affiche le menu principal et gère la navigation entre les sous-menus
+ * @remarks Initialise la simulation et le robot, charge les paramètres de configuration
+ *          et ferme correctement l'historique et la simulation à la sortie.
+ */
 void homeMenu(void)
 {
     char choice;
@@ -107,6 +120,10 @@ void homeMenu(void)
     simuOpen = NULL;
 }
 
+/**
+ * @brief Menu de contrôle du robot (CLI ou vocal)
+ * @remarks Gère la saisie de commandes utilisateur, leur analyse, parsing et exécution.
+ */
 void controlMenu(void)
 {
     char choice;
@@ -163,7 +180,7 @@ void controlMenu(void)
             strncpy(userCommand, speechInput, sizeof(userCommand) - 1);
             userCommand[sizeof(userCommand) - 1] = '\0';
 
-            /*free(speechInput);*/
+            /*free(speechInput);*/ // La chaîne retournée est statique
             speechInput = NULL;
 
             printf("Vocal Input: %s\n", userCommand);
@@ -228,6 +245,9 @@ void controlMenu(void)
     }
 }
 
+/**
+ * @brief Menu de sélection de la langue
+ */
 void languagesMenu(void)
 {
     char choice;
@@ -278,6 +298,9 @@ void languagesMenu(void)
     }
 }
 
+/**
+ * @brief Menu de gestion de la fenêtre de simulation
+ */
 void simulationMenu(void)
 {
     char choice;
