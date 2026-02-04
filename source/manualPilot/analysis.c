@@ -20,17 +20,6 @@ int is_number(char *mot)
 
     int i = 0;
 
-    /* Gérer le signe négatif (optionnel) */
-    if (mot[0] == '-' || mot[0] == '+')
-    {
-        i = 1;
-        /* Si c'est juste "-" ou "+" ce n'est pas un nombre */
-        if (mot[1] == '\0')
-        {
-            return 0;
-        }
-    }
-
     int has_dot = 0; /* Pour gérer les nombres décimaux comme "3.14" */
 
     /* Parcourir chaque caractère */

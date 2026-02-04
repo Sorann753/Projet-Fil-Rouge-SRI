@@ -49,8 +49,6 @@ Color HSVtoRGB(HSVColor base){
 }
 
 /**
- * @note H is a pure angle so it's group U(1) and therefore the radius
- * isn't taken into accound for this curved distance
  */
 double colorDistance(HSVColor A, HSVColor B){
     double deltaH = fabs(B.H - A.H);

@@ -8,6 +8,7 @@
 
 #include "utils/matrix_impl.h"
 
+//TODO : use config file to load them dynamically
 #define HEADER_MAX_LENGTH 255
 #define FIELD_MAX_LENGTH 16
 #define IMG_BUFFER_SIZE 1500
