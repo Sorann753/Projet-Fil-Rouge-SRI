@@ -480,8 +480,15 @@ BallArray findSpheres(const Matrix* colorMask){
         // check the likelihood
         ObjectFeature features = modelFeatures(center, colorMask, sphere, NULL, 3000);
         const size_t objectSurface = things.elements[s].surface;
-        const double holeFactor = 0.5;
-        const double artifactThreshold = 0.25;
+        
+        char* holeFactorConfig = config_loader("config/visionConfig.toml", "holeFactor");
+        char* artifactThresholdConfig = config_loader("config/visionConfig.toml", "artifactThreshold");
+
+        const double holeFactor = atof(holeFactorConfig);
+        const double artifactThreshold = atof(artifactThresholdConfig);
+
+        free(holeFactorConfig);
+        free(artifactThresholdConfig);
 
         double artifactRatio = (double)(features.artifactPixelCount) / (double)objectSurface;
 

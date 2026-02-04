@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "utils/position.h"
+#include "configLoader/configLoader.h"
 #include "manualPilot/command.h"
 
 #include "line.h"

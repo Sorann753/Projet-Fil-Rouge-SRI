@@ -1,1 +1,3 @@
 file = ./../../../../data/IMG_5403.txt
+holeFactor = 0.5
+artifactThreshold = 0.25
