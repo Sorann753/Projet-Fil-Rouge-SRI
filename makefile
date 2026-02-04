@@ -29,7 +29,7 @@ PFR-unit:
 	@mkdir -p $(BIN_DIR)/export
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_UNIT) $(SRC_UNIT) -lm
 
-# Run 
+# Run  with vision module
 .PHONY: run-unit
 run-unit: PFR-unit
 	cd $(BIN_DIR) && ./PFR-unit
