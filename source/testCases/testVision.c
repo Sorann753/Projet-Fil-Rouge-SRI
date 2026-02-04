@@ -197,6 +197,7 @@ void testObjectDetect(const char* imgPath){
         .B = 64,
     };
 
+    clock_t start = clock();
     ColorMasks masks = extractColors(&img, ref);
 
     BallArray redBall = findSpheres(&(masks.masks[0]));
@@ -208,14 +209,18 @@ void testObjectDetect(const char* imgPath){
     BallArray whiteBall = findSpheres(&(masks.masks[6]));
     BallArray grayBall = findSpheres(&(masks.masks[7]));
 
-    exportBallsToFile("./red.bin", redBall);
-    exportBallsToFile("./green.bin", greenBall);
-    exportBallsToFile("./blue.bin", blueBall);
-    exportBallsToFile("./yellow.bin", yellowBall);
-    exportBallsToFile("./purple.bin", purpleBall);
-    exportBallsToFile("./black.bin", blackBall);
-    exportBallsToFile("./white.bin", whiteBall);
-    exportBallsToFile("./gray.bin", grayBall );
+    exportBallsToFile("./export/red.bin", redBall);
+    exportBallsToFile("./export/green.bin", greenBall);
+    exportBallsToFile("./export/blue.bin", blueBall);
+    exportBallsToFile("./export/yellow.bin", yellowBall);
+    exportBallsToFile("./export/purple.bin", purpleBall);
+    exportBallsToFile("./export/black.bin", blackBall);
+    exportBallsToFile("./export/white.bin", whiteBall);
+    exportBallsToFile("./export/gray.bin", grayBall );
+    clock_t end = clock();
+
+    double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("[INFO] - Execution time of sphere detection across all channels : %f seconds\n", seconds);
 
     free(redBall.balls);
     free(greenBall.balls);

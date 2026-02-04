@@ -11,6 +11,7 @@
 #include "image.h"
 #include "color.h"
 
+//TODO : use config file to load them dynamically
 #define SAMPLE_POINT_COUNT 5
 #define OBJECT_MIN_SURFACE 100
 

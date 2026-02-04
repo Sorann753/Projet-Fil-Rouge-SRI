@@ -73,8 +73,10 @@ int main(void)
     
     const char* testImg = config_loader("config/visionConfig.toml", "file");
 
-    testMaskExtract(testImg, "./img.bin");
+    testMaskExtract(testImg, "./export/img.bin");
+
     testObjectDetect(testImg);
+
 
 
     homeMenu();

@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import os
 
+inputFolder = "./../../build/linux/x86_64/debug/export/"
+dataFolder = "./../../data/imageRecognized/"
+
 def read_masks(path):
     with open(path, "rb") as f:
         # we have to assume little endian, though i don't know much hardware in big endian
@@ -36,17 +39,24 @@ def display_image(w, h, data, objects):
         ax.add_patch(circle)
 
     ax.axis("off")
+
+    count = 0
+    savePath = dataFolder + "reconstructed"
+    while os.path.exists(savePath + ".png"):
+        count += 1
+        savePath = dataFolder + "reconstructed" + str(count)
+
+    plt.savefig(savePath + ".png", dpi=300, bbox_inches="tight")
     plt.show()
 
 
-
-width, height, data = read_masks("./../../build/linux/x86_64/debug/img.bin")
-RedCount, RedSpheres = read_sphere("./../../build/linux/x86_64/debug/red.bin")
-greenCount, greenSpheres = read_sphere("./../../build/linux/x86_64/debug/green.bin")
-BlueCount, BlueSpheres = read_sphere("./../../build/linux/x86_64/debug/blue.bin")
-YellowCount, YellowSpheres = read_sphere("./../../build/linux/x86_64/debug/yellow.bin")
-blackCount, BlackSpheres = read_sphere("./../../build/linux/x86_64/debug/black.bin")
-whiteCount, WhiteSpheres = read_sphere("./../../build/linux/x86_64/debug/white.bin")
+width, height, data = read_masks(inputFolder + "img.bin")
+RedCount, RedSpheres = read_sphere(inputFolder + "red.bin")
+greenCount, greenSpheres = read_sphere(inputFolder + "green.bin")
+BlueCount, BlueSpheres = read_sphere(inputFolder + "blue.bin")
+YellowCount, YellowSpheres = read_sphere(inputFolder + "yellow.bin")
+blackCount, BlackSpheres = read_sphere(inputFolder + "black.bin")
+whiteCount, WhiteSpheres = read_sphere(inputFolder + "white.bin")
 
 red = None
 green = None
@@ -84,3 +94,7 @@ else:
 
 display_image(width, height, data, allSpheres)
 
+# cleanup the folder
+for name in os.listdir(inputFolder):
+    path = os.path.join(inputFolder, name)
+    os.remove(path)

@@ -481,7 +481,7 @@ BallArray findSpheres(const Matrix* colorMask){
         ObjectFeature features = modelFeatures(center, colorMask, sphere, NULL, 3000);
         const size_t objectSurface = things.elements[s].surface;
         const double holeFactor = 0.5;
-        const double artifactThreshold = 0.11;
+        const double artifactThreshold = 0.25;
 
         double artifactRatio = (double)(features.artifactPixelCount) / (double)objectSurface;
 
