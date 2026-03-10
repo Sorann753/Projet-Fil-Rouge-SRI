@@ -5,6 +5,7 @@ add_cflags("-Wwrite-strings", "-Wformat=2")
 add_cflags("-Wno-unused-result", "-Wno-unused-variable", "-Wno-unused-parameter", "-Wno-float-equal")
 set_warnings("all", "error")
 set_languages("c11")
+add_requires("fltk")
 
 target("PFR-simulator")
     set_kind("binary")
@@ -12,6 +13,12 @@ target("PFR-simulator")
     add_files("source/**.c")
     remove_files("source/test.c", "source/unitTest.c", "source/testCases/**c") --les trucs a ne pas compiler
 
+target("PFR-GUI")
+    set_languages("cxx17")
+    set_kind("binary")
+    add_includedirs("GUI/include/")
+    add_files("GUI/source/**.cpp")
+    add_packages("fltk")
 
 
 target("PFR-hardware")
