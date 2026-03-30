@@ -1,68 +1,91 @@
 #include <Arduino.h>
 #include <AFMotor.h>
 
+/*ULTRASON 1 */
+const int trig1Pin = 47;
+const int echo1Pin = 46;
 
-const int trigPin = 47;
-const int echoPin = 46;
+/*ULTRASON 2 */
+const int trig2Pin = 45;
+const int echo2Pin = 44;
+
+/*ULTRASON 3 */
+const int trig3Pin = 43;
+const int echo3Pin = 42;
+
 unsigned long precedentMillis = 0;
 const long intervalle = 500;
 AF_DCMotor moteur(1);
 
-void lectureUltrasons1() {
-  digitalWrite(trigPin, LOW);
+int lectureUltrasonsAvant()
+{
+  digitalWrite(trig1Pin, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
+  digitalWrite(trig1Pin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
+  digitalWrite(trig1Pin, LOW);
+
+  long duree = pulseIn(echo1Pin, HIGH, 20000);
+  if (duree == 0)
+    return 9999;
+  return duree * 0.034 / 2;
 }
 
-void moteurAvancer() {
+void moteurAvancer()
+{
   Serial.println("Moteur AVANT");
   moteur.run(FORWARD);
 }
 
-void moteurReculer() {
+void moteurReculer()
+{
   Serial.println("Moteur ARRIERE");
   moteur.run(BACKWARD);
 }
 
-void moteurStop() {
+void moteurStop()
+{
   Serial.println("Moteur STOP");
   moteur.run(RELEASE);
 }
 
-void setup() {
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  
-  Serial.begin(9600); 
-  Serial1.begin(230400); 
+void setup()
+{
+  pinMode(trig1Pin, OUTPUT);
+  pinMode(echo1Pin, INPUT);
+
+  Serial.begin(115200);
+  Serial1.begin(230400);
 
   moteur.setSpeed(200);
   moteur.run(RELEASE);
-  
+
   Serial.println("Fin Setup - Pret pour test");
 }
 
-void loop() {
+void loop()
+{
   char c;
 
-  //Bluetooth
-  if (Serial.available()) {
+  // Bluetooth
+  if (Serial.available())
+  {
     c = Serial.read();
     Serial1.print(c);
   }
 
-  if (Serial1.available()) {
+  if (Serial1.available())
+  {
     c = Serial1.read();
     Serial.print(c);
   }
 
-  //Ultrasons
+  // Ultrasons
   unsigned long actuelMillis = millis();
-  if (actuelMillis - precedentMillis >= intervalle) {
+  if (actuelMillis - precedentMillis >= intervalle)
+  {
     precedentMillis = actuelMillis;
-    lectureUltrasons1();
+
+    Serial.println(lectureUltrasonsAvant());
   }
 }
-
