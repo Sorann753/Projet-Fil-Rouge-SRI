@@ -14,7 +14,7 @@ const int trig3Pin = 43;
 const int echo3Pin = 42;
 
 unsigned long precedentMillis = 0;
-const long intervalle = 100;
+const long intervalle = 1000;
 
 /* MOTEURS*/
 AF_DCMotor moteurAvG(1); // M1 (avant gauche)
@@ -24,17 +24,18 @@ AF_DCMotor moteurArD(4); // M4 (arriére droite)
 
 /**
  * @brief lecture de lultrason
+ * @param numero (int) : numero de lultrason a lire (1, 2 ou 3)
  * @return duree (int)
  */
-int lectureUltrasonsAvant()
+int lectureUltrasons(int trigPin, int echoPin)
 {
-  digitalWrite(trig1Pin, LOW);
+  digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-  digitalWrite(trig1Pin, HIGH);
+  digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trig1Pin, LOW);
+  digitalWrite(trigPin, LOW);
 
-  long duree = pulseIn(echo1Pin, HIGH, 20000);
+  long duree = pulseIn(echoPin, HIGH, 20000);
   if (duree == 0)
     return 9999;
   return duree * 0.034 / 2;
@@ -92,6 +93,12 @@ void setup()
   pinMode(trig1Pin, OUTPUT);
   pinMode(echo1Pin, INPUT);
 
+  pinMode(trig2Pin, OUTPUT);
+  pinMode(echo2Pin, INPUT);
+  
+  pinMode(trig3Pin, OUTPUT);
+  pinMode(echo3Pin, INPUT);
+
   Serial.begin(115200);
   Serial1.begin(230400);
 
@@ -128,6 +135,8 @@ void loop()
 
     precedentMillis = actuelMillis;
 
-    Serial.println(lectureUltrasonsAvant());
+    Serial.println("UltraSon 1: " + String(lectureUltrasons(trig1Pin, echo1Pin)));
+    Serial.println("UltraSon 2: " + String(lectureUltrasons(trig2Pin, echo2Pin)));
+    Serial.println("UltraSon 3: " + String(lectureUltrasons(trig3Pin, echo3Pin)));
   }
 }
