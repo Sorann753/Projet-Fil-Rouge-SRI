@@ -1,13 +1,14 @@
 #include <Arduino.h>
 #include <AFMotor.h>
 
+
 const int trigPin = 47;
-const int echoPin = 43;
+const int echoPin = 46;
 unsigned long precedentMillis = 0;
 const long intervalle = 500;
 AF_DCMotor moteur(1);
 
-void lectureUltrasons() {
+void lectureUltrasons1() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
@@ -35,7 +36,7 @@ void setup() {
   pinMode(echoPin, INPUT);
   
   Serial.begin(9600); 
-  Serial1.begin(9600); 
+  Serial1.begin(230400); 
 
   moteur.setSpeed(200);
   moteur.run(RELEASE);
@@ -61,7 +62,7 @@ void loop() {
   unsigned long actuelMillis = millis();
   if (actuelMillis - precedentMillis >= intervalle) {
     precedentMillis = actuelMillis;
-    lectureUltrasons();
+    lectureUltrasons1();
   }
 }
 
