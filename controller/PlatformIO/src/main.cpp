@@ -14,9 +14,18 @@ const int trig3Pin = 43;
 const int echo3Pin = 42;
 
 unsigned long precedentMillis = 0;
-const long intervalle = 500;
-AF_DCMotor moteur(1);
+const long intervalle = 100;
 
+/* MOTEURS*/
+AF_DCMotor moteurAvG(1); // M1 (avant gauche)
+AF_DCMotor moteurAvD(2); // M2 (avant droite)
+AF_DCMotor moteurArG(3); // M3 (arriére gauche)
+AF_DCMotor moteurArD(4); // M4 (arriére droite)
+
+/**
+ * @brief lecture de lultrason
+ * @return duree (int)
+ */
 int lectureUltrasonsAvant()
 {
   digitalWrite(trig1Pin, LOW);
@@ -31,22 +40,51 @@ int lectureUltrasonsAvant()
   return duree * 0.034 / 2;
 }
 
+/**
+ * @brief initialisation de la vitesse
+ */
+void setspeedroue(int vitesse)
+{
+  moteurAvG.setSpeed(vitesse);
+  moteurAvD.setSpeed(vitesse);
+  moteurArG.setSpeed(vitesse);
+  moteurArD.setSpeed(vitesse);
+}
+
+/**
+ * @brief avancer les 4 roues
+ */
 void moteurAvancer()
 {
   Serial.println("Moteur AVANT");
-  moteur.run(FORWARD);
+  moteurAvG.run(FORWARD);
+  moteurAvD.run(FORWARD);
+  moteurArG.run(FORWARD);
+  moteurArD.run(FORWARD);
 }
 
+/**
+ * @brief reculer les 4 roues
+ */
 void moteurReculer()
 {
   Serial.println("Moteur ARRIERE");
-  moteur.run(BACKWARD);
+  moteurAvG.run(BACKWARD);
+  moteurAvD.run(BACKWARD);
+  moteurArG.run(BACKWARD);
+  moteurArD.run(BACKWARD);
 }
 
+/**
+ * @brief arreter les 4 roues
+ */
 void moteurStop()
 {
   Serial.println("Moteur STOP");
-  moteur.run(RELEASE);
+  moteurAvG.run(RELEASE);
+  moteurAvD.run(RELEASE);
+  moteurArG.run(RELEASE);
+  moteurArD.run(RELEASE);
 }
 
 void setup()
@@ -57,8 +95,9 @@ void setup()
   Serial.begin(115200);
   Serial1.begin(230400);
 
-  moteur.setSpeed(200);
-  moteur.run(RELEASE);
+  setspeedroue(200);
+
+  moteurStop();
 
   Serial.println("Fin Setup - Pret pour test");
 }
@@ -82,8 +121,11 @@ void loop()
 
   // Ultrasons
   unsigned long actuelMillis = millis();
+
+  /*si la mesure millis ateint un multiple de intervalle on fait l'action*/
   if (actuelMillis - precedentMillis >= intervalle)
   {
+
     precedentMillis = actuelMillis;
 
     Serial.println(lectureUltrasonsAvant());
