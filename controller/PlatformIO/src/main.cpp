@@ -14,13 +14,16 @@ const int trig3Pin = 43;
 const int echo3Pin = 42;
 
 unsigned long precedentMillis = 0;
-const long intervalle = 1000;
+const long intervalle = 100;
 
 /* MOTEURS*/
 AF_DCMotor moteurAvG(1); // M1 (avant gauche)
 AF_DCMotor moteurAvD(2); // M2 (avant droite)
 AF_DCMotor moteurArG(3); // M3 (arriére gauche)
 AF_DCMotor moteurArD(4); // M4 (arriére droite)
+
+/*Distances */
+int distAv = 9999, distG = 9999, distD = 9999;
 
 /**
  * @brief lecture de lultrason
@@ -95,7 +98,7 @@ void setup()
 
   pinMode(trig2Pin, OUTPUT);
   pinMode(echo2Pin, INPUT);
-  
+
   pinMode(trig3Pin, OUTPUT);
   pinMode(echo3Pin, INPUT);
 
@@ -111,6 +114,7 @@ void setup()
 
 void loop()
 {
+  /*
   char c;
 
   // Bluetooth
@@ -125,6 +129,7 @@ void loop()
     c = Serial1.read();
     Serial.print(c);
   }
+  */
 
   // Ultrasons
   unsigned long actuelMillis = millis();
@@ -135,8 +140,46 @@ void loop()
 
     precedentMillis = actuelMillis;
 
-    Serial.println("UltraSon 1: " + String(lectureUltrasons(trig1Pin, echo1Pin)));
-    Serial.println("UltraSon 2: " + String(lectureUltrasons(trig2Pin, echo2Pin)));
-    Serial.println("UltraSon 3: " + String(lectureUltrasons(trig3Pin, echo3Pin)));
+    distAv = lectureUltrasons(trig1Pin, echo1Pin);
+    /*distG = lectureUltrasons(trig2Pin, echo2Pin);
+    distD = lectureUltrasons(trig3Pin, echo3Pin);*/
+
+    /*DETECTION DOBSTACLE*/
+    if (distAv <= 15)
+    {
+      moteurAvG.run(RELEASE);
+      moteurAvD.run(RELEASE);
+      moteurArG.run(RELEASE);
+      moteurArD.run(RELEASE);
+    }
+  }
+
+  if (Serial.available() > 0)
+  {
+    /*lire la commande recu*/
+    String cmd = Serial.readStringUntil('\n'); /*lire la ligne*/
+    cmd.trim();                                /*netoyage*/
+
+    if (cmd == "FORWARD")
+    {
+      if (distAv > 15)
+      {
+        moteurAvancer();
+      }
+      else
+      {
+        Serial.println("OBSTACLE");
+      }
+    }
+    else if (cmd == "BACKWARD")
+    {
+      moteurReculer();
+      Serial.println("le moteur recule ...");
+    }
+    else if (cmd == "STOP")
+    {
+      moteurStop();
+      Serial.println("Moteur STOP ...");
+    }
   }
 }
