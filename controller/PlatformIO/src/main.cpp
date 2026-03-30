@@ -1,54 +1,67 @@
 #include <Arduino.h>
-#include <SoftwareSerial.h>
+#include <AFMotor.h>
 
-// Pins Capteur Ultrason
 const int trigPin = 47;
 const int echoPin = 43;
-long duree;
-int distance;
+unsigned long precedentMillis = 0;
+const long intervalle = 500;
+AF_DCMotor moteur(1);
 
-void setup() {
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  
-  // Port USB (Moniteur série)
-  Serial.begin(9600);
-  
-  // Port Bluetooth (Pins 18 et 19)
-  Serial1.begin(9600); 
-  Serial.println("Bluetooth prêt");
-  
-}
-
-void loop() {
-  // Mesure Ultrason
+void lectureUltrasons() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  
-  duree = pulseIn(echoPin, HIGH);
-  distance = duree * 0.034 / 2;
-  
-  // Affichage sur le PC
-  /*
-  // Affichage de la distance sur le Moniteur Série
-  Serial.print("Distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
-
-  // Envoi de la distance au Bluetooth
-  Serial1.print("Dist: ");
-  Serial1.println(distance);
-*/
-  // Communication Bluetooth <-> USB
-  if (Serial1.available()) {
-    Serial.write(Serial1.read());
-  }
-  if (Serial.available()) {
-    Serial1.write(Serial.read());
-  }
-
-  delay(500);
 }
+
+void moteurAvancer() {
+  Serial.println("Moteur AVANT");
+  moteur.run(FORWARD);
+}
+
+void moteurReculer() {
+  Serial.println("Moteur ARRIERE");
+  moteur.run(BACKWARD);
+}
+
+void moteurStop() {
+  Serial.println("Moteur STOP");
+  moteur.run(RELEASE);
+}
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
+  Serial.begin(9600); 
+  Serial1.begin(9600); 
+
+  moteur.setSpeed(200);
+  moteur.run(RELEASE);
+  
+  Serial.println("Fin Setup - Pret pour test");
+}
+
+void loop() {
+  char c;
+
+  //Bluetooth
+  if (Serial.available()) {
+    c = Serial.read();
+    Serial1.print(c);
+  }
+
+  if (Serial1.available()) {
+    c = Serial1.read();
+    Serial.print(c);
+  }
+
+  //Ultrasons
+  unsigned long actuelMillis = millis();
+  if (actuelMillis - precedentMillis >= intervalle) {
+    precedentMillis = actuelMillis;
+    lectureUltrasons();
+  }
+}
+
