@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include "read_lidar.h"
 
 void testLidarAcquisition(void);
 
