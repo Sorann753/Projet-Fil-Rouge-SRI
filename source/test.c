@@ -17,15 +17,16 @@
 #include "testCases/parsertest.h"
 #include "testCases/speechTest.h"
 #include "testCases/executortest.h"
+#include "testCases/testLidar.h"
 
 int main(void)
 {
     printf("\n\n\n\n\n\n");
-    history_init();
+    //history_init();
 
-    homeMenu();
-
-    history_close();
+    //homeMenu();
+    testLidarAcquisition();
+    //history_close();
 
     return 0;
 }
