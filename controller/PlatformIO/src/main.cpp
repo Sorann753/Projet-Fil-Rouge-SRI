@@ -22,19 +22,23 @@ AF_DCMotor moteurAvD(2); // M2 (avant droite)
 AF_DCMotor moteurArG(3); // M3 (arriére gauche)
 AF_DCMotor moteurArD(4); // M4 (arriére droite)
 
+/*Distances */
+int distAv = 9999, distG = 9999, distD = 9999;
+
 /**
  * @brief lecture de lultrason
+ * @param numero (int) : numero de lultrason a lire (1, 2 ou 3)
  * @return duree (int)
  */
-int lectureUltrasonsAvant()
+int lectureUltrasons(int trigPin, int echoPin)
 {
-  digitalWrite(trig1Pin, LOW);
+  digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-  digitalWrite(trig1Pin, HIGH);
+  digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trig1Pin, LOW);
+  digitalWrite(trigPin, LOW);
 
-  long duree = pulseIn(echo1Pin, HIGH, 20000);
+  long duree = pulseIn(echoPin, HIGH, 20000);
   if (duree == 0)
     return 9999;
   return duree * 0.034 / 2;
@@ -92,6 +96,12 @@ void setup()
   pinMode(trig1Pin, OUTPUT);
   pinMode(echo1Pin, INPUT);
 
+  pinMode(trig2Pin, OUTPUT);
+  pinMode(echo2Pin, INPUT);
+
+  pinMode(trig3Pin, OUTPUT);
+  pinMode(echo3Pin, INPUT);
+
   Serial.begin(115200);
   Serial1.begin(230400);
 
@@ -104,6 +114,7 @@ void setup()
 
 void loop()
 {
+  /*
   char c;
 
   // Bluetooth
@@ -118,6 +129,7 @@ void loop()
     c = Serial1.read();
     Serial.print(c);
   }
+  */
 
   // Ultrasons
   unsigned long actuelMillis = millis();
@@ -128,6 +140,46 @@ void loop()
 
     precedentMillis = actuelMillis;
 
-    Serial.println(lectureUltrasonsAvant());
+    distAv = lectureUltrasons(trig1Pin, echo1Pin);
+    /*distG = lectureUltrasons(trig2Pin, echo2Pin);
+    distD = lectureUltrasons(trig3Pin, echo3Pin);*/
+
+    /*DETECTION DOBSTACLE*/
+    if (distAv <= 15)
+    {
+      moteurAvG.run(RELEASE);
+      moteurAvD.run(RELEASE);
+      moteurArG.run(RELEASE);
+      moteurArD.run(RELEASE);
+    }
+  }
+
+  if (Serial.available() > 0)
+  {
+    /*lire la commande recu*/
+    String cmd = Serial.readStringUntil('\n'); /*lire la ligne*/
+    cmd.trim();                                /*netoyage*/
+
+    if (cmd == "FORWARD")
+    {
+      if (distAv > 15)
+      {
+        moteurAvancer();
+      }
+      else
+      {
+        Serial.println("OBSTACLE");
+      }
+    }
+    else if (cmd == "BACKWARD")
+    {
+      moteurReculer();
+      Serial.println("le moteur recule ...");
+    }
+    else if (cmd == "STOP")
+    {
+      moteurStop();
+      Serial.println("Moteur STOP ...");
+    }
   }
 }
