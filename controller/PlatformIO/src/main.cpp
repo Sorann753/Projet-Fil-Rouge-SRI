@@ -1,6 +1,12 @@
 #include <Arduino.h>
 #include <AFMotor.h>
 
+const int robotspeed = 100; // Point-virgule ajoute
+
+/* WATCHDOG */
+unsigned long dernierMessagePi = 0;
+const long timeoutPi = 2000;
+
 /*ULTRASON 1 */
 const int trig1Pin = 47;
 const int echo1Pin = 46;
@@ -114,22 +120,6 @@ void setup()
 
 void loop()
 {
-  /*
-  char c;
-
-  // Bluetooth
-  if (Serial.available())
-  {
-    c = Serial.read();
-    Serial1.print(c);
-  }
-
-  if (Serial1.available())
-  {
-    c = Serial1.read();
-    Serial.print(c);
-  }
-  */
 
   // Ultrasons
   unsigned long actuelMillis = millis();
@@ -141,11 +131,19 @@ void loop()
     precedentMillis = actuelMillis;
 
     distAv = lectureUltrasons(trig3Pin, echo3Pin);
-    /*distG = lectureUltrasons(trig2Pin, echo2Pin);
-    distD = lectureUltrasons(trig3Pin, echo3Pin);*/
+    distG = lectureUltrasons(trig2Pin, echo2Pin);
+    distD = lectureUltrasons(trig1Pin, echo1Pin);
+
+    /*affichage dans le serial1 (data de lultrason)*/
+    Serial1.print("Av:");
+    Serial1.print(distAv);
+    Serial1.print(" G:");
+    Serial1.print(distG);
+    Serial1.print(" D:");
+    Serial1.println(distD);
 
     /*DETECTION DOBSTACLE*/
-    if (distAv <= 15)
+    if (distAv <= 40)
     {
       moteurAvG.run(RELEASE);
       moteurAvD.run(RELEASE);
@@ -156,13 +154,17 @@ void loop()
 
   if (Serial.available() > 0)
   {
+
+    /*test du watchdog */
+    dernierMessagePi = millis();
+
     /*lire la commande recu*/
     String cmd = Serial.readStringUntil('\n'); /*lire la ligne*/
     cmd.trim();                                /*netoyage*/
 
     if (cmd == "FORWARD")
     {
-      if (distAv > 15)
+      if (distAv > 40)
       {
         moteurAvancer();
       }
@@ -181,5 +183,14 @@ void loop()
       moteurStop();
       Serial.println("Moteur STOP ...");
     }
+  }
+
+  if (actuelMillis - dernierMessagePi >= timeoutPi)
+  {
+    /* On coupe le courant aux roues sans utiliser Serial.println */
+    moteurAvG.run(RELEASE);
+    moteurAvD.run(RELEASE);
+    moteurArG.run(RELEASE);
+    moteurArD.run(RELEASE);
   }
 }
