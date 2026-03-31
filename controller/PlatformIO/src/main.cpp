@@ -105,7 +105,7 @@ void setup()
   Serial.begin(115200);
   Serial1.begin(230400);
 
-  setspeedroue(200);
+  setspeedroue(100);
 
   moteurStop();
 
@@ -140,7 +140,7 @@ void loop()
 
     precedentMillis = actuelMillis;
 
-    distAv = lectureUltrasons(trig1Pin, echo1Pin);
+    distAv = lectureUltrasons(trig3Pin, echo3Pin);
     /*distG = lectureUltrasons(trig2Pin, echo2Pin);
     distD = lectureUltrasons(trig3Pin, echo3Pin);*/
 

@@ -40,17 +40,16 @@ try:
 
     #envoie de commande avance
     print("envoie de 'FORWARD'")
-    ser.write(b"FORWARD\n") #envoie de "FORWARD" en binaire
-    time.sleep(2) #attendre laction physique
+    ser.write(b"FORWARD\n")
+    reponse_fwd = ser.readline().decode('utf-8').strip()
+    print(f"[ARDUINO -> PI] {reponse_fwd}")
     
-    #envoie de commande avance
+    time.sleep(2)
+    
     print("envoie de 'STOP'")
     ser.write(b"STOP\n")
-    time.sleep(2) #attendre laction physique
-
-    #traitement de la reponse stop
     reponse_stop = ser.readline().decode('utf-8').strip()
-    print(f"[ARDUINO -> PI] Réponse reçue : {reponse_stop}")
+    print(f"[ARDUINO -> PI] {reponse_stop}")
 
     ser.close()
     print("fin du test")
