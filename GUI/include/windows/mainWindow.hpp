@@ -7,8 +7,8 @@
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Output.H>
 
-#include <burgerMenu.hpp>
-#include <botsim.hpp>
+#include "windows/burgerMenu.hpp"
+#include "entities/botsim.hpp"
 
 #include <memory>
 
@@ -17,7 +17,10 @@ class SimpleWindow : public Fl_Window {
 public:
     SimpleWindow(int w, int h, const char *title);
     ~SimpleWindow();
-      std::unique_ptr<Botsim> bot;
+    
+    int handle(int event)override;
+    
+    std::unique_ptr<Botsim> bot;
     
 private:
     //static void cb_copy(Fl_Widget *, void *);

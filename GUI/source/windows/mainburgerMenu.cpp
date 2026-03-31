@@ -1,4 +1,4 @@
-#include "burgerMenu.hpp"
+#include "windows/burgerMenu.hpp"
 
 BurgerMenu::BurgerMenu(int X, int Y, int W, int H, const char *title) : Fl_Menu_Button(X, Y, W, H, title)
 {

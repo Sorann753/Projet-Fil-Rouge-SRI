@@ -6,6 +6,7 @@
 #include <FL/fl_draw.H>
 #include <algorithm>
 
+
 class Botsim : public Fl_Box
 {
 private:
@@ -13,12 +14,12 @@ private:
     int inputY;
     int BOT_SIZE = 40;
     int SPEED = 5;
-
 public:
     Botsim(int X, int Y, int W, int H);
 
     void draw() override;
-    int handle(int event) override;
+    void moveFromKey(int key);
 };
+
 
 #endif
