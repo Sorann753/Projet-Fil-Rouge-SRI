@@ -1,4 +1,4 @@
-#include "testCases/lidarTest.h"
+#include "testCases/testLidar.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

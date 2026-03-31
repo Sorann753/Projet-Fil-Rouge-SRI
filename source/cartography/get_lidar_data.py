@@ -3,7 +3,7 @@ import time
 from rplidar import RPLidar, RPLidarException
 
 def get_single_scan():
-    lidar = RPLidar('COM9', timeout=3)
+    lidar = RPLidar('/dev/ttyUSB0', timeout=3)
     try:
         lidar.stop()
         lidar.clean_input()
