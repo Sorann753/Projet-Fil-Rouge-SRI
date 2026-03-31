@@ -1,0 +1,6 @@
+#ifndef AUTOMATIC_PILOT_H
+#define AUTOMATIC_PILOT_H
+
+//TODO
+
+#endif
