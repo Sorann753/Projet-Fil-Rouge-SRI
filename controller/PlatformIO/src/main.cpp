@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <AFMotor.h>
 
-const int robotspeed = 100; // Point-virgule ajoute
+const int robotspeed = 200; // vitesse du robot
 
 /* WATCHDOG */
 unsigned long dernierMessagePi = 0;
@@ -18,6 +18,13 @@ const int echo2Pin = 44;
 /*ULTRASON 3 */
 const int trig3Pin = 43;
 const int echo3Pin = 42;
+
+/* ODOMETRIE*/
+const float CM_PAR_SECONDE = 30.0;  // A mesurer physiquement : Vitesse du robot (cm/s) a PWM 200
+const float DEG_PAR_SECONDE = 90.0; // A mesurer physiquement : Vitesse de rotation (deg/s) a PWM 200
+
+unsigned long tempsFinAction = 0; // Chronometre d'arret
+bool robotMouvement = false;
 
 unsigned long precedentMillis = 0;
 const long intervalle = 100;
@@ -111,7 +118,7 @@ void setup()
   Serial.begin(115200);
   Serial1.begin(230400);
 
-  setspeedroue(100);
+  setspeedroue(robotspeed);
 
   moteurStop();
 
@@ -162,15 +169,48 @@ void loop()
     String cmd = Serial.readStringUntil('\n'); /*lire la ligne*/
     cmd.trim();                                /*netoyage*/
 
+    int index_separateur = cmd.indexOf(':');
+    String action = cmd;
+    int valeur = 0;
+
+    /*si le separateur existe*/
+    if (index_separateur != -1)
+    {
+      /*couper la phrase*/
+      action = cmd.substring(0, index_separateur);          /*recupere laction*/
+      valeur = cmd.substring(index_separateur + 1).toInt(); /*recupére la valeur (cast en int)*/
+    }
+
     if (cmd == "FORWARD")
     {
       if (distAv > 40)
       {
-        moteurAvancer();
+        // calcule du temp daction en fonction de la valeur distance
+        // CM_PAR_SECONDE est fixée à 25 cm/s
+        // Temps = Distance / Vitesse
+
+        long duree = (valeur / CM_PAR_SECONDE) * 1000.0;
+
+        tempsFinAction = millis() + duree;
+        robotMouvement = true;
+
+        // debug
+        Serial.print("moteur avant | Valeur: ");
+        Serial.print(valeur);
+
+        // Envoie une trace complète de debug
+        Serial.print("Moteur AVANT | Dist capteur: ");
+        Serial.println(distAv);
+
+        moteurAvG.run(FORWARD);
+        moteurAvD.run(FORWARD);
+        moteurArG.run(FORWARD);
+        moteurArD.run(FORWARD);
       }
       else
       {
-        Serial.println("OBSTACLE");
+        Serial.print("OBSTACLE REFUSE | Dist capteur: ");
+        Serial.println(distAv);
       }
     }
     else if (cmd == "BACKWARD")
