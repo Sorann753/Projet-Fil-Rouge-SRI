@@ -17,17 +17,15 @@ void setup() {
 }
 
 void loop() {
-  // 1. Écouter (Input)
+
   readCommand(); 
+  
   updateUltrasons();
 
-  // 2. Décider (Logic)
   updateState();
 
-  // 3. Agir (Output)
   updateMovement();
 
-  // 4. Watchdog (Global)
   if (millis() - dernierMessagePi >= timeoutPi && currentState == MOVING) {
       currentState = IDLE;
   }
