@@ -39,24 +39,33 @@ try:
     """
 
     #envoie de commande avance
-    print("envoie de 'FORWARD'")
+    print("[PI -> ARDUINO] Envoi de 'FORWARD'")
     ser.write(b"FORWARD\n")
-    reponse_fwd = ser.readline().decode('utf-8').strip()
-    print(f"[ARDUINO -> PI] {reponse_fwd}")
     
-    time.sleep(2)
+    # 2. ECOUTE PENDANT 2 SECONDES
+    print("[LOG] Le robot avance")
+    t_fin = time.time() + 2.0 #on calcule le temp de fin dans 2s
+    while time.time() < t_fin: #si on ateind le temp de fin dans 2s
+        if ser.in_waiting > 0: #regarde sil y a des message en attente sur le cable
+            msg_debug = ser.readline().decode('utf-8').strip()
+            print(f"[ARDUINO] {msg_debug}")
     
-    print("envoie de 'STOP'")
+    # 3. ARRET
+    print("[PI -> ARDUINO] Envoi de 'STOP'")
     ser.write(b"STOP\n")
-    reponse_stop = ser.readline().decode('utf-8').strip()
-    print(f"[ARDUINO -> PI] {reponse_stop}")
-
+    
+    # 4. (Confirmation d'arrêt)
+    t_fin_stop = time.time() + 0.5 # On attend max 0.5s la réponse du STOP
+    while time.time() < t_fin_stop:
+        if ser.in_waiting > 0:
+            rep_stop = ser.readline().decode('utf-8').strip()
+            print(f"[ARDUINO] {rep_stop}")
     ser.close()
     print("fin du test")
 
     
     
 except Exception as e:
-    print(f"[ERREUR CRITIQUE] : {e}")
+    print(f"[ERREUR] : {e}")
 
     
