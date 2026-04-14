@@ -5,28 +5,45 @@
 #include "constants.hpp"
 
 void updateMovement() {
-    switch (currentState) {
-        case EMERGENCY:
-        case IDLE:
-            moteurStop();
-            currentCmd.active = false; 
-            break;
+  switch (currentState) {
+    case EMERGENCY:
+    case IDLE:
+      moteurStop();
+      currentCmd.active = false;
+      break;
 
-        case MOVING:
-            if (currentCmd.active) {
+    case MOVING:
+      if (currentCmd.active) {
+        float ratio = 1.0;
 
-                float ratio = (currentCmd.action == "FORWARD" || currentCmd.action == "BACKWARD") 
-                              ? CM_PAR_SECONDE : DEG_PAR_SECONDE;
-                
-                tempsFinAction = millis() + (currentCmd.valeur / ratio) * 1000.0;
+        // Sélection du ratio selon le type de mouvement
+        if (currentCmd.action == "FORWARD") {
+          ratio = CM_PAR_SECONDE;
+        } 
+        else if (currentCmd.action == "BACKWARD") {
+          ratio = CM_PAR_SECONDE;
+        } 
+        else {
+          ratio = DEG_PAR_SECONDE;
+        }
 
-                if (currentCmd.action == "FORWARD") moteurAvancer();
-                else if (currentCmd.action == "BACKWARD") moteurReculer();
-                else if (currentCmd.action == "LEFT") moteurGauche();
-                else if (currentCmd.action == "RIGHT") moteurDroite();
+        tempsFinAction = millis() + (currentCmd.valeur / ratio) * 1000.0;
 
-                currentCmd.active = false; 
-            }
-            break;
-    }
+        if (currentCmd.action == "FORWARD") {
+          moteurAvancer();
+        } 
+        else if (currentCmd.action == "BACKWARD") {
+          moteurReculer();
+        } 
+        else if (currentCmd.action == "LEFT") {
+          moteurGauche();
+        } 
+        else if (currentCmd.action == "RIGHT") {
+          moteurDroite();
+        }
+
+        currentCmd.active = false;
+      }
+      break;
+  }
 }
