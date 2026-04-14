@@ -3,7 +3,7 @@
 int distAv = 9999, distG = 9999, distD = 9999;
 
 static unsigned long precedentMillisUltrasons = 0;
-const long intervalleUltrasons = 100;
+const long intervalleUltrasons = 1000;
 
 void initUltrasons() {
     pinMode(TRIG1_PIN, OUTPUT);

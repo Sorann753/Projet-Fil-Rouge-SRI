@@ -2,6 +2,10 @@
 #include "components/ultrasons.hpp"
 #include "updater/command.hpp"
 
+State currentState = IDLE;
+
+extern unsigned long tempsFinAction;
+
 void updateState() {
     unsigned long actuelMillis = millis();
 
@@ -25,5 +29,5 @@ void updateState() {
     if (currentState == EMERGENCY && distAv > 40) {
         currentState = IDLE;
     }
-    Serial.print(currentState);
+
 }
