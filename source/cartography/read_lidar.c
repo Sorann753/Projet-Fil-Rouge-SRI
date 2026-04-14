@@ -8,6 +8,9 @@
 
 #define COMMAND_BUFFER_SIZE 512
 
+/*
+    @param count : Number of point scanned
+*/
 PolarCoordinate* get_lidar_scan(int *count)
 {
     *count = 0;
