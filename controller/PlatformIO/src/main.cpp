@@ -1,236 +1,102 @@
 #include <Arduino.h>
-#include <AFMotor.h>
+#include "constants.hpp"
+#include "motor.hpp"
+#include "ultrasons.hpp"
 
-const int robotspeed = 200; // vitesse du robot
-
-/* WATCHDOG */
-unsigned long dernierMessagePi = 0;
-const long timeoutPi = 2000;
-
-/*ULTRASON 1 */
-const int trig1Pin = 47;
-const int echo1Pin = 46;
-
-/*ULTRASON 2 */
-const int trig2Pin = 45;
-const int echo2Pin = 44;
-
-/*ULTRASON 3 */
-const int trig3Pin = 43;
-const int echo3Pin = 42;
-
-/* ODOMETRIE*/
-const float CM_PAR_SECONDE = 30.0;  // A mesurer physiquement : Vitesse du robot (cm/s) a PWM 200
-const float DEG_PAR_SECONDE = 90.0; // A mesurer physiquement : Vitesse de rotation (deg/s) a PWM 200
-
-unsigned long tempsFinAction = 0; // Chronometre d'arret
+unsigned long tempsFinAction = 0;
 bool robotMouvement = false;
+unsigned long dernierMessagePi = 0;
 
-unsigned long precedentMillis = 0;
-const long intervalle = 100;
+void setup() {
+  Serial.begin(115200);  // Communication avec le PC/Raspberry Pi
+  Serial1.begin(230400); // Bluetooth
 
-/* MOTEURS*/
-AF_DCMotor moteurAvG(1); // M1 (avant gauche)
-AF_DCMotor moteurAvD(2); // M2 (avant droite)
-AF_DCMotor moteurArG(3); // M3 (arriére gauche)
-AF_DCMotor moteurArD(4); // M4 (arriére droite)
-
-/*Distances */
-int distAv = 9999, distG = 9999, distD = 9999;
-
-/**
- * @brief lecture de lultrason
- * @param numero (int) : numero de lultrason a lire (1, 2 ou 3)
- * @return duree (int)
- */
-int lectureUltrasons(int trigPin, int echoPin)
-{
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  long duree = pulseIn(echoPin, HIGH, 20000);
-  if (duree == 0)
-    return 9999;
-  return duree * 0.034 / 2;
-}
-
-/**
- * @brief initialisation de la vitesse
- */
-void setspeedroue(int vitesse)
-{
-  moteurAvG.setSpeed(vitesse);
-  moteurAvD.setSpeed(vitesse);
-  moteurArG.setSpeed(vitesse);
-  moteurArD.setSpeed(vitesse);
-}
-
-/**
- * @brief avancer les 4 roues
- */
-void moteurAvancer()
-{
-  Serial.println("Moteur AVANT");
-  moteurAvG.run(FORWARD);
-  moteurAvD.run(FORWARD);
-  moteurArG.run(FORWARD);
-  moteurArD.run(FORWARD);
-}
-
-/**
- * @brief reculer les 4 roues
- */
-void moteurReculer()
-{
-  Serial.println("Moteur ARRIERE");
-  moteurAvG.run(BACKWARD);
-  moteurAvD.run(BACKWARD);
-  moteurArG.run(BACKWARD);
-  moteurArD.run(BACKWARD);
-}
-
-/**
- * @brief arreter les 4 roues
- */
-void moteurStop()
-{
-  Serial.println("Moteur STOP");
-  moteurAvG.run(RELEASE);
-  moteurAvD.run(RELEASE);
-  moteurArG.run(RELEASE);
-  moteurArD.run(RELEASE);
-}
-
-void setup()
-{
-  pinMode(trig1Pin, OUTPUT);
-  pinMode(echo1Pin, INPUT);
-
-  pinMode(trig2Pin, OUTPUT);
-  pinMode(echo2Pin, INPUT);
-
-  pinMode(trig3Pin, OUTPUT);
-  pinMode(echo3Pin, INPUT);
-
-  Serial.begin(115200);
-  Serial1.begin(230400);
-
+  initUltrasons();
+  
   setspeedroue(robotspeed);
-
   moteurStop();
 
+  dernierMessagePi = millis();
   Serial.println("Fin Setup - Pret pour test");
 }
 
-void loop()
-{
-
-  // Ultrasons
+void loop() {
   unsigned long actuelMillis = millis();
 
-  /*si la mesure millis ateint un multiple de intervalle on fait l'action*/
-  if (actuelMillis - precedentMillis >= intervalle)
-  {
+  // Mise à jour périodique des distances (gérée par millis() dans le module)
+  updateUltrasons();
 
-    precedentMillis = actuelMillis;
-
-    distAv = lectureUltrasons(trig3Pin, echo3Pin);
-    distG = lectureUltrasons(trig2Pin, echo2Pin);
-    distD = lectureUltrasons(trig1Pin, echo1Pin);
-
-    /*affichage dans le serial1 (data de lultrason)*/
-    Serial1.print("Av:");
-    Serial1.print(distAv);
-    Serial1.print(" G:");
-    Serial1.print(distG);
-    Serial1.print(" D:");
-    Serial1.println(distD);
-
-    /*DETECTION DOBSTACLE*/
-    if (distAv <= 40)
-    {
-      moteurAvG.run(RELEASE);
-      moteurAvD.run(RELEASE);
-      moteurArG.run(RELEASE);
-      moteurArD.run(RELEASE);
-    }
+  // SECURITE : Arrêt prioritaire si obstacle devant
+  if (distAv <= 40 && robotMouvement) {
+    moteurStop();
+    robotMouvement = false;
+    Serial.println("STOP: Obstacle detecte");
   }
 
-  if (Serial.available() > 0)
-  {
+  // SECURITE : Watchdog Raspberry Pi
+  if (actuelMillis - dernierMessagePi >= timeoutPi) {
+    moteurStop();
+    robotMouvement = false;
+  }
 
-    /*test du watchdog */
-    dernierMessagePi = millis();
+  // GESTION DU TIMING DES MOUVEMENTS
+  if (robotMouvement && actuelMillis >= tempsFinAction) {
+    moteurStop();
+    robotMouvement = false;
+    Serial.println("Action terminee");
+  }
 
-    /*lire la commande recu*/
-    String cmd = Serial.readStringUntil('\n'); /*lire la ligne*/
-    cmd.trim();                                /*netoyage*/
+  // LECTURE DES COMMANDES
+  if (Serial.available() > 0) {
+    dernierMessagePi = actuelMillis;
+
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
 
     int index_separateur = cmd.indexOf(':');
     String action = cmd;
     int valeur = 0;
 
-    /*si le separateur existe*/
-    if (index_separateur != -1)
-    {
-      /*couper la phrase*/
-      action = cmd.substring(0, index_separateur);          /*recupere laction*/
-      valeur = cmd.substring(index_separateur + 1).toInt(); /*recupére la valeur (cast en int)*/
+    if (index_separateur != -1) {
+      action = cmd.substring(0, index_separateur);
+      valeur = cmd.substring(index_separateur + 1).toInt();
     }
 
-    if (cmd == "FORWARD")
-    {
-      if (distAv > 40)
-      {
-        // calcule du temp daction en fonction de la valeur distance
-        // CM_PAR_SECONDE est fixée à 25 cm/s
-        // Temps = Distance / Vitesse
-
-        long duree = (valeur / CM_PAR_SECONDE) * 1000.0;
-
-        tempsFinAction = millis() + duree;
+    if (action == "FORWARD") {
+      if (distAv > 40) {
+        // Temps = (Distance / Vitesse) * 1000 pour conversion en ms
+        long duree = (valeur / (float)CM_PAR_SECONDE) * 1000.0;
+        tempsFinAction = actuelMillis + duree;
         robotMouvement = true;
 
-        // debug
-        Serial.print("moteur avant | Valeur: ");
+        Serial.print("Moteur AVANT | Distance demandee: ");
         Serial.print(valeur);
+        Serial.print(" | Duree calculee: ");
+        Serial.println(duree);
 
-        // Envoie une trace complète de debug
-        Serial.print("Moteur AVANT | Dist capteur: ");
-        Serial.println(distAv);
-
-        moteurAvG.run(FORWARD);
-        moteurAvD.run(FORWARD);
-        moteurArG.run(FORWARD);
-        moteurArD.run(FORWARD);
-      }
-      else
-      {
-        Serial.print("OBSTACLE REFUSE | Dist capteur: ");
+        moteurAvancer();
+      } else {
+        Serial.print("OBSTACLE REFUSE | Dist: ");
         Serial.println(distAv);
       }
-    }
-    else if (cmd == "BACKWARD")
-    {
+    } 
+    else if (action == "BACKWARD") {
       moteurReculer();
-      Serial.println("le moteur recule ...");
+      robotMouvement = false; // Pas de timer sur le recul pour ce mode
+      Serial.println("Moteur ARRIERE");
+    } 
+    else if (action == "LEFT") {
+      moteurGauche();
+      Serial.println("Pivot GAUCHE");
     }
-    else if (cmd == "STOP")
-    {
+    else if (action == "RIGHT") {
+      moteurDroite();
+      Serial.println("Pivot DROITE");
+    }
+    else if (action == "STOP") {
       moteurStop();
-      Serial.println("Moteur STOP ...");
+      robotMouvement = false;
+      Serial.println("Moteur STOP");
     }
-  }
-
-  if (actuelMillis - dernierMessagePi >= timeoutPi)
-  {
-    /* On coupe le courant aux roues sans utiliser Serial.println */
-    moteurAvG.run(RELEASE);
-    moteurAvD.run(RELEASE);
-    moteurArG.run(RELEASE);
-    moteurArD.run(RELEASE);
   }
 }
