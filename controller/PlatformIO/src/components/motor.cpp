@@ -1,4 +1,4 @@
-#include "motor.hpp"
+#include "components/motor.hpp"
 
 AF_DCMotor moteurAvG(1);
 AF_DCMotor moteurAvD(2);

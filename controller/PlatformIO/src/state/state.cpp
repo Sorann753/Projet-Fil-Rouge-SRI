@@ -1,5 +1,0 @@
-enum state {
-    Idle,
-    Moving,
-    
-};
