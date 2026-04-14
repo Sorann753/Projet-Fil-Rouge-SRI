@@ -42,5 +42,4 @@ void loop() {
       currentState = IDLE;
   }
 
-  delay(50);
 }

@@ -7,8 +7,6 @@ State currentState = IDLE;
 extern unsigned long tempsFinAction;
 
 void updateState() {
-    unsigned long actuelMillis = millis();
-
     if (distAv <= 20) {
         currentState = EMERGENCY;
         return;
@@ -21,13 +19,8 @@ void updateState() {
             currentState = MOVING;
         }
     }
-
-    if (currentState == MOVING && actuelMillis >= tempsFinAction) {
-        currentState = IDLE;
-    }
-
+    
     if (currentState == EMERGENCY && distAv > 40) {
         currentState = IDLE;
     }
-
 }
