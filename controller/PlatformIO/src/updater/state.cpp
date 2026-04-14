@@ -25,4 +25,5 @@ void updateState() {
     if (currentState == EMERGENCY && distAv > 40) {
         currentState = IDLE;
     }
+    Serial.print(currentState);
 }

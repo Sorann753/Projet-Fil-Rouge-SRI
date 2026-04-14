@@ -7,6 +7,9 @@
 void updateMovement() {
   switch (currentState) {
     case EMERGENCY:
+        moteurStop();
+        currentCmd.active = false;
+        break;
     case IDLE:
       moteurStop();
       currentCmd.active = false;

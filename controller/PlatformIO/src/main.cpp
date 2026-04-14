@@ -23,10 +23,12 @@ void loop() {
   updateUltrasons();
 
   updateState();
-
+  
   updateMovement();
 
   if (millis() - dernierMessagePi >= timeoutPi && currentState == MOVING) {
       currentState = IDLE;
   }
+
+  delay(50);
 }
