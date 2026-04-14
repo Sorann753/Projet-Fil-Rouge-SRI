@@ -21,7 +21,7 @@ void testLidarAcquisition(void) {
     for (int i = 0; i < count; i++) {
         assert(points[i].theta >= 0.0 && points[i].theta <= 360.0);
         assert(points[i].dist >= 0.0);
-        printf("Point - Angle (degré): %.2f, Distance (dist): %.2f mm\n", points[i].theta, points[i].dist);
+        printf("Point: %d - Angle (degré): %.2f, Distance (dist): %.2f mm\n",i+1 ,points[i].theta, points[i].dist);
     }
 
 
