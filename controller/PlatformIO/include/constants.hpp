@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 // Vitesse PWM (0-255)
-constexpr int robotspeed = 200; 
+constexpr int FORWARD_SPEED = 180; 
 
 /* TIMEOUT */
 constexpr long timeoutPi = 2000;

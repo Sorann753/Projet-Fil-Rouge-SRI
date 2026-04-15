@@ -3,4 +3,5 @@
 
 void updateMovement();
 
+extern int currentSpeed;
 #endif

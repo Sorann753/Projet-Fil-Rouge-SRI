@@ -12,6 +12,10 @@ struct Command {
 extern unsigned long dernierMessagePi;
 extern Command currentCmd;
 extern Command listCmd[];
-void readCommand();
+extern int indexRead;   
+extern int indexWrite; 
+
+void readCmd();
+void writeCmd(Command commande);
 
 #endif

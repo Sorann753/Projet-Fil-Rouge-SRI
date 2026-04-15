@@ -9,7 +9,7 @@
 #include "constants.hpp"
 
 
-unsigned long dernierMessagePi = 0;
+
 
 void setup() {
   Serial.begin(115200);
@@ -23,12 +23,11 @@ void setup() {
 
 void loop() {
 
-  readCommand(); 
+  readCmd(); 
 
   updateUltrasons();
 
   updateState();
-
 
   updateMovement();
 

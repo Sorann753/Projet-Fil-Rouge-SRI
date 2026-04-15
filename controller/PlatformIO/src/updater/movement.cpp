@@ -10,6 +10,7 @@
 #include "components/motor.hpp"
 #include "constants.hpp"
 
+int currentSpeed = 0;
 void updateMovement() {
   switch (currentState) {
     case EMERGENCY:
@@ -25,6 +26,7 @@ void updateMovement() {
       if (currentCmd.active) {
 
         if (currentCmd.action == "FORWARD") {
+          currentSpeed = FORWARD_SPEED;
           moteurAvancer();
         } 
         else if (currentCmd.action == "BACKWARD") {
@@ -36,8 +38,10 @@ void updateMovement() {
         else if (currentCmd.action == "RIGHT") {
           moteurDroite();
         }
+
+        currentCmd.active = false;
       }
-      
+
       break;
   }
 }
