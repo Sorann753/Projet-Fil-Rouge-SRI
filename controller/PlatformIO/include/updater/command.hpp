@@ -9,7 +9,9 @@ struct Command {
     bool active;
 };
 
+extern unsigned long dernierMessagePi;
 extern Command currentCmd;
+extern Command listCmd[];
 void readCommand();
 
 #endif

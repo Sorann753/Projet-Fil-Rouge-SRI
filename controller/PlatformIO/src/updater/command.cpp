@@ -2,10 +2,13 @@
 #include "constants.hpp"
 
 Command currentCmd = {"", 0, false};
+Command listCmd[10];
+int indexCurrentCmd;
+int indexWriteCmd;
 
 void readCommand() {
   if (Serial.available() > 0) {
-    extern unsigned long dernierMessagePi;
+    unsigned long dernierMessagePi;
     dernierMessagePi = millis();
 
     String cmd = Serial.readStringUntil('\n');

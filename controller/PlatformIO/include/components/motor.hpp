@@ -39,4 +39,6 @@ void moteurDroite();
  */
 void moteurStop();
 
+void moteurTest();
+
 #endif

@@ -13,28 +13,16 @@
 void updateMovement() {
   switch (currentState) {
     case EMERGENCY:
+      moteurStop();
+      currentCmd.valeur = false;
+      break;
     case IDLE:
       moteurStop();
-      currentCmd.active = false;
       break;
 
     case MOVING:
 
       if (currentCmd.active) {
-        float ratio = 1.0;
-
-        if (currentCmd.action == "FORWARD") {
-          ratio = CM_PAR_SECONDE;
-        } 
-        else if (currentCmd.action == "BACKWARD") {
-          ratio = CM_PAR_SECONDE;
-        } 
-        else {
-          ratio = DEG_PAR_SECONDE;
-        }
-
-        tempsFinAction = millis() + (currentCmd.valeur / ratio) * 1000.0;
-
 
         if (currentCmd.action == "FORWARD") {
           moteurAvancer();
@@ -48,14 +36,8 @@ void updateMovement() {
         else if (currentCmd.action == "RIGHT") {
           moteurDroite();
         }
-
-        currentCmd.active = false;
       }
-
-      if (millis() >= tempsFinAction) {
-        currentState = IDLE;
-        moteurStop();
-      }
+      
       break;
   }
 }
