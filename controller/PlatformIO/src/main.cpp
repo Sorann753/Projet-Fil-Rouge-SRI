@@ -8,27 +8,24 @@
 #include "components/bluetooth.hpp"
 #include "constants.hpp"
 
-
-
-
-void setup() {
+unsigned long dernierMessagePi = 0;
+void setup()
+{
   Serial.begin(115200);
 
   initUltrasons();
 
-  setspeedroue(robotspeed);
-
   moteurStop();
 }
 
-void loop() {
+void loop()
+{
 
-  readCmd(); 
+  readCmd();
 
   updateUltrasons();
 
   updateState();
 
   updateMovement();
-
 }

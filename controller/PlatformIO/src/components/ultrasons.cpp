@@ -3,9 +3,10 @@
 int distAv = 9999, distG = 9999, distD = 9999;
 
 static unsigned long precedentMillisUltrasons = 0;
-const long intervalleUltrasons = 1000;
+const long intervalleUltrasons = 300;
 
-void initUltrasons() {
+void initUltrasons()
+{
     pinMode(TRIG1_PIN, OUTPUT);
     pinMode(ECHO1_PIN, INPUT);
     pinMode(TRIG2_PIN, OUTPUT);
@@ -14,7 +15,8 @@ void initUltrasons() {
     pinMode(ECHO3_PIN, INPUT);
 }
 
-int lectureUltrasons(int trigPin, int echoPin) {
+int lectureUltrasons(int trigPin, int echoPin)
+{
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
     digitalWrite(trigPin, HIGH);
@@ -22,14 +24,17 @@ int lectureUltrasons(int trigPin, int echoPin) {
     digitalWrite(trigPin, LOW);
 
     long duree = pulseIn(echoPin, HIGH, 20000); // Timeout de 20ms
-    if (duree == 0) return 9999;
+    if (duree == 0)
+        return 9999;
     return duree * 0.034 / 2;
 }
 
-void updateUltrasons() {
+void updateUltrasons()
+{
     unsigned long actuelMillis = millis();
 
-    if (actuelMillis - precedentMillisUltrasons >= intervalleUltrasons) {
+    if (actuelMillis - precedentMillisUltrasons >= intervalleUltrasons)
+    {
         precedentMillisUltrasons = actuelMillis;
 
         distAv = lectureUltrasons(TRIG3_PIN, ECHO3_PIN);

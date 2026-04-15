@@ -10,38 +10,43 @@
 #include "components/motor.hpp"
 #include "constants.hpp"
 
-int currentSpeed = 0;
-void updateMovement() {
-  switch (currentState) {
-    case EMERGENCY:
-      moteurStop();
-      currentCmd.valeur = false;
-      break;
-    case IDLE:
-      moteurStop();
-      break;
+void updateMovement()
+{
+  switch (currentState)
+  {
+  case EMERGENCY:
+    moteurStop();
+    currentCmd.valeur = false;
+    break;
+  case IDLE:
+    moteurStop();
+    break;
 
-    case MOVING:
+  case MOVING:
 
-      if (currentCmd.active) {
+    if (currentCmd.active)
+    {
 
-        if (currentCmd.action == "FORWARD") {
-          currentSpeed = FORWARD_SPEED;
-          moteurAvancer();
-        } 
-        else if (currentCmd.action == "BACKWARD") {
-          moteurReculer();
-        } 
-        else if (currentCmd.action == "LEFT") {
-          moteurGauche();
-        } 
-        else if (currentCmd.action == "RIGHT") {
-          moteurDroite();
-        }
-
-        currentCmd.active = false;
+      if (currentCmd.action == "FORWARD")
+      {
+        moteurAvancer();
+      }
+      else if (currentCmd.action == "BACKWARD")
+      {
+        moteurReculer();
+      }
+      else if (currentCmd.action == "LEFT")
+      {
+        moteurGauche();
+      }
+      else if (currentCmd.action == "RIGHT")
+      {
+        moteurDroite();
       }
 
-      break;
+      currentCmd.active = false;
+    }
+
+    break;
   }
 }
