@@ -3,12 +3,13 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Button.H>
-#include <FL/Fl_Input.H>
-#include <FL/Fl_Output.H>
+//#include <FL/Fl_Button.H>
+//#include <FL/Fl_Input.H>
+//#include <FL/Fl_Output.H>
 
-#include "windows/burgerMenu.hpp"
-#include "entities/botsim.hpp"
+//#include "windows/burgerMenu.hpp"
+#include "entities/canvasSim.hpp"
+#include "entities/entities.hpp"
 
 #include <memory>
 
@@ -17,10 +18,11 @@ class SimpleWindow : public Fl_Window {
 public:
     SimpleWindow(int w, int h, const char *title);
     ~SimpleWindow();
-    
+
     int handle(int event)override;
     
-    std::unique_ptr<Botsim> bot;
+    std::unique_ptr<CanvasSim> bot;
+
     
 private:
     //static void cb_copy(Fl_Widget *, void *);

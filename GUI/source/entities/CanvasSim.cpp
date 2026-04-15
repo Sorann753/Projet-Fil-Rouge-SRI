@@ -1,19 +1,32 @@
-#include "entities/botsim.hpp"
+#include "entities/canvasSim.hpp"
+#include <iostream>
+#include <iterator>
 
-Botsim::Botsim(int X, int Y, int W, int H)
+CanvasSim::CanvasSim(int X, int Y, int W, int H)
     : Fl_Box(X, Y, W, H), inputX(W/2), inputY(H/2)
 {}
 
-void Botsim::draw()
+
+void CanvasSim::draw()
 {
     fl_color(FL_WHITE);
     fl_rectf(x(), y(), w(), h());
 
     fl_color(FL_RED);
     fl_pie(x() + inputX, y() + inputY, BOT_SIZE, BOT_SIZE, 0, 90);
+
+    auto entitiesTab1 = GeneEntities(500,50,50,50);
+    auto entitiesTab2 = GeneEntities(50,500,5,50);
+    auto entitiesTab3 = GeneEntities(100,50,50,50);
+    obj.push_back(entitiesTab1);
+    obj.push_back(entitiesTab2);
+    obj.push_back(entitiesTab3);
+    
+
+
 }
 
-void Botsim::moveFromKey(int key)
+void CanvasSim::moveFromKey(int key)
 {
     int minX = 0, maxX = w() - BOT_SIZE;
     int minY = 0, maxY = h() - BOT_SIZE;
@@ -24,7 +37,7 @@ void Botsim::moveFromKey(int key)
         case 's': inputY = std::min(maxY, inputY + SPEED); break;
         case 'q': inputX = std::max(minX, inputX - SPEED); break;
         case 'd': inputX = std::min(maxX, inputX + SPEED); break;
-        default: return;
+        default: return; 
     }
 
     redraw();
