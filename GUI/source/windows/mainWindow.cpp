@@ -4,7 +4,7 @@ SimpleWindow::SimpleWindow(int w, int h, const char *title) : Fl_Window(w, h, ti
 
     begin();
 
-    bot = std::make_unique<CanvasSim>(0, 0, w, h);
+    bot = std::make_unique<CanvasSim>(w-w, h-h, w, h);
     end();
     
     resizable(this);

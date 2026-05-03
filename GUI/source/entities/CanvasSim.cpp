@@ -1,6 +1,7 @@
 #include "entities/canvasSim.hpp"
 #include <iostream>
 #include <iterator>
+#include "utils/utils.hpp"
 
 CanvasSim::CanvasSim(int X, int Y, int W, int H)
     : Fl_Box(X, Y, W, H), inputX(W/2), inputY(H/2)
@@ -9,20 +10,27 @@ CanvasSim::CanvasSim(int X, int Y, int W, int H)
 
 void CanvasSim::draw()
 {
+    // set robot
+
     fl_color(FL_WHITE);
     fl_rectf(x(), y(), w(), h());
 
     fl_color(FL_RED);
-    fl_pie(x() + inputX, y() + inputY, BOT_SIZE, BOT_SIZE, 0, 90);
+    fl_pie(x() + inputX, y() + inputY, BOT_SIZE, BOT_SIZE, -130, -50);
 
-    auto entitiesTab1 = GeneEntities(500,50,50,50);
-    auto entitiesTab2 = GeneEntities(50,500,5,50);
-    auto entitiesTab3 = GeneEntities(100,50,50,50);
-    obj.push_back(entitiesTab1);
-    obj.push_back(entitiesTab2);
-    obj.push_back(entitiesTab3);
-    
+    //
 
+    // Entities generation
+    /*for (int i = 0; i <data.size() ; i++)
+    {
+        auto tabs = GeneEntities(500+i,50+i,SIZE_RATIO,50);
+        obj.push_back(tabs);
+    }*/
+    //
+        for (const auto& p : data) {
+            coordinate coo = polarConvert(p.r,p.theta);
+            auto tabs = GeneEntities(coo.x+(w()/2),coo.y+(h()/2),SIZE_RATIO,SIZE_RATIO);
+    }
 
 }
 
