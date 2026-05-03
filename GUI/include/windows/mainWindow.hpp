@@ -3,11 +3,11 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
-//#include <FL/Fl_Button.H>
-//#include <FL/Fl_Input.H>
-//#include <FL/Fl_Output.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Input.H>
+#include <FL/Fl_Output.H>
 
-//#include "windows/burgerMenu.hpp"
+#include "windows/burgerMenu.hpp"
 #include "entities/canvasSim.hpp"
 #include "entities/entities.hpp"
 
@@ -20,7 +20,7 @@ public:
     ~SimpleWindow();
 
     int handle(int event)override;
-    
+    BurgerMenu* burger;
     std::unique_ptr<CanvasSim> bot;
 
     

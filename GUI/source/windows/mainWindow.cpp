@@ -5,6 +5,8 @@ SimpleWindow::SimpleWindow(int w, int h, const char *title) : Fl_Window(w, h, ti
     begin();
 
     bot = std::make_unique<CanvasSim>(w-w, h-h, w, h);
+    burger = new BurgerMenu(w - 44, 4, 36, 32);
+    burger->onQuit = [](){ exit(0); };
     end();
     
     resizable(this);
@@ -14,7 +16,6 @@ SimpleWindow::SimpleWindow(int w, int h, const char *title) : Fl_Window(w, h, ti
 //----------------------------------------------------
 
 SimpleWindow::~SimpleWindow() {
-    // peut'être foireux, a vérifier si c'est okay que sa soit vide
 }
 
 //----------------------------------------------------
