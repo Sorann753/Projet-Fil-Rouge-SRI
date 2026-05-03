@@ -2,26 +2,56 @@
 #include "constants.hpp"
 
 Command currentCmd = {"", 0, false};
+Command listCmd[10];
+int indexRead = 0;
+int indexWrite = 0;
 
-void readCommand() {
-  if (Serial.available() > 0) {
-    extern unsigned long dernierMessagePi;
+extern unsigned long dernierMessagePi;
+void readCmd()
+{
+  if (Serial.available() > 0)
+  {
     dernierMessagePi = millis();
 
-    String cmd = Serial.readStringUntil('\n');
-    cmd.trim();
+    String raw = Serial.readStringUntil('\n');
+    raw.trim();
 
-    int index_separateur = cmd.indexOf(':');
-    String action = cmd;
-    int valeur = 0;
+    if (raw.length() > 0)
+    {
+      int index_separateur = raw.indexOf(':');
+      Command nouvelleCmd;
 
-    if (index_separateur != -1) {
-      action = cmd.substring(0, index_separateur);
-      valeur = cmd.substring(index_separateur + 1).toInt();
+      if (index_separateur != -1)
+      {
+        nouvelleCmd.action = raw.substring(0, index_separateur);
+        nouvelleCmd.valeur = raw.substring(index_separateur + 1).toInt();
+      }
+      else
+      {
+        nouvelleCmd.action = raw;
+        nouvelleCmd.valeur = 0;
+      }
+      nouvelleCmd.active = true;
+
+      writeCmd(nouvelleCmd);
     }
-    
-    currentCmd.action = action;
-    currentCmd.valeur = valeur;
-    currentCmd.active = true;
+  }
+}
+
+void writeCmd(Command commande)
+{
+  int prochainIndex = (indexWrite + 1) % 10;
+
+  if (prochainIndex == indexRead)
+  {
+    Serial.println("ERREUR : Buffer plein, commande ignoree");
+  }
+  else
+  {
+    listCmd[indexWrite] = commande;
+    indexWrite = prochainIndex;
+
+    Serial.print("Commande ajoutee a l'index: ");
+    Serial.println(indexWrite);
   }
 }
