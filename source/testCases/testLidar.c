@@ -1,31 +1,30 @@
-#include "testCases/testLidar.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include "cartography/read_lidar.h"
+#include "testCases/testLidar.h"
+#include "cartography/lidar.h"
 
 void testLidarAcquisition(void) {
-    printf("----- TEST LIDAR ACQUISITION -----\n");
-
-    int count = 0;
-    PolarCoordinate *points = get_lidar_scan(&count);
-
-    if (points == NULL || count == 0) {
-        printf("Erreur : Aucun point récupéré (vérifier config/capteur ou allocation).\n");
-        assert(count > 0);
-        assert(points != NULL);
+    if (lidar_start() != 0) {
+        printf("Erreur : Impossible de démarrer le Lidar.\n");
+        return;
     }
 
-    printf("Points reçus : %d\n", count);
+    lidar_reset_buffer();
 
-    for (int i = 0; i < count; i++) {
-        assert(points[i].theta >= 0.0 && points[i].theta <= 360.0);
-        assert(points[i].dist >= 0.0);
-        printf("Point: %d - Angle (degré): %.2f, Distance (dist): %.2f mm\n",i+1 ,points[i].theta, points[i].dist);
+    printf("Acquisition d'un scan...\n");
+    lidar_update_scan();
+
+    printf("\n--- AFFICHAGE DES POINTS ACQUIS (%d points) ---\n", current_total);
+    printf("Index | Angle (°) | Distance (mm)\n");
+    printf("------------------------------------\n");
+
+    for (int i = 0; i < current_total; i++) {
+        printf("[%d] | %.2f° | %.2f mm\n", 
+               i, 
+               lidar_data_buffer[i].theta, 
+               lidar_data_buffer[i].dist);
     }
 
+    printf("------------------------------------\n");
 
-    free(points);
-
-    printf("----- TEST SUCCESS -----\n\n");
+    lidar_close();
 }

@@ -3,7 +3,6 @@
  */
 
 #include "history/history.h"
-
 #include "testCases/matrixTest.h"
 #include "testCases/testMenu.h"
 #include "testCases/testVision.h"
@@ -25,7 +24,9 @@ int main(void)
     //history_init();
 
     //homeMenu();
+
     testLidarAcquisition();
+    
     //history_close();
 
     return 0;
