@@ -48,7 +48,7 @@ try:
     #TODO: lire les commande a partir dune file dynamique
 
     print("\n--- TEST 1 : CALIBRATION ---")
-    envoie_commande("FORWARD", 100, 6.0)
+    envoie_commande("RIGHT", 90, 6.0)
 
 
     #envoie arret
