@@ -25,6 +25,12 @@ typedef struct PolarCoordinate_t {
     float theta;
 } PolarCoordinate;
 
+typedef struct Coordinate_t {
+    float x;
+    float y;
+} Coordinate;
+
+
 /*---- CONSTANTES ----*/
 #ifndef PI
 #define PI 3.1415926535897932
