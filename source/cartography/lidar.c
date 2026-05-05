@@ -8,16 +8,11 @@
 #include "cartography/lidar.h"
 #include "configLoader/configLoader.h"
 
-int current_total = 0;
 PolarCoordinate lidar_data_buffer[MAX_TOTAL_POINTS];
 
 static FILE *to_python = NULL;
 static FILE *from_python = NULL;
 static pid_t lidar_pid = -1;
-
-void lidar_reset_buffer() {
-    current_total = 0;
-}
 
 
 int lidar_start() {
@@ -60,8 +55,8 @@ int lidar_start() {
     return 0;
 }
 
-void lidar_update_scan() {
-    if (!to_python || !from_python) return;
+PolarCoordinate* lidar_update_scan(int* point_number) {
+    if (!to_python || !from_python) return 0;
 
     fprintf(to_python, "SCAN\n");
     fflush(to_python);
@@ -69,14 +64,15 @@ void lidar_update_scan() {
     char line[LINE_BUFFER_SIZE];
     while (fgets(line, sizeof(line), from_python)) {
         if (strncmp(line, "END", 3) == 0) break;
-
-        if (current_total < MAX_TOTAL_POINTS) {
-            if (sscanf(line, "%f,%f", &lidar_data_buffer[current_total].theta, 
-                                      &lidar_data_buffer[current_total].dist) == 2) {
-                current_total++;
+        
+        if (*point_number < MAX_TOTAL_POINTS) {
+            if (sscanf(line, "%f,%f", &lidar_data_buffer[*point_number].theta, 
+                                      &lidar_data_buffer[*point_number].dist) == 2) {
+                (*point_number)++;
             }
         }
     }
+    return lidar_data_buffer;
 }
 
 void lidar_close() {

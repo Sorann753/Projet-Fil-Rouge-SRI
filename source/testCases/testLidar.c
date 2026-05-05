@@ -3,28 +3,35 @@
 #include "cartography/lidar.h"
 
 void testLidarAcquisition(void) {
+
+    PolarCoordinate* scan_data; 
+    int point_number;
+
     if (lidar_start() != 0) {
         printf("Erreur : Impossible de démarrer le Lidar.\n");
         return;
     }
+    
 
-    lidar_reset_buffer();
+    for (int i =0; i<3;i++)
+    {
+        point_number = 0;
 
-    printf("Acquisition d'un scan...\n");
-    lidar_update_scan();
+        printf("Acquisition d'un scan...\n");
+        scan_data = lidar_update_scan(&point_number);
 
-    printf("\n--- AFFICHAGE DES POINTS ACQUIS (%d points) ---\n", current_total);
-    printf("Index | Angle (°) | Distance (mm)\n");
-    printf("------------------------------------\n");
+    
+        printf("\n--- AFFICHAGE DES POINTS ACQUIS (%d points) ---\n", point_number);
+        printf("Index | Angle (°) | Distance (mm)\n");
+        printf("------------------------------------\n");
 
-    for (int i = 0; i < current_total; i++) {
-        printf("[%d] | %.2f° | %.2f mm\n", 
-               i, 
-               lidar_data_buffer[i].theta, 
-               lidar_data_buffer[i].dist);
-    }
+        for (int i = 0; i < point_number; i++) 
+        {
+            printf("[%d] | %.2f° | %.2f mm\n", i, scan_data[i].theta, scan_data[i].dist);
+        }
 
-    printf("------------------------------------\n");
-
+        printf("------------------------------------\n");
+        
+    } 
     lidar_close();
 }

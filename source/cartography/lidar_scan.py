@@ -26,6 +26,8 @@ def run():
                         sys.stdout.write("END\n")
                         sys.stdout.flush()
                         break
+                    lidar.stop()
+                    time.sleep(0.1)
 
             elif cmd == "EXIT":
                 break
