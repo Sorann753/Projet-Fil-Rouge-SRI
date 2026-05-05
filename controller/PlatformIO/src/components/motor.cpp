@@ -6,9 +6,20 @@ AF_DCMotor moteurAvG(2);
 AF_DCMotor moteurArG(3);
 AF_DCMotor moteurArD(4);
 
+void vitesseAvantApres(int vitesse, int vitesseG)
+{
+  Serial.print("[MOTEUR] PWM Droit: ");
+  Serial.print(vitesse);
+  Serial.print(" | PWM Gauche (Corrigé): ");
+  Serial.println(vitesseG);
+}
 void setspeedroue(int vitesse)
 {
   int vitesseG = constrain(vitesse + K_CORRECTION_GAUCHE, 0, 255); // pour ne pas depasser 255
+
+  // log vitesse avant et apres correction
+  vitesseAvantApres(vitesse, vitesseG);
+
   int vitesseD = constrain(vitesse, 0, 255);
 
   moteurAvG.setSpeed(vitesseG);

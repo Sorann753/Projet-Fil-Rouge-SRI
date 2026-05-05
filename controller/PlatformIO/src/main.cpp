@@ -25,7 +25,7 @@ void setup()
 
 void loop()
 {
-  updateBluetoothBridge();
+
   readCmd();
 
   updateUltrasons();

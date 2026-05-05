@@ -29,7 +29,7 @@ void readCmd()
       else
       {
         nouvelleCmd.action = raw;
-        nouvelleCmd.valeur = 0; 
+        nouvelleCmd.valeur = 0;
       }
       nouvelleCmd.active = true;
 
@@ -48,6 +48,13 @@ void writeCmd(Command commande)
   }
   else
   {
+    // ... dans le bloc 'else', juste après Serial.println(indexWrite); ...
+    int places_libres = (indexRead - indexWrite - 1 + 10) % 10;
+    Serial1.print("[BUFFER] Ecriture [");
+    Serial1.print(indexWrite);
+    Serial1.print("] - Places restantes : ");
+    Serial1.println(places_libres);
+
     listCmd[indexWrite] = commande;
     indexWrite = prochainIndex;
 

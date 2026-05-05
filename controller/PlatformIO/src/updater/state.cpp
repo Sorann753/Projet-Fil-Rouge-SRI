@@ -26,21 +26,36 @@ void logStateChange(State avant, State apres)
         return;
     }
     // affichage des log sur le serial1
-    Serial1.print("CHANGEMENT D'ETAT");
-    Serial1.print(avant);
-    Serial1.print(" => ");
-    Serial1.println(apres);
+    Serial.print("CHANGEMENT D'ETAT");
+    Serial.print(avant);
+    Serial.print(" => ");
+    Serial.println(apres);
+}
+
+/**
+ * @brief log [Action] : valeur => Duree de calcule
+ */
+RobotState logActionduree(RobotState nextState, Command currentCmd)
+{
+    unsigned long duree = nextState.tempsFinAction - millis();
+    Serial.print("[ACTION] ");
+    Serial.print(currentCmd.action);
+    Serial.print(" : ");
+    Serial.print(currentCmd.valeur);
+    Serial.print(" => Duree calculee : ");
+    Serial.print(duree);
+    Serial.println(" ms");
 }
 
 // prototype pour que traitementCommandebuffer puisse lutiliser
 static RobotState IDLETransition(RobotState currentState, Command cmd);
 
 /**
- * @brief
+ * @brief creer une liste de commande a lindexRead (de command.hpp) et passer la commande a active et incrementer le indexRead
  */
 RobotState traitmentCommandebuffer(RobotState currentState)
 {
-    if (indexRead == indexWrite) // buffer vide
+    if (indexRead == indexWrite) // buffer vide lecture = ecriture
         return currentState;
 
     Command cmd = listCmd[indexRead];
@@ -50,9 +65,11 @@ RobotState traitmentCommandebuffer(RobotState currentState)
     if (currentState.state == EMERGENCY)
         return currentState;
 
+    // mettre a jour le currentCmd dans command.hpp
     currentCmd = cmd;
     currentCmd.active = true;
 
+    // on es en IDLE on fait la transition vers un autre état en fonction de currentState
     RobotState nextState = IDLETransition(currentState, cmd);
     logStateChange(currentState.state, nextState.state);
     return nextState;
@@ -60,13 +77,14 @@ RobotState traitmentCommandebuffer(RobotState currentState)
 
 /**
  * @brief pour la perte de la conexion avec la Raspbery
- * @param dernierMessagePi ()
+ * @param dernierMessagePi (le moment de reception dun message RBI)
+ * si on depasse le timeoutPi (constants.hpp) on passe en etat IDLE (arret)
  */
 RobotState watchdogVerification(RobotState currentState, unsigned long dernierMessagePi)
 {
     if (currentState.state == MOVING && (millis() - dernierMessagePi > timeoutPi))
     {
-        Serial1.println("Watchdog !! connexion RBI perdu");
+        Serial.println("Watchdog !! connexion RBI perdu");
 
         RobotState nextState = currentState;
         logStateChange(nextState.state, IDLE);
@@ -75,6 +93,23 @@ RobotState watchdogVerification(RobotState currentState, unsigned long dernierMe
         return nextState;
     }
     return currentState;
+}
+
+/**
+ * @brief definir le ratio pour le calcule de vitesse en fonction de laction "FORWARD/BACKWARD" et "TURN"
+ * on set la vitesse des roue en fonction de laction
+ */
+int defineSpeedRatio(String action)
+{
+    // si on a forward/backward on utilise CM/sec si turn alors DEG/sec
+    float ratio = (action == "FORWARD" || action == "BACKWARD") ? CM_PAR_SECONDE : DEG_PAR_SECONDE;
+
+    if (action == "FORWARD" || action == "BACKWARD")
+        setspeedroue(FORWARD_SPEED);
+    else
+        setspeedroue(TURN_SPEED);
+
+    return ratio;
 }
 
 //---FONCTION DE TRANSITION---
@@ -96,15 +131,15 @@ RobotState IDLETransition(const RobotState currentState, const Command currentCm
     }
 
     // Speedratio en CM/sec ou DEG/sec en fonction si on avant/recule ou tourne
-    float ratio = (currentCmd.action == "FORWARD" || currentCmd.action == "BACKWARD") ? CM_PAR_SECONDE : DEG_PAR_SECONDE;
-    if (currentCmd.action == "FORWARD" || currentCmd.action == "BACKWARD")
-        setspeedroue(FORWARD_SPEED);
-    else
-        setspeedroue(TURN_SPEED);
+    int ratio = defineSpeedRatio(currentCmd.action);
 
     nextState.state = MOVING;
 
     nextState.tempsFinAction = CalculTempFinAction(currentCmd.valeur, ratio, millis());
+
+    // log laction et la durée de laction
+    nextState = logActionduree(nextState, currentCmd);
+
     return nextState;
 }
 
@@ -119,7 +154,7 @@ RobotState MOVINGTransition(RobotState currentState)
         nextState.state = IDLE;
         nextState.tempsFinAction = 0;
         currentCmd = {"", 0, false}; // reinitialisation de la structure commande (action="" | valeur=0 | active = false)
-        Serial1.println("CHANGEMENT D'ETAT => (IDLE)");
+        Serial.println("CHANGEMENT D'ETAT => (IDLE)");
     }
     return nextState;
 }
@@ -138,6 +173,12 @@ RobotState updateState(RobotState currentState, int distAv, unsigned long dernie
         logStateChange(currentState.state, EMERGENCY);
         nextState.state = EMERGENCY;
         nextState.tempsFinAction = 0;
+
+        // ... dans le bloc if (distAv <= 20) ...
+        Serial.print("[EMERGENCY] Obstacle critique a ");
+        Serial.print(distAv);
+        Serial.println(" cm !");
+
         return nextState;
     }
 
@@ -167,10 +208,11 @@ RobotState updateState(RobotState currentState, int distAv, unsigned long dernie
         }
     }
 
+    // ETAT IDLE
     if (nextState.state == IDLE)
         nextState = traitmentCommandebuffer(nextState);
 
-    // Vérifier timer si MOVING
+    // ETAT MOVING
     if (nextState.state == MOVING)
     {
         RobotState apres = MOVINGTransition(nextState);
