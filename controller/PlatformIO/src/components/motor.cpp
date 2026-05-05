@@ -1,4 +1,5 @@
 #include "components/motor.hpp"
+#include "constants.hpp"
 
 AF_DCMotor moteurAvD(1);
 AF_DCMotor moteurAvG(2);
@@ -7,9 +8,12 @@ AF_DCMotor moteurArD(4);
 
 void setspeedroue(int vitesse)
 {
-  moteurAvG.setSpeed(vitesse);
+  int vitesseG = constrain(vitesse + K_CORRECTION_GAUCHE, 0, 255); // pour ne pas depasser 255
+  int vitesseD = constrain(vitesse, 0, 255);
+
+  moteurAvG.setSpeed(vitesseG);
   moteurAvD.setSpeed(vitesse);
-  moteurArG.setSpeed(vitesse);
+  moteurArG.setSpeed(vitesseG);
   moteurArD.setSpeed(vitesse);
 }
 

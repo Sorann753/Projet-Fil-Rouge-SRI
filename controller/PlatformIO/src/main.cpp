@@ -9,10 +9,15 @@
 #include "constants.hpp"
 
 unsigned long dernierMessagePi = 0;
+
+// initialisation du state et tempfinAction
+RobotState robotState = {IDLE, 0};
+
 void setup()
 {
   Serial.begin(115200);
-
+  Serial.setTimeout(10);
+  initBluetooth();
   initUltrasons();
 
   moteurStop();
@@ -20,12 +25,12 @@ void setup()
 
 void loop()
 {
-
+  updateBluetoothBridge();
   readCmd();
 
   updateUltrasons();
 
-  updateState();
+  robotState = updateState(robotState, distAv, dernierMessagePi);
 
-  updateMovement();
+  updateMovement(robotState);
 }

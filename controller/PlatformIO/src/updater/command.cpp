@@ -23,13 +23,13 @@ void readCmd()
 
       if (index_separateur != -1)
       {
-        nouvelleCmd.action = raw.substring(0, index_separateur);
-        nouvelleCmd.valeur = raw.substring(index_separateur + 1).toInt();
+        nouvelleCmd.action = raw.substring(0, index_separateur);          // "cmd" + ":"
+        nouvelleCmd.valeur = raw.substring(index_separateur + 1).toInt(); //":" + "valeur"
       }
       else
       {
         nouvelleCmd.action = raw;
-        nouvelleCmd.valeur = 0;
+        nouvelleCmd.valeur = 0; 
       }
       nouvelleCmd.active = true;
 
