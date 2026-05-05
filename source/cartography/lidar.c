@@ -55,8 +55,8 @@ int lidar_start() {
     return 0;
 }
 
-PolarCoordinate* lidar_update_scan(int* point_number) {
-    if (!to_python || !from_python) return 0;
+PolarCoordinate* lidar_update_scan(size_t* point_number) {
+    if (!to_python || !from_python || !point_number) return NULL;
 
     fprintf(to_python, "SCAN\n");
     fflush(to_python);
@@ -65,9 +65,11 @@ PolarCoordinate* lidar_update_scan(int* point_number) {
     while (fgets(line, sizeof(line), from_python)) {
         if (strncmp(line, "END", 3) == 0) break;
         
-        if (*point_number < MAX_TOTAL_POINTS) {
-            if (sscanf(line, "%f,%f", &lidar_data_buffer[*point_number].theta, 
-                                      &lidar_data_buffer[*point_number].dist) == 2) {
+        float t, d;
+        if (sscanf(line, "%f,%f", &t, &d) == 2) {
+            if (*point_number < MAX_TOTAL_POINTS) {
+                lidar_data_buffer[*point_number].theta = t;
+                lidar_data_buffer[*point_number].dist = d;
                 (*point_number)++;
             }
         }

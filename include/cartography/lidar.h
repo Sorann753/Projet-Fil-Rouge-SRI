@@ -7,7 +7,7 @@
 #define LINE_BUFFER_SIZE 256
 
 int lidar_start();
-PolarCoordinate* lidar_update_scan(int* point_number);
+PolarCoordinate* lidar_update_scan(size_t* point_number);
 void lidar_close();
 
 #endif

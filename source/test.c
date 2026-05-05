@@ -17,6 +17,7 @@
 #include "testCases/speechTest.h"
 #include "testCases/executortest.h"
 #include "testCases/testLidar.h"
+#include "testCases/clusterTest.h"
 
 int main(void)
 {
@@ -24,8 +25,8 @@ int main(void)
     //history_init();
 
     //homeMenu();
-
-    testLidarAcquisition();
+    
+    clusterTest();
     
     //history_close();
 

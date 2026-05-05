@@ -53,4 +53,10 @@ float rad_to_degr(float angle_rad);
  */
 double euclidDist(IntCoordinate P1, IntCoordinate P2);
 
+/**
+ * @brief convertie des coordonnées polaires en coordonnée cartésienne
+ */
+Coordinate PolarToCartesian(PolarCoordinate polarCoordinate);
+
+
 #endif

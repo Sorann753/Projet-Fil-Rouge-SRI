@@ -25,7 +25,7 @@ typedef struct Shape_t{
     ShapeKind kind;
 } Shape;
 
-Cluster* makeClusters(PolarCoordinate* rawPoints, size_t count);
+Cluster* makeClusters(PolarCoordinate* rawPoints, size_t pointCount , size_t* clusterPoints);
 
 ShapeKind recognizeShape(Cluster obj);
 Coordinate getCenter(Cluster obj);
