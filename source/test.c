@@ -18,6 +18,7 @@
 #include "testCases/executortest.h"
 #include "testCases/testLidar.h"
 #include "testCases/clusterTest.h"
+#include "testCases/arduinoTest.h"
 
 int main(void)
 {
@@ -26,8 +27,8 @@ int main(void)
 
     //homeMenu();
     
-    clusterTest();
-    
+    //clusterTest();
+    arduinoTest();
     //history_close();
 
     return 0;

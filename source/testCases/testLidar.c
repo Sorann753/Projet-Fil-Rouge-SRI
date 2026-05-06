@@ -18,7 +18,6 @@ void testLidarAcquisition(void) {
 
         printf("Acquisition d'un scan...\n");
         scan_data = lidar_update_scan(&point_number);
-
     
         printf("\n--- AFFICHAGE DES POINTS ACQUIS (%ld points) ---\n", point_number);
         printf("Index | Angle (°) | Distance (mm)\n");
