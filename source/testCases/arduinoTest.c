@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+
 #include "rbiArduinoInterface/arduino_interface.h"
 #include "testCases/arduinoTest.h"
 
@@ -21,30 +22,26 @@ void arduinoTest(void)
     RobotData data;
 
     printf("\n--- TEST 1 : FORWARD ---\n");
-    printf("[PI -> ARDUINO] Envoi de FORWARD:100\n");
-    sendCommand("FORWARD", 100);
-
-    for (int i = 0; i < 10; i++) {
-        char* msg = readArduino(); 
-        if (msg != NULL && parseTelemetry(msg, &data)) {
-            printf("[DATA] Etat: %d | Action: %s | Duree: %d | Distances -> Av:%d G:%d D:%d\n",
-                data.state, data.cmd, data.duration, data.distAv, data.distG, data.distD);
-        }
-        
-    }
-    sleep(1);
-    printf("\n--- TEST 2 : STOP ---\n");
-    printf("[PI -> ARDUINO] Envoi de STOP:0\n");
-    sendCommand("STOP", 0);
-
-    for (int i = 0; i < 10; i++) {
+    sendCommand("FORWARD", 1000);
+    
+    for(int i = 0; i < 50; i++) { 
         char* msg = readArduino();
         if (msg != NULL && parseTelemetry(msg, &data)) {
-            printf("[DATA] Etat: %d | Action: %s | Duree: %d | Distances -> Av:%d G:%d D:%d\n",
-                data.state, data.cmd, data.duration, data.distAv, data.distG, data.distD);
+            printf("[DATA] Etat: %d | Action: %s | Temps restant: %d ms | Av: %d\n", 
+                    data.state, data.cmd, data.duration, data.distAv);
         }
     }
 
+    printf("\n--- TEST 2 : BACKWARD ---\n");
+    sendCommand("BACKWARD", 100);
+    
+    for(int i = 0; i < 50; i++) {
+        char* msg = readArduino();
+        if (msg != NULL && parseTelemetry(msg, &data)) {
+            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n", 
+                    data.state, data.cmd, data.distAv);
+        }
+    }
+    sleep(2);
     printf("\n[LOG] Fin du test.\n");
-    printf("---------------------------------------\n");
 }

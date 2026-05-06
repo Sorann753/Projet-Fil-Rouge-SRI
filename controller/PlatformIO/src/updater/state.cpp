@@ -45,6 +45,8 @@ RobotState logActionduree(RobotState nextState, Command currentCmd)
     Serial1.print(" => Duree calculee : ");
     Serial1.print(duree);
     Serial1.println(" ms");
+
+    return nextState;
 }
 
 // prototype pour que traitementCommandebuffer puisse lutiliser
