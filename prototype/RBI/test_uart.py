@@ -44,30 +44,15 @@ try:
 
     # On vide le tampon (nettoyage)
     ser.reset_input_buffer()
-    
 
-    #envoie de commande avance
-    envoie_commande("FORWARD", 50)
-    
-    #envoie de la commande reculer
-    envoie_commande("BACKWARD", 65)
-    
+    #TODO: lire les commande a partir dune file dynamique
 
-    #envoie de la commande tourner gauche
-    envoie_commande("LEFT",45)
-    
+    print("\n--- TEST 1 : CALIBRATION ---")
+    envoie_commande("RIGHT", 90, 6.0)
 
-    #envoie de la commande tourner gauche
-    envoie_commande("RIGHT", 20)
-
-    #envoie de la commande reculer
-    envoie_commande("BACKWARD", 20)
 
     #envoie arret
     envoie_commande("STOP",0, 5.0)
-
-    #envoie de commande avance
-    envoie_commande("FORWARD", 70)
 
     ser.close()
     print("fin du test")
@@ -79,6 +64,6 @@ except serial.SerialException as e:
 except Exception as e:
     print(f"[ERREUR] : {type(e).__name__} : {e}")
 finally:
-    if 'ser' in dir() and ser.is_open:
+    if 'ser' in locals() and ser.is_open:
         ser.close()
         print("[LOG] Port fermé proprement")

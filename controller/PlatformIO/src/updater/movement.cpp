@@ -4,49 +4,24 @@
 #include "components/motor.hpp"
 #include "constants.hpp"
 
-#include "updater/movement.hpp"
-#include "updater/state.hpp"
-#include "updater/command.hpp"
-#include "components/motor.hpp"
-#include "constants.hpp"
-
-void updateMovement()
+void updateMovement(RobotState robotState)
 {
-  switch (currentState)
+  switch (robotState.state)
   {
   case EMERGENCY:
-    moteurStop();
-    currentCmd.valeur = false;
-    break;
   case IDLE:
     moteurStop();
     break;
 
   case MOVING:
-
-    if (currentCmd.active)
-    {
-
-      if (currentCmd.action == "FORWARD")
-      {
-        moteurAvancer();
-      }
-      else if (currentCmd.action == "BACKWARD")
-      {
-        moteurReculer();
-      }
-      else if (currentCmd.action == "LEFT")
-      {
-        moteurGauche();
-      }
-      else if (currentCmd.action == "RIGHT")
-      {
-        moteurDroite();
-      }
-
-      currentCmd.active = false;
-    }
-
+    if (currentCmd.action == "FORWARD")
+      moteurAvancer();
+    else if (currentCmd.action == "BACKWARD")
+      moteurReculer();
+    else if (currentCmd.action == "LEFT")
+      moteurGauche();
+    else if (currentCmd.action == "RIGHT")
+      moteurDroite();
     break;
   }
 }

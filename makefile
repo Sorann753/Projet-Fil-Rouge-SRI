@@ -1,41 +1,62 @@
 # Compiler
 CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -std=c11 -lm
+CFLAGS = -Wall -Wextra -pedantic -std=c11
 INCLUDES = -Iinclude
+LIBS = -lm
 
-# Sources
-SRC_TEST = $(shell find source -name '*.c' ! -name 'main.c' ! -name 'unitTest.c')  # tout sauf main.c
-SRC_UNIT = $(shell find source -name '*.c' ! -name 'main.c' ! -name 'test.c')  # tout sauf main.c
-
-# Binaire
+# Dossier binaire
 BIN_DIR = build/linux/x86_64/release
-BIN_TEST = $(BIN_DIR)/PFR-test
-BIN_UNIT = $(BIN_DIR)/PFR-unit
 
-# Compile
-.PHONY: PFR-test
+# --- FILTRAGE DES SOURCES ---
+
+# Pour le robot (Pilotage Manuel + Main)
+SRC_ROBOT = $(shell find source -name '*.c' ! -name 'test.c' ! -name 'unitTest.c' ! -name 'arduinoTest.c')
+
+# Pour les tests Arduino (ton ancien test)
+SRC_TEST = $(shell find source -name '*.c' ! -name 'main.c' ! -name 'unitTest.c')
+
+# Pour le module Vision (Unit Test)
+SRC_VISION = $(shell find source -name '*.c' ! -name 'main.c' ! -name 'test.c')
+
+# Binaires
+BIN_ROBOT = $(BIN_DIR)/PFR-robot
+BIN_TEST  = $(BIN_DIR)/PFR-test
+BIN_UNIT  = $(BIN_DIR)/PFR-unit
+
+# --- CIBLES ---
+
+.PHONY: all clean
+
+all: PFR-robot
+
+# Compilation et Run du programme principal (Pilotage manuel)
+.PHONY: PFR-robot run
+PFR-robot:
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_ROBOT) $(SRC_ROBOT) $(LIBS)
+
+run: PFR-robot
+	./$(BIN_ROBOT)
+
+# Compilation et Run des tests Arduino
+.PHONY: PFR-test run-test
 PFR-test:
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_TEST) $(SRC_TEST) -lm
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_TEST) $(SRC_TEST) $(LIBS)
 
-# Run
-.PHONY: run-test
 run-test: PFR-test
-	cd $(BIN_DIR) && ./PFR-test
+	./$(BIN_TEST)
 
-.PHONY: PFR-unit
+# Compilation et Run du module Vision (Unit Test)
+.PHONY: PFR-unit run-unit
 PFR-unit:
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(BIN_DIR)/export
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_UNIT) $(SRC_UNIT) -lm
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_UNIT) $(SRC_VISION) $(LIBS)
 
-# Run  with vision module
-.PHONY: run-unit
 run-unit: PFR-unit
 	cd $(BIN_DIR) && ./PFR-unit
 
-# Clean
-.PHONY: clean
+# Nettoyage
 clean:
 	rm -rf build/linux
-
