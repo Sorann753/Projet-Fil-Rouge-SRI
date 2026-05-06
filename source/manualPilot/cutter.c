@@ -52,12 +52,12 @@ int cutter(const char *phrase, tokenlist *result)
     /* initialiser le compteur */
     result->count = 0;
 
-    /* copier */
+    /* copier la phrase entiére */
     char copie[256];
     strncpy(copie, phrase, 255);
     copie[255] = '\0';
 
-    /* decouper la phrase */
+    /* decouper la copie de la phrase */
     char *mot = strtok(copie, " \t\n,.;:!?'");
 
     /* mettre les mots dans tokenlist */
