@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tcp_server.h"
+#include "communication/tcp_server.h"
 
 // TODO: Inclure tes headers PFR1 (cutter.h, parser.h, etc.)
 
 #define PORT 5000
 #define BUFFER_SIZE 1024
 
-int main()
+int main_server()
 {
     // definir le buffer
     char buffer[BUFFER_SIZE];

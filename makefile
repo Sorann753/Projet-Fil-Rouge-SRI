@@ -1,6 +1,6 @@
 # Compiler
 CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -std=c11
+CFLAGS = -Wall -Wextra -pedantic -std=c11 -D_DEFAULT_SOURCE
 INCLUDES = -Iinclude
 LIBS = -lm
 

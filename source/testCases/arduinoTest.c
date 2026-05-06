@@ -7,7 +7,7 @@
 
 void arduinoTest(void)
 {
-    printf("\n----- Test envoi commande Arduino -----\n");
+    printf("\n----- Test envoi commande Arduinos -----\n");
 
     char* port = "/dev/ttyACM0";
     if (initSerial(port) != 0) {
@@ -22,7 +22,7 @@ void arduinoTest(void)
     RobotData data;
 
     printf("\n--- TEST 1 : FORWARD ---\n");
-    sendCommand("FORWARD", 1000);
+    sendCommand("FORWARD", 100);
     
     for(int i = 0; i < 50; i++) { 
         char* msg = readArduino();
@@ -30,6 +30,7 @@ void arduinoTest(void)
             printf("[DATA] Etat: %d | Action: %s | Temps restant: %d ms | Av: %d\n", 
                     data.state, data.cmd, data.duration, data.distAv);
         }
+        usleep(10000);
     }
 
     printf("\n--- TEST 2 : BACKWARD ---\n");
@@ -41,7 +42,31 @@ void arduinoTest(void)
             printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n", 
                     data.state, data.cmd, data.distAv);
         }
+        usleep(10000);
     }
+
+    printf("\n--- TEST 3 : TURN LEFT---\n");
+    sendCommand("LEFT", 180);
+    
+    for(int i = 0; i < 50; i++) {
+        char* msg = readArduino();
+        if (msg != NULL && parseTelemetry(msg, &data)) {
+            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n", 
+                    data.state, data.cmd, data.distAv);
+        }
+        usleep(10000);
+    }
+
+    sendCommand("STOP", 180);
+    
+    for(int i = 0; i < 50; i++) {
+        char* msg = readArduino();
+        if (msg != NULL && parseTelemetry(msg, &data)) {
+            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n", 
+                    data.state, data.cmd, data.distAv);
+        }
+    }
+
     sleep(2);
     printf("\n[LOG] Fin du test.\n");
 }
