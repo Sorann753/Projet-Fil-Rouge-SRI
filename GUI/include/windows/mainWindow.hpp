@@ -6,13 +6,13 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Output.H>
+#include <memory>
 
-#include "windows/burgerMenu.hpp"
 #include"windows/devOverlay.hpp"
 #include "entities/canvasSim.hpp"
 #include "entities/entities.hpp"
 
-#include <memory>
+
 
 class SimpleWindow : public Fl_Window {
 
@@ -21,13 +21,9 @@ public:
     ~SimpleWindow();
 
     int handle(int event)override;
-    BurgerMenu* burger;
     std::unique_ptr<CanvasSim> bot;
-    DevOverlay* overlay;
-
     
 private:
-    void toggleOverlay();
     //static void cb_copy(Fl_Widget *, void *);
     //inline void cb_copy_i();
 

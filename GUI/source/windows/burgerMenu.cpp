@@ -3,7 +3,6 @@
 BurgerMenu::BurgerMenu(int x, int y, int bw, int bh)
     : Fl_Group(x, y, bw, bh)
 {
-    // Bouton ☰
     btn = new Fl_Button(x, y, bw, bh, "@#menu");
     btn->box(FL_FLAT_BOX);
     btn->color(fl_rgb_color(30, 30, 40));
@@ -12,7 +11,6 @@ BurgerMenu::BurgerMenu(int x, int y, int bw, int bh)
     btn->tooltip("Menu");
     btn->callback(btnCB, this);
 
-    // Menu popup (taille nulle, affiché manuellement)
     menu = new Fl_Menu_Button(0, 0, 0, 0);
     menu->type(Fl_Menu_Button::POPUP3);
 

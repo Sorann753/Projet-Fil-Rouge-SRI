@@ -1,11 +1,13 @@
 #include "entities/canvasSim.hpp"
-#include <iostream>
-#include <iterator>
-#include "utils/utils.hpp"
 
 CanvasSim::CanvasSim(int X, int Y, int W, int H)
     : Fl_Box(X, Y, W, H), inputX(W/2), inputY(H/2)
-{}
+{
+    burger = new BurgerMenu(W - 44, 4, 36, 32);
+    overlay = new DevOverlay(0, 0, W, H);
+    burger->onToggleOverlay = [this]() { toggleOverlay(); };
+    burger->onQuit = [](){ exit(0); };
+}
 
 
 void CanvasSim::draw()
@@ -18,6 +20,8 @@ void CanvasSim::draw()
     fl_color(FL_RED);
     fl_pie(x() + inputX, y() + inputY, BOT_SIZE, BOT_SIZE, -130, -50);
 
+
+    
     //
 
     // Entities generation
@@ -27,10 +31,14 @@ void CanvasSim::draw()
         obj.push_back(tabs);
     }*/
     //
-        for (const auto& p : data) {
-            coordinate coo = polarConvert(p.r,p.theta);
-            auto tabs = GeneEntities(coo.x+(w()/2),coo.y+(h()/2),SIZE_RATIO,SIZE_RATIO);
+
+    for (const auto& p : data) {
+        coordinate coo = polarConvert(p.r,p.theta);
+        auto tabs = GeneEntities(coo.x+(w()/2),coo.y+(h()/2),SIZE_RATIO,SIZE_RATIO);
     }
+
+    if (gApp.devOverlayVisible) overlay->draw();
+    burger->redraw();
 
 }
 
@@ -49,4 +57,15 @@ void CanvasSim::moveFromKey(int key)
     }
 
     redraw();
+}
+
+ void CanvasSim::sizeData(std::vector<Polar> Poldata){
+
+    auto sizeEntity = Poldata.size();
+    gApp.entityCount=sizeEntity;
+}
+
+void CanvasSim::toggleOverlay() {
+    overlay->toggle();
+    sizeData(data);
 }

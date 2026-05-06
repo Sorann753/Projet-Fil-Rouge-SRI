@@ -8,18 +8,17 @@
  
 class BurgerMenu : public Fl_Group {
 public:
-    // Callbacks éditables de l'extérieur
     std::function<void()> onToggleOverlay;
     std::function<void()> onQuit;
  
     BurgerMenu(int x, int y, int w, int h);
  
 private:
-    Fl_Button*      btn;
+    Fl_Button* btn;
     Fl_Menu_Button* menu;
  
     static void btnCB(Fl_Widget*, void* self);
-    void        openMenu();
+    void openMenu();
 };
 
 #endif

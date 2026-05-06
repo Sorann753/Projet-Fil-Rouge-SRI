@@ -1,13 +1,4 @@
-// ─────────────────────────────────────────────────────────────────
-//  DevOverlay.cpp
-// ─────────────────────────────────────────────────────────────────
 #include "windows/devOverlay.hpp"
-#include "utils/utils.hpp"
-
-#include <FL/fl_draw.H>
-#include <cstdio>
-
-AppData gApp;
 
 // Palette terminal
 static const Fl_Color COL_BG     = fl_rgb_color(10,  10,  30);
@@ -23,13 +14,21 @@ static constexpr int MARGIN  = 10;
 DevOverlay::DevOverlay(int x, int y, int w, int h)
     : Fl_Widget(x, y, w, h, nullptr)
 {
-    hide(); // masqué par défaut
+    hide();
 }
 
 // ─────────────────────────────────────────────
 void DevOverlay::toggle() {
     gApp.devOverlayVisible = !gApp.devOverlayVisible;
-    gApp.devOverlayVisible ? show() : hide();
+    if (gApp.devOverlayVisible)
+    {
+        show();
+    }else
+    {
+        hide();
+    }
+    
+     
 }
 
 // ─────────────────────────────────────────────
@@ -78,9 +77,13 @@ void DevOverlay::drawMetrics(int tx, int ty, int lineH) {
 
     line("State      : %s",    gApp.currentState);
     line("Entities   : %d",    gApp.entityCount);
+    line("Current Command  : %s", gApp.currentCommand);
+    line("Command Time  : %d ms", gApp.commandTime);
+    line("Front Ultrasound sensor  : %d cm", gApp.frontDist);
+    line("Right Ultrasound sensor  : %d cm", gApp.rightDist);
+    line("Left Ultrasound sensor  : %d cm", gApp.leftDist);
 }
-
 // ─────────────────────────────────────────────
 int DevOverlay::handle(int) {
-    return 0; // laisse passer tous les événements
+    return 0;
 }
