@@ -8,10 +8,10 @@ AF_DCMotor moteurArD(4);
 
 void vitesseAvantApres(int vitesse, int vitesseG)
 {
-  Serial.print("[MOTEUR] PWM Droit: ");
-  Serial.print(vitesse);
-  Serial.print(" | PWM Gauche (Corrigé): ");
-  Serial.println(vitesseG);
+  Serial1.print("[MOTEUR] PWM Droit: ");
+  Serial1.print(vitesse);
+  Serial1.print(" | PWM Gauche (Corrigé): ");
+  Serial1.println(vitesseG);
 }
 void setspeedroue(int vitesse)
 {

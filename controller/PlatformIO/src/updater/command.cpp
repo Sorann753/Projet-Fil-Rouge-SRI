@@ -44,11 +44,10 @@ void writeCmd(Command commande)
 
   if (prochainIndex == indexRead)
   {
-    Serial.println("ERREUR : Buffer plein, commande ignoree");
+    Serial1.println("ERREUR : Buffer plein, commande ignoree");
   }
   else
   {
-    // ... dans le bloc 'else', juste après Serial.println(indexWrite); ...
     int places_libres = (indexRead - indexWrite - 1 + 10) % 10;
     Serial1.print("[BUFFER] Ecriture [");
     Serial1.print(indexWrite);
@@ -58,7 +57,8 @@ void writeCmd(Command commande)
     listCmd[indexWrite] = commande;
     indexWrite = prochainIndex;
 
-    Serial.print("Commande ajoutee a l'index: ");
-    Serial.println(indexWrite);
+    Serial1.print("Commande ajoutee a l'index: ");
+    Serial1.println(indexWrite);
   }
 }
+

@@ -26,10 +26,10 @@ void logStateChange(State avant, State apres)
         return;
     }
     // affichage des log sur le serial1
-    Serial.print("CHANGEMENT D'ETAT");
-    Serial.print(avant);
-    Serial.print(" => ");
-    Serial.println(apres);
+    Serial1.print("CHANGEMENT D'ETAT");
+    Serial1.print(avant);
+    Serial1.print(" => ");
+    Serial1.println(apres);
 }
 
 /**
@@ -38,13 +38,13 @@ void logStateChange(State avant, State apres)
 RobotState logActionduree(RobotState nextState, Command currentCmd)
 {
     unsigned long duree = nextState.tempsFinAction - millis();
-    Serial.print("[ACTION] ");
-    Serial.print(currentCmd.action);
-    Serial.print(" : ");
-    Serial.print(currentCmd.valeur);
-    Serial.print(" => Duree calculee : ");
-    Serial.print(duree);
-    Serial.println(" ms");
+    Serial1.print("[ACTION] ");
+    Serial1.print(currentCmd.action);
+    Serial1.print(" : ");
+    Serial1.print(currentCmd.valeur);
+    Serial1.print(" => Duree calculee : ");
+    Serial1.print(duree);
+    Serial1.println(" ms");
 }
 
 // prototype pour que traitementCommandebuffer puisse lutiliser
@@ -84,7 +84,7 @@ RobotState watchdogVerification(RobotState currentState, unsigned long dernierMe
 {
     if (currentState.state == MOVING && (millis() - dernierMessagePi > timeoutPi))
     {
-        Serial.println("Watchdog !! connexion RBI perdu");
+        Serial1.println("Watchdog !! connexion RBI perdu");
 
         RobotState nextState = currentState;
         logStateChange(nextState.state, IDLE);
@@ -154,7 +154,7 @@ RobotState MOVINGTransition(RobotState currentState)
         nextState.state = IDLE;
         nextState.tempsFinAction = 0;
         currentCmd = {"", 0, false}; // reinitialisation de la structure commande (action="" | valeur=0 | active = false)
-        Serial.println("CHANGEMENT D'ETAT => (IDLE)");
+        Serial1.println("CHANGEMENT D'ETAT => (IDLE)");
     }
     return nextState;
 }
@@ -175,9 +175,9 @@ RobotState updateState(RobotState currentState, int distAv, unsigned long dernie
         nextState.tempsFinAction = 0;
 
         // ... dans le bloc if (distAv <= 20) ...
-        Serial.print("[EMERGENCY] Obstacle critique a ");
-        Serial.print(distAv);
-        Serial.println(" cm !");
+        Serial1.print("[EMERGENCY] Obstacle critique a ");
+        Serial1.print(distAv);
+        Serial1.println(" cm !");
 
         return nextState;
     }

@@ -9,23 +9,18 @@
 int fd = -1;
 
 int initSerial(const char* port) {
-    fd = open(port, O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open(port, O_RDWR | O_NOCTTY); // O_NDELAY retiré
     if (fd == -1) return -1;
-
     struct termios tty;
     if (tcgetattr(fd, &tty) != 0) return -1;
-
     cfsetospeed(&tty, B115200);
     cfsetispeed(&tty, B115200);
-
-    tty.c_cflag |= (CLOCAL | CREAD);    // Activer lecture
-    tty.c_cflag &= ~PARENB;            // Pas de parité
-    tty.c_cflag &= ~CSTOPB;            // 1 bit de stop
+    tty.c_cflag |= (CLOCAL | CREAD);
+    tty.c_cflag &= ~PARENB;
+    tty.c_cflag &= ~CSTOPB;
     tty.c_cflag &= ~CSIZE;
-    tty.c_cflag |= CS8;                // 8 bits de données
-
+    tty.c_cflag |= CS8;
     tty.c_lflag |= ICANON;
-    
     tcsetattr(fd, TCSANOW, &tty);
     return 0;
 }
@@ -39,8 +34,29 @@ void sendCommand(const char* action, int value) {
 
 char* readArduino() {
     static char buffer[256];
-    memset(buffer, 0, sizeof(buffer));
-    int n = read(fd, buffer, sizeof(buffer) - 1);
-    if (n > 0) return buffer;
-    return NULL;
+    int pos = 0;
+    char c;
+    while (pos < 255) {
+        int n = read(fd, &c, 1);
+        if (n <= 0) return NULL;
+        if (c == '\n') break;
+        if (c == '\r') continue;
+        buffer[pos++] = c;
+    }
+    buffer[pos] = '\0';
+    if (strncmp(buffer, "TELE;", 5) != 0) return NULL;
+    return buffer;
+}
+
+int parseTelemetry(char* line, RobotData* data) {
+    if (line == NULL) return 0;
+    if (strncmp(line, "TELE;", 5) != 0) return 0;
+    int parsed = sscanf(line, "TELE;%d;%[^;];%d;%d;%d;%d",
+        &data->state,
+        data->cmd,
+        &data->duration,
+        &data->distAv,
+        &data->distG,
+        &data->distD);
+    return (parsed == 6);
 }

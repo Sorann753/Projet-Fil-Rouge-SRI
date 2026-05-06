@@ -3,6 +3,7 @@
 #include "updater/command.hpp"
 #include "updater/state.hpp"
 #include "updater/movement.hpp"
+#include "updater/ack.hpp"
 #include "components/motor.hpp"
 #include "components/ultrasons.hpp"
 #include "components/bluetooth.hpp"
@@ -33,4 +34,6 @@ void loop()
   robotState = updateState(robotState, distAv, dernierMessagePi);
 
   updateMovement(robotState);
+
+  ACKCmd(robotState);
 }
