@@ -1,29 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "communication/tcp_server.h"
+#include <unistd.h> // Pour la fonction close()
+#include "tcp_server.h"
 
-// TODO: Inclure tes headers PFR1 (cutter.h, parser.h, etc.)
+// TODO: Inclure le header UART de Victor quand il sera prêt
 
-#define PORT 5000
-#define BUFFER_SIZE 1024
-
-int main_server()
+int main()
 {
-    // definir le buffer
     char buffer[BUFFER_SIZE];
+    printf("---CONNEXTION TCP---\n");
 
-    printf("CONNEXION TCP au PC\n");
-
-    // initialisation du port et recup l'ID
+    // initialisation du port Serveur
     int server_socket = init_tcp_server(PORT);
 
+    // Maintien en vie du serveur (Daemon)
     while (1)
     {
+        // Attente de la connexion du client
+        int client_socket = accept_client(server_socket);
 
-        wait_and_read_message(server_socket, buffer, BUFFER_SIZE);
-        printf("[GUI DIT] : %s\n", buffer);
+        // Lecture continue tant que le client es connecter
+        while (1)
+        {
+            int octetslus = read_message(client_socket, buffer, BUFFER_SIZE);
 
-        /*TODO: envoyer le buffer a tokenize_sentence()*/
+            // Gestion de la deconnexion ou erreur
+            if (octetslus <= 0)
+            {
+                printf("[SERVEUR] Fin de session avec ce client.\n");
+                break; // On sort de la sous-boucle, on va fermer le socket
+            }
+
+            // Affichage et Relais
+            printf("[GUI DIT] : %s\n", buffer);
+            fflush(stdout); // forcer laffichage imediat
+
+            // TODO : Envoyer la commande UART
+            // envoyer_uart(buffer);
+        }
+
+        // Fermeture avant d'attendre une nouvelle connexion
+        close(client_socket);
+        printf("[SERVEUR] Ligne client fermee. Retour a l'ecoute...\n");
     }
+
     return 0;
 }

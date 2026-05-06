@@ -1,18 +1,8 @@
 /**
  * @author GHOUILEM ABDELHAFIDH
- * code pour communication entre le PC et le RBI avec le protocole TCP
- * TODO:
- * socket() : Demande à l'OS Linux de créer un point de communication réseau (IPv4, TCP).
- * bind() : Attache ce socket au port de ton choix (ex: 8080).
- * listen() : Met la Raspberry Pi en mode "écoute passive". Le programme se fige ici en attendant le GUI.
- * accept() : Le GUI de Joan se connecte. La connexion est validée (Handshake). Un nouveau canal sécurisé est créé.
- * recv() : La Raspberry Pi lit la chaîne de caractères brute envoyée par le réseau (ex: "AVANCE DE 100").
- * Traitement Métier : Tu injectes ce texte dans ta fonction tokenize_sentence (Cutter), tu l'analyses, et tu extrais la command.
- * Exécution UART : Tu envoies "FORWARD:100" à l'Arduino via le code de Victor.
- * close() : Fermeture de la ligne une fois la commande exécutée.
  */
-
-#include "communication/tcp_server.h"
+#include <netinet/tcp.h>
+#include "tcp_server.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,6 +34,50 @@ void liaisonBind(int server_socket, struct sockaddr_in address)
     }
 }
 
+/*verification securié*/
+void testServeurSocket(int server_socket)
+{
+    if (server_socket < 0)
+    {
+        perror("ERREUR: impossible de creer la socket");
+        exit(EXIT_FAILURE);
+    }
+}
+void testAntiBlocage(int server_socket)
+{
+    int opt = 1;
+    if (setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+    {
+        perror("ERREUR: setsockopt a echoue");
+        exit(EXIT_FAILURE);
+    }
+}
+void testlisten(int server_socket)
+{
+    // '3' est la taille de la file d'attente système (backlog)
+    if (listen(server_socket, 3) < 0)
+    {
+        perror("ERREUR: [init_tcp_serveur()] echec du listen du serveur");
+        exit(EXIT_FAILURE);
+    }
+}
+void testClientSocket(int client_socket)
+{
+    if (client_socket < 0)
+    {
+        perror("ERREUR: [wait_and_read_message()] probleme de connexion");
+        exit(EXIT_FAILURE);
+    }
+}
+void testNagle(int client_socket)
+{
+    int flag = 1;
+    if (setsockopt(client_socket, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(int)) < 0)
+    {
+        perror("ERREUR: Impossible de desactiver Nagle (TCP_NODELAY)");
+    }
+}
+
 /**
  * @brief Initialise le port (socket, bind, listen)
  * @return l'ID de la prise (File Descriptor)
@@ -54,19 +88,10 @@ int init_tcp_server(int port)
 
     // Création du socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_socket < 0)
-    {
-        perror("ERREUR: impossible de creer la socket");
-        exit(EXIT_FAILURE);
-    }
+    testServeurSocket(server_socket);
 
     // sécurité anti-blocage de port apres le ctrl+C
-    int opt = 1;
-    if (setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
-    {
-        perror("ERREUR: setsockopt a echoue");
-        exit(EXIT_FAILURE);
-    }
+    testAntiBlocage(server_socket);
 
     // Configuration de l'adresse
     struct sockaddr_in address = configurationAdresse(port);
@@ -75,12 +100,7 @@ int init_tcp_server(int port)
     liaisonBind(server_socket, address);
 
     // MISE EN ÉCOUTE PASSIVE
-    // '3' est la taille de la file d'attente système (backlog)
-    if (listen(server_socket, 3) < 0)
-    {
-        perror("ERREUR: [init_tcp_serveur()] echec du listen du serveur");
-        exit(EXIT_FAILURE);
-    }
+    testlisten(server_socket);
 
     printf("[SERVEUR] En ecoute sur le port %d...\n", port);
 
@@ -88,25 +108,26 @@ int init_tcp_server(int port)
 }
 
 /**
- * @brief Bloque le programme, attend le GUI, lit la phrase reçue et la stocke dans 'buffer'
- * @param serveur_socket fait precedement ecoute avec init_tcp_server qui crée un pointeur vers un 'buffer'
+ * @brief Bloque le programme jusqu'à ce que Joan se connecte
+ * @return le socket du client
  */
-void wait_and_read_message(int serveur_socket, char *buffer, int buffer_size)
+int accept_client(int server_socket)
 {
-    // ne rien faire tant que le GUI nest pas connecter
-    int client_socket = accept(serveur_socket, NULL, NULL);
-    if (client_socket < 0)
-    {
-        perror("ERREUR: [wait_and_read_message()] probleme de connexion");
-        exit(EXIT_FAILURE);
-    }
+    printf("[SERVEUR] En attente de connexion du GUI...\n");
+    int client_socket = accept(server_socket, NULL, NULL);
+    testClientSocket(client_socket);
+    printf("[SERVEUR] GUI Connecte ! Ligne ouverte.\n");
 
-    // nettoyer la memoir
-    memset(buffer, 0, buffer_size); // forcer les caractére du buffer a \0
+    testNagle(client_socket);
+    return client_socket;
+}
 
-    // lire les messages recu en TCP
-    read(client_socket, buffer, buffer_size); // on va ecrire la phrase recu dans le buffer
-
-    // fermer la ligne TCP apres reception
-    close(client_socket);
+/**
+ * @brief Lit un seul message sur la ligne
+ * @return le nombre d'octets lus (0 = deconnexion, <0 = erreur)
+ */
+int read_message(int client_socket, char *buffer, int buffer_size)
+{
+    memset(buffer, 0, buffer_size);
+    return recv(client_socket, buffer, buffer_size, 0);
 }
