@@ -10,7 +10,7 @@ constexpr int TURN_SPEED = 240;
 const int K_CORRECTION_GAUCHE = 50;
 
 /* TIMEOUT */
-constexpr long timeoutPi = 15000;
+constexpr long timeoutPi = 500;
 
 /* ODOMETRIE*/
 const float CM_PAR_SECONDE = 90.16;  // A mesurer physiquement : Vitesse du robot (cm/s) a PWM 200

@@ -92,6 +92,11 @@ RobotState watchdogVerification(RobotState currentState, unsigned long dernierMe
         logStateChange(nextState.state, IDLE);
         nextState.state = IDLE;
         nextState.tempsFinAction = 0;
+
+        // purge de securité
+        currentCmd = {"", 0, false}; // Détruit la commande en cours
+        indexRead = indexWrite;      // Vide tout le buffer listCmd
+
         return nextState;
     }
     return currentState;
