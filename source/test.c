@@ -19,17 +19,15 @@
 #include "testCases/testLidar.h"
 #include "testCases/clusterTest.h"
 #include "testCases/arduinoTest.h"
+#include "testCases/testNPLprocess.h"
 
 int main(void)
 {
-    printf("\n\n\n\n\n\n");
-    //history_init();
-
-    //homeMenu();
-    
-    //clusterTest();
-    arduinoTest();
-    //history_close();
-
+    // history_init();
+    // homeMenu();
+    // clusterTest();
+    // arduinoTest();
+    // history_close();
+    testNPLprocess();
     return 0;
 }

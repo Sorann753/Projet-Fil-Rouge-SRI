@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <unistd.h> // Pour la fonction close()
-#include "tcp_server.h"
+#include "communication/tcp_server.h"
 
 // TODO: Inclure le header UART de Victor quand il sera prêt
 
-int main()
+int main_server()
 {
     char buffer[BUFFER_SIZE];
     printf("---CONNEXTION TCP---\n");
@@ -23,6 +24,8 @@ int main()
         while (1)
         {
             int octetslus = read_message(client_socket, buffer, BUFFER_SIZE);
+
+            buffer[strcspn(buffer, "\r\n")] = 0; // retirer
 
             // Gestion de la deconnexion ou erreur
             if (octetslus <= 0)

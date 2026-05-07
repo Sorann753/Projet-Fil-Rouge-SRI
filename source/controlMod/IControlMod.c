@@ -1,6 +1,7 @@
 #include "controlMod/IControlMod.h"
 
-IControlMod makeSimulController(){
+IControlMod makeSimulController()
+{
     return (IControlMod){
         .init = NULL,
         .getAction = NULL,
@@ -8,7 +9,8 @@ IControlMod makeSimulController(){
     };
 }
 
-IControlMod makeHardController(){
+IControlMod makeHardController()
+{
     return (IControlMod){
         .init = NULL,
         .getAction = NULL,

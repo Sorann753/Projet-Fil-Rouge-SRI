@@ -5,10 +5,11 @@
 
 #include "manualPilot/command.h"
 
-typedef struct IControlMod_t {
+typedef struct IControlMod_t
+{
     void (*init)(void);
     void (*getAction)(command_list);
-    void (*updateState)(void*);
+    void (*updateState)(void *);
 } IControlMod;
 
 IControlMod makeHardController();

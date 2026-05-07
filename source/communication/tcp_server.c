@@ -2,7 +2,7 @@
  * @author GHOUILEM ABDELHAFIDH
  */
 #include <netinet/tcp.h>
-#include "tcp_server.h"
+#include "communication/tcp_server.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
