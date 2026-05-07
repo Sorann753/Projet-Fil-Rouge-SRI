@@ -27,6 +27,9 @@ int main(void)
     // homeMenu();
     // clusterTest();
     // arduinoTest();
+
+    printf("\n----------------------------------------------------------\n");
+
     // history_close();
     testNPLprocess();
     return 0;
