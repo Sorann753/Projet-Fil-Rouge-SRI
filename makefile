@@ -1,21 +1,22 @@
-# Compiler
+# --- CONFIGURATION ---
 CC = gcc
 CFLAGS = -Wall -Wextra -pedantic -std=c11 -D_DEFAULT_SOURCE
 INCLUDES = -Iinclude
 LIBS = -lm
 
-# Dossier binaire
+# Dossiers
 BIN_DIR = build/linux/x86_64/release
+# On s'assure que le chemin est absolu pour éviter les surprises
+ABS_BIN_DIR = $(shell pwd)/$(BIN_DIR)
 
-# --- FILTRAGE DES SOURCES ---
-
-# Pour le robot (Pilotage Manuel + Main)
+# --- SOURCES ---
+# Robot principal (exclut les fichiers de test)
 SRC_ROBOT = $(shell find source -name '*.c' ! -name 'test.c' ! -name 'unitTest.c' ! -name 'arduinoTest.c')
 
-# Pour les tests Arduino (ton ancien test)
+# Tests Arduino (inclut arduinoTest.c mais exclut main.c)
 SRC_TEST = $(shell find source -name '*.c' ! -name 'main.c' ! -name 'unitTest.c')
 
-# Pour le module Vision (Unit Test)
+# Vision / Unit Tests
 SRC_VISION = $(shell find source -name '*.c' ! -name 'main.c' ! -name 'test.c')
 
 # Binaires
@@ -25,34 +26,32 @@ BIN_UNIT  = $(BIN_DIR)/PFR-unit
 
 # --- CIBLES ---
 
-.PHONY: all clean
+.PHONY: all clean run run-test run-unit
 
 all: PFR-robot
 
-# Compilation et Run du programme principal (Pilotage manuel)
-.PHONY: PFR-robot run
+# Compilation du Robot
 PFR-robot:
-	@mkdir -p $(BIN_DIR)
+	@mkdir -p "$(BIN_DIR)"
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_ROBOT) $(SRC_ROBOT) $(LIBS)
 
-run: PFR-robot
-	./$(BIN_ROBOT)
-
-# Compilation et Run des tests Arduino
-.PHONY: PFR-test run-test
+# Compilation des Tests Arduino
 PFR-test:
-	@mkdir -p $(BIN_DIR)
+	@mkdir -p "$(BIN_DIR)"
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_TEST) $(SRC_TEST) $(LIBS)
 
-run-test: PFR-test
-	./$(BIN_TEST)
-
-# Compilation et Run du module Vision (Unit Test)
-.PHONY: PFR-unit run-unit
+# Compilation Vision
 PFR-unit:
-	@mkdir -p $(BIN_DIR)
-	@mkdir -p $(BIN_DIR)/export
+	@mkdir -p "$(BIN_DIR)"
+	@mkdir -p "$(BIN_DIR)/export"
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_UNIT) $(SRC_VISION) $(LIBS)
+
+# --- EXECUTION ---
+run: PFR-robot
+	cd $(BIN_DIR) && ./PFR-robot
+
+run-test: PFR-test
+	cd $(BIN_DIR) && ./PFR-test
 
 run-unit: PFR-unit
 	cd $(BIN_DIR) && ./PFR-unit

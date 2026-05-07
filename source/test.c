@@ -25,8 +25,8 @@ int main(void)
 {
     // history_init();
     // homeMenu();
-    // clusterTest();
-    // arduinoTest();
+    clusterTest();
+    arduinoTest();
 
     printf("\n----------------------------------------------------------\n");
 
