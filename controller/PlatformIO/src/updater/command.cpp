@@ -61,4 +61,3 @@ void writeCmd(Command commande)
     Serial1.println(indexWrite);
   }
 }
-
