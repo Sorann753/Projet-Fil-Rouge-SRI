@@ -11,7 +11,7 @@
 #include"windows/devOverlay.hpp"
 #include "entities/canvasSim.hpp"
 #include "entities/entities.hpp"
-
+#include "TCP/client.hpp"
 
 
 class SimpleWindow : public Fl_Window {
@@ -22,8 +22,10 @@ public:
 
     int handle(int event)override;
     std::unique_ptr<CanvasSim> bot;
+    Client* comm;
     
 private:
+
     //static void cb_copy(Fl_Widget *, void *);
     //inline void cb_copy_i();
 

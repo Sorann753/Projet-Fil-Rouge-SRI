@@ -2,10 +2,10 @@
 
 
 SimpleWindow::SimpleWindow(int w, int h, const char *title) : Fl_Window(w, h, title) {
-
-    begin();
+    begin();   
 
     bot = std::make_unique<CanvasSim>(w-w, h-h, w, h);
+    comm = new Client();
     end();
     
     resizable(this);

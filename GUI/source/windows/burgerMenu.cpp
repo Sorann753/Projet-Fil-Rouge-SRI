@@ -19,15 +19,22 @@ BurgerMenu::BurgerMenu(int x, int y, int bw, int bh)
             auto* bm = static_cast<BurgerMenu*>(self);
             if (bm->onToggleOverlay) bm->onToggleOverlay();
         }, this);
+    
+    menu->add(
+        "Connection",0,
+        [](Fl_Widget*, void* data) {
+            Client* client = static_cast<Client*>(data);
+            client->connection(client->sock);
+        },&client);
 
     menu->add("Quitter", 0,
-        [](Fl_Widget*, void* self) {
-            auto* bm = static_cast<BurgerMenu*>(self);
-            if (bm->onQuit) bm->onQuit();
-        }, this);
+    [](Fl_Widget*, void* self) {
+        auto* bm = static_cast<BurgerMenu*>(self);
+        if (bm->onQuit) bm->onQuit();
+    }, this);
 
-    end();
-}
+    }
+
 
 void BurgerMenu::btnCB(Fl_Widget*, void* self) {
     static_cast<BurgerMenu*>(self)->openMenu();
