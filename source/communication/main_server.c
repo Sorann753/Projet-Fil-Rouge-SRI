@@ -6,7 +6,15 @@
 #include "communication/tcp_server.h"
 #include "rbiArduinoInterface/arduino_interface.h"
 
-// TODO: Inclure le header UART de Victor quand il sera prêt
+/**
+ * @brief envoi des données de telemetrie au GUI
+ */
+void envoieTelemetrie(RobotData data, int client_socket)
+{
+    char feedback[128]; // buffer denvoi
+    sprintf(feedback, "DATA;%d;%s;%d;%d\n", data.state, data.cmd, data.distAv, data.duration);
+    send_message(client_socket, feedback);
+}
 
 int main()
 {
@@ -49,7 +57,7 @@ int main()
             }
             else if (octetslus > 0)
             {
-                // On a reçu une vraie commande, on la traite
+                // On a reçu une vraie commande on la traite
                 buffer[strcspn(buffer, "\r\n")] = '\0';
 
                 printf("\n[GUI DIT] : %s\n", buffer);
@@ -69,6 +77,7 @@ int main()
             char *msg = readArduino();
             if (msg != NULL && parseTelemetry(msg, &data))
             {
+
                 // mémoriser l'état au tour de boucle précédent
                 static int etat_precedent = 0;
 
@@ -87,6 +96,9 @@ int main()
 
                 // Mise à jour de la mémoire
                 etat_precedent = data.state;
+
+                // ENVOIE des data au GUI
+                envoieTelemetrie(RobotData data, int client_socket);
             }
 
             // securite batement de coeur de l'arduino

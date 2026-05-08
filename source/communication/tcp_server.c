@@ -131,3 +131,12 @@ int read_message(int client_socket, char *buffer, int buffer_size)
     memset(buffer, 0, buffer_size);
     return recv(client_socket, buffer, buffer_size, 0);
 }
+
+/**
+ * @brief envoie un message
+ */
+int send_message(int client_socket, const char *message)
+{
+    // On envoie la chaîne de caractères sur la socket du client
+    return send(client_socket, message, strlen(message), 0);
+}

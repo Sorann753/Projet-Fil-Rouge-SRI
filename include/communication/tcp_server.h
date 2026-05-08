@@ -22,4 +22,9 @@ int accept_client(int server_socket);
  */
 int read_message(int client_socket, char *buffer, int buffer_size);
 
+/**
+ * @brief envoie un message
+ */
+int send_message(int client_socket, const char *message);
+
 #endif
