@@ -6,6 +6,8 @@
 #include "communication/tcp_server.h"
 #include "rbiArduinoInterface/arduino_interface.h"
 
+enum MODE mode = MANUEL; // 0 = MANUEL (par défaut), 1 = AUTONOME
+
 /**
  * @brief envoi des données de telemetrie au GUI
  */
@@ -14,6 +16,31 @@ void envoieTelemetrie(RobotData data, int client_socket)
     char feedback[128]; // buffer denvoi
     sprintf(feedback, "DATA;%d;%s;%d;%d\n", data.state, data.cmd, data.distAv, data.duration);
     send_message(client_socket, feedback);
+}
+
+/**
+ * @brief autonome : si pas dobstacle avance de 30 si obstacle recule de 30 et tourne droite 90°
+ */
+void modeAutonome(RobotData *data)
+{
+    if (mode == AUTONOME && data->state == 0)
+    {
+        if (data->distAv > DIST_LIMITE_AVANT)
+        {
+            sendCommand("F", 30);
+            printf("[AUTONOME] Avance de 30cm (Obstacle: %d cm)\n", data->distAv);
+        }
+        else
+        {
+            // Evitement dobstacle
+            sendCommand("B", 30); // recule
+            sendCommand("R", 90); // tourne
+            printf("[AUTONOME] Obstacle à %d cm ! Recul puis rotation gauche.\n", data->distAv);
+        }
+
+        // modifie la vraie variable du main grâce au pointeur
+        data->state = 1;
+    }
 }
 
 int main()
@@ -53,6 +80,11 @@ int main()
             if (octetslus == 0)
             {
                 printf("[SERVEUR] Fin de session avec ce client.\n");
+
+                // securité arret et retour en MANUEL
+                mode = MANUEL;
+                sendCommand("S", 0);
+
                 break; // On sort de la sous-boucle, on va fermer le socket
             }
             else if (octetslus > 0)
@@ -66,10 +98,42 @@ int main()
                 char action[10];
                 int valeur = 0;
 
+                // parsing du buffer recu par le GUI
                 if (sscanf(buffer, "%s %d", action, &valeur) >= 1)
                 {
-                    sendCommand(action, valeur);
-                    printf("[UART -> ARDUINO] : %s %d\n", action, valeur);
+                    // si on recoi un "S"
+                    if (strcmp(action, "S") == 0)
+                    {
+                        mode = MANUEL;       // forcer le passage en mode manuelle
+                        sendCommand("S", 0); // envoie dun stop
+                        printf("[STOP] Arrêt d'urgence et retour MANUEL.\n");
+                    }
+                    // si on recoie un "M"
+                    else if (strcmp(action, "M") == 0)
+                    {
+                        // mode autonome
+                        if (valeur == 1)
+                        {
+                            mode = AUTONOME;
+                            printf("[AUTONOME] mode autonome activé\n");
+                        }
+                        // mode manuel
+                        else
+                        {
+                            mode = MANUEL;
+                            printf("[MANUEL] mode manuel activé\n");
+                        }
+                        sendCommand("S", 0); // on stop lors du changement de mode
+                    }
+                    else if (mode == MANUEL)
+                    {
+                        sendCommand(action, valeur);
+                        printf("[UART -> ARDUINO] : %s %d\n", action, valeur);
+                    }
+                    else
+                    {
+                        printf("[AUTONOME] commande Ignoré : Le robot est en mode AUTONOME.\n");
+                    }
                 }
             }
 
@@ -98,7 +162,7 @@ int main()
                 etat_precedent = data.state;
 
                 // ENVOIE des data au GUI
-                envoieTelemetrie(RobotData data, int client_socket);
+                envoieTelemetrie(data, client_socket);
             }
 
             // securite batement de coeur de l'arduino
@@ -109,6 +173,9 @@ int main()
                 sendCommand("PING", 0);
                 heartbeat_counter = 0;
             }
+
+            // DECISION AUTONOME
+            modeAutonome(&data);
 
             // Respiration du système (10 millisecondes)
             usleep(10000);

@@ -4,6 +4,8 @@
 #define PORT 5000
 #define BUFFER_SIZE 1024
 
+// TODO : Augmenter légèrement le BUFFER_SIZE si tu prévois d'envoyer des chaînes plus longues pour le débug du mode auto.
+
 /**
  * @brief Initialise le port (socket, bind, listen)
  * @return l'ID de la prise (File Descriptor)
