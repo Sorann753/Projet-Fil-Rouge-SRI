@@ -9,8 +9,9 @@ void arduinoTest(void)
 {
     printf("\n----- Test envoi commande Arduinos -----\n");
 
-    char* port = "/dev/ttyACM0";
-    if (initSerial(port) != 0) {
+    char *port = "/dev/ttyACM0";
+    if (initSerial(port) != 0)
+    {
         fprintf(stderr, "[ERREUR] Impossible d'ouvrir %s\n", port);
         return;
     }
@@ -22,48 +23,56 @@ void arduinoTest(void)
     RobotData data;
 
     printf("\n--- TEST 1 : FORWARD ---\n");
-    sendCommand("FORWARD", 100);
-    
-    for(int i = 0; i < 50; i++) { 
-        char* msg = readArduino();
-        if (msg != NULL && parseTelemetry(msg, &data)) {
-            printf("[DATA] Etat: %d | Action: %s | Temps restant: %d ms | Av: %d\n", 
-                    data.state, data.cmd, data.duration, data.distAv);
+    sendCommand("F", 100);
+
+    for (int i = 0; i < 50; i++)
+    {
+        char *msg = readArduino();
+        if (msg != NULL && parseTelemetry(msg, &data))
+        {
+            printf("[DATA] Etat: %d | Action: %s | Temps restant: %d ms | Av: %d\n",
+                   data.state, data.cmd, data.duration, data.distAv);
         }
         usleep(10000);
     }
 
     printf("\n--- TEST 2 : BACKWARD ---\n");
-    sendCommand("BACKWARD", 100);
-    
-    for(int i = 0; i < 50; i++) {
-        char* msg = readArduino();
-        if (msg != NULL && parseTelemetry(msg, &data)) {
-            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n", 
-                    data.state, data.cmd, data.distAv);
+    sendCommand("B", 100);
+
+    for (int i = 0; i < 50; i++)
+    {
+        char *msg = readArduino();
+        if (msg != NULL && parseTelemetry(msg, &data))
+        {
+            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n",
+                   data.state, data.cmd, data.distAv);
         }
         usleep(10000);
     }
 
     printf("\n--- TEST 3 : TURN LEFT---\n");
-    sendCommand("LEFT", 180);
-    
-    for(int i = 0; i < 50; i++) {
-        char* msg = readArduino();
-        if (msg != NULL && parseTelemetry(msg, &data)) {
-            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n", 
-                    data.state, data.cmd, data.distAv);
+    sendCommand("L", 180);
+
+    for (int i = 0; i < 50; i++)
+    {
+        char *msg = readArduino();
+        if (msg != NULL && parseTelemetry(msg, &data))
+        {
+            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n",
+                   data.state, data.cmd, data.distAv);
         }
         usleep(10000);
     }
 
-    sendCommand("STOP", 180);
-    
-    for(int i = 0; i < 50; i++) {
-        char* msg = readArduino();
-        if (msg != NULL && parseTelemetry(msg, &data)) {
-            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n", 
-                    data.state, data.cmd, data.distAv);
+    sendCommand("S", 180);
+
+    for (int i = 0; i < 50; i++)
+    {
+        char *msg = readArduino();
+        if (msg != NULL && parseTelemetry(msg, &data))
+        {
+            printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n",
+                   data.state, data.cmd, data.distAv);
         }
     }
 

@@ -25,8 +25,11 @@ int main(void)
 {
     // history_init();
     // homeMenu();
-    // clusterTest();
-    // arduinoTest();
+    clusterTest();
+    arduinoTest();
+
+    printf("\n----------------------------------------------------------\n");
+
     // history_close();
     testNPLprocess();
     return 0;

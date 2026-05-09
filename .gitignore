@@ -63,4 +63,5 @@ build/
 .vscode/
 *.log
 
-doxygen/
+doc/doxygen/
+doc/doxygen/

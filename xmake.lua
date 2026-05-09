@@ -5,6 +5,7 @@ add_cflags("-Wwrite-strings", "-Wformat=2")
 add_cflags("-Wno-unused-result", "-Wno-unused-variable", "-Wno-unused-parameter", "-Wno-float-equal")
 set_warnings("all", "error")
 set_languages("c11")
+
 add_requires("fltk")
 
 target("PFR-simulator")

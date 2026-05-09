@@ -26,7 +26,8 @@ struct AppData
     size_t entityCount;
     bool devOverlayVisible = false;
 
-};extern AppData gApp;
+};
+extern AppData gApp;
 
 extern std::vector<Polar> data;
 

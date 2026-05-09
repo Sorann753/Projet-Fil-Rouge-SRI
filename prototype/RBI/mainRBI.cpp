@@ -13,9 +13,9 @@ int main()
     }
 
     std::cout << "\n--- TEST 1 : CALIBRATION ---" << std::endl;
-    envoieCommande("FORWARD", 100, 6000); // attend 6s = 100/30*1000 + marge
+    envoieCommande("F", 100, 6000); // attend 6s = 100/30*1000 + marge
 
-    envoieCommande("STOP", 0, 2000);
+    envoieCommande("S", 0, 2000);
 
     uartClose();
     std::cout << "fin du test" << std::endl;

@@ -10,7 +10,7 @@ bool uartInit(const std::string &port, int baud);
 // Ferme le port proprement
 void uartClose();
 
-// Envoie "CMD:VALEUR\n" et écoute les réponses pendant duree_ms millisecondes
+// Envoie "CMD:VALEUR\n" (ex: "F:100\n") et écoute les réponses pendant duree_ms millisecondes
 void envoieCommande(const std::string &cmd, int valeur, int duree_ms);
 
 #endif

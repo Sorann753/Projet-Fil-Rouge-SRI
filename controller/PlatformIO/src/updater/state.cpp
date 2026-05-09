@@ -92,6 +92,11 @@ RobotState watchdogVerification(RobotState currentState, unsigned long dernierMe
         logStateChange(nextState.state, IDLE);
         nextState.state = IDLE;
         nextState.tempsFinAction = 0;
+
+        // purge de securité
+        currentCmd = {"", 0, false}; // Détruit la commande en cours
+        indexRead = indexWrite;      // Vide tout le buffer listCmd
+
         return nextState;
     }
     return currentState;
@@ -104,9 +109,9 @@ RobotState watchdogVerification(RobotState currentState, unsigned long dernierMe
 int defineSpeedRatio(String action)
 {
     // si on a forward/backward on utilise CM/sec si turn alors DEG/sec
-    float ratio = (action == "FORWARD" || action == "BACKWARD") ? CM_PAR_SECONDE : DEG_PAR_SECONDE;
+    float ratio = (action == "F" || action == "B") ? CM_PAR_SECONDE : DEG_PAR_SECONDE;
 
-    if (action == "FORWARD" || action == "BACKWARD")
+    if (action == "F" || action == "B")
         setspeedroue(FORWARD_SPEED);
     else
         setspeedroue(TURN_SPEED);
@@ -126,7 +131,7 @@ RobotState IDLETransition(const RobotState currentState, const Command currentCm
     RobotState nextState = currentState;
     nextState.tempsFinAction = 0;
 
-    if (currentCmd.action == "STOP")
+    if (currentCmd.action == "S")
     {
         nextState.state = IDLE;
         return nextState;
@@ -198,7 +203,7 @@ RobotState updateState(RobotState currentState, int distAv, unsigned long dernie
     if (nextState.state == MOVING && indexRead != indexWrite)
     {
         Command peek = listCmd[indexRead];
-        if (peek.action == "STOP")
+        if (peek.action == "S")
         {
             indexRead = (indexRead + 1) % 10;
             currentCmd = {"", 0, false}; // reinitialisation de la structure commande (action="" | valeur=0 | active = false)

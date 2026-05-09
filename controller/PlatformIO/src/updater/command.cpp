@@ -18,7 +18,7 @@ void readCmd()
 
     if (raw.length() > 0)
     {
-      int index_separateur = raw.indexOf(':');
+      int index_separateur = raw.indexOf(' ');
       Command nouvelleCmd;
 
       if (index_separateur != -1)
@@ -61,4 +61,3 @@ void writeCmd(Command commande)
     Serial1.println(indexWrite);
   }
 }
-

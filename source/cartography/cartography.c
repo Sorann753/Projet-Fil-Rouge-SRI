@@ -14,7 +14,7 @@ Cluster* makeClusters(PolarCoordinate* rawPoints, size_t pointCount, size_t* clu
 
     Coordinate* rawPointsCartesian = malloc(pointCount * sizeof(Coordinate));
     if (rawPointsCartesian == NULL) return NULL;
-
+    printf("angle - dist");
     for (size_t i = 0; i < pointCount; i++) {
         rawPointsCartesian[i] = PolarToCartesian(rawPoints[i]);
     }
