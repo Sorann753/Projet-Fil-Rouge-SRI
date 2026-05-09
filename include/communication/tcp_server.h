@@ -1,6 +1,17 @@
 #ifndef TCP_SERVER_H
 #define TCP_SERVER_H
 
+#include <netinet/tcp.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdbool.h>
+
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
 #define PORT 5000
 #define BUFFER_SIZE 1024
 
@@ -8,7 +19,7 @@
 
 /**
  * @brief Initialise le port (socket, bind, listen)
- * @return l'ID de la prise (File Descriptor)
+ * @return la socket du serveur
  */
 int init_tcp_server(int port);
 

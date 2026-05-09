@@ -23,7 +23,8 @@ enum MODE
 
 int initSerial(const char *port);
 void sendCommand(const char *action, int value);
-char *readArduino();
+char* readArduino(void);
 int parseTelemetry(char *line, RobotData *data);
+void closeArduino(void);
 
 #endif

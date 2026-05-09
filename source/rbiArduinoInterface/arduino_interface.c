@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+
 #include "rbiArduinoInterface/arduino_interface.h"
 
 int fd = -1;
@@ -74,7 +75,7 @@ void sendCommand(const char *action, int value)
 }
 
 /* Lit le retour de l'Arduino de manière robuste (Anti-fragmentation) */
-char *readArduino()
+char *readArduino(void)
 {
     static char buffer[256]; // Stockage entre deux appels
     static int pos = 0;      // Mémorise où on en est dans la phrase
@@ -127,4 +128,12 @@ int parseTelemetry(char *line, RobotData *data)
                         &data->distG,
                         &data->distD);
     return (parsed == 6);
+}
+
+
+void closeArduino(void){
+    if(close(fd) != 0){
+        // weird case
+        perror("[WARNING] - The arduino UART interface wasn't closed properly for some reason\n");
+    }
 }
