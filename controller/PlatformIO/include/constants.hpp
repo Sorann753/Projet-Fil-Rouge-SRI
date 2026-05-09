@@ -7,12 +7,14 @@
 constexpr int FORWARD_SPEED = 180;
 constexpr int TURN_SPEED = 240;
 
+const int K_CORRECTION_GAUCHE = 50;
+
 /* TIMEOUT */
-constexpr long timeoutPi = 2000;
+constexpr long timeoutPi = 500;
 
 /* ODOMETRIE*/
-const float CM_PAR_SECONDE = 30.0;  // A mesurer physiquement : Vitesse du robot (cm/s) a PWM 200
-const float DEG_PAR_SECONDE = 90.0; // A mesurer physiquement : Vitesse de rotation (deg/s) a PWM 200
+const float CM_PAR_SECONDE = 74.53;  // CM_PAR_SECONDE = CM_PAR_SECONDE * (distMesuree / distDemandee);
+const float DEG_PAR_SECONDE = 46.49; // DEG_PAR_SECONDE = DEG_PAR_SECONDE * (angleMesure / angleDemande);
 const float DIST_SECUR = 40.0;
 
 #endif

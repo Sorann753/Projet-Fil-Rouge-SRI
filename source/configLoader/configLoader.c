@@ -12,7 +12,7 @@
 #include <string.h>
 #include "configLoader/configLoader.h"
 
-#define LINE_MAX_LEN 512  /**< Longueur maximale d'une ligne lue depuis le fichier */
+#define LINE_MAX_LEN 512 /**< Longueur maximale d'une ligne lue depuis le fichier */
 
 /**
  * @brief Supprime les espaces, tabulations et retours à la ligne
@@ -37,7 +37,7 @@ static void trim(char *str)
 
     // décaler la chaîne si nécessaire
     if (start != str)
-        memmove(str, start, end - start + 2); 
+        memmove(str, start, end - start + 2);
 }
 
 /**
@@ -52,29 +52,36 @@ char *config_loader(const char *filename, const char *key)
 {
     // construire le chemin complet depuis le répertoire de build
     char fullpath[512];
+
     snprintf(fullpath, sizeof(fullpath), "../../../../%s", filename);
+    /*snprintf(fullpath, sizeof(fullpath), "%s", filename);*/
 
     // ouvrir le fichier en lecture
     FILE *file = fopen(fullpath, "r");
-    if (!file) {
+    if (!file)
+    {
         fprintf(stderr, "ERROR: cannot open file %s\n", fullpath);
         return NULL;
     }
 
     char line[LINE_MAX_LEN];
 
-    while (fgets(line, sizeof(line), file)) {
+    while (fgets(line, sizeof(line), file))
+    {
 
         // ignorer les commentaires commençant par #
         char *comment_pos = strchr(line, '#');
-        if (comment_pos) *comment_pos = '\0';
+        if (comment_pos)
+            *comment_pos = '\0';
 
-        trim(line);  
-        if (strlen(line) == 0) continue; 
+        trim(line);
+        if (strlen(line) == 0)
+            continue;
 
         // chercher le caractère '=' pour identifier clé = valeur
         char *equal_pos = strchr(line, '=');
-        if (!equal_pos) continue;   // ligne sans '=' ignorée
+        if (!equal_pos)
+            continue; // ligne sans '=' ignorée
 
         // séparer clé et valeur
         *equal_pos = '\0';
@@ -85,9 +92,14 @@ char *config_loader(const char *filename, const char *key)
         trim(value_str); // supprimer espaces autour de la valeur
 
         // si la clé correspond à celle recherchée, renvoyer une copie de la valeur
-        if (strcmp(key_str, key) == 0) {
+        if (strcmp(key_str, key) == 0)
+        {
             char *result = malloc(strlen(value_str) + 1);
-            if (!result) { fclose(file); return NULL; }
+            if (!result)
+            {
+                fclose(file);
+                return NULL;
+            }
             strcpy(result, value_str);
             fclose(file);
             return result;

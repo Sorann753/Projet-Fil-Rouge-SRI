@@ -89,12 +89,6 @@ void init_Simulator(RobotPosition *Position)
     history_log(INFO, "Robot position reset to initial coordinates");
 }
 
-/**
- * @brief procédure pour ecrire dans un fichier laction et la valeur dans SimulatorController.txt
- * @param act laction enumerer dans le .h
- * @param value la valuer associer a laction
- */
-
 void startSimu()
 {
     char *python_path = config_loader("config/globalConfig.toml", "python_simulation_path");
@@ -122,6 +116,11 @@ void closeSimu()
     fclose(action_file);
 }
 
+/**
+ * @brief procédure pour ecrire dans un fichier laction et la valeur dans SimulatorController.txt
+ * @param act laction enumerer dans le .h
+ * @param value la valuer associer a laction
+ */
 void WriteAction(action_t act, float value)
 { /*le char (pointeur = string) est en const (appliquer sur le char on ne le modifie pas dans la fonction) */
 
@@ -214,7 +213,6 @@ void forward(float distance, RobotPosition *Position)
     /*mise a jour de la position*/
     Position->x = new_x;
     Position->y = new_y;
-    
 
     /*apelle de la fonction pour ecrire dans le SimulatorControler.txt pour pouvoir communiquer avec le python*/
     WriteAction(ACT_FORWARD, actual_distance);
@@ -222,8 +220,8 @@ void forward(float distance, RobotPosition *Position)
 
     char log_msg[128];
     snprintf(log_msg, sizeof(log_msg),
-            "FORWARD -> New position x=%.2f y=%.2f theta=%.2f",
-            Position->x, Position->y, Position->theta);
+             "FORWARD -> New position x=%.2f y=%.2f theta=%.2f",
+             Position->x, Position->y, Position->theta);
     history_log(INFO, log_msg);
 }
 
@@ -269,8 +267,8 @@ void backward(float distance, RobotPosition *Position)
 
     char log_msg[128];
     snprintf(log_msg, sizeof(log_msg),
-            "BACKWARD -> New position x=%.2f y=%.2f theta=%.2f",
-            Position->x, Position->y, Position->theta);
+             "BACKWARD -> New position x=%.2f y=%.2f theta=%.2f",
+             Position->x, Position->y, Position->theta);
     history_log(INFO, log_msg);
 }
 
@@ -294,7 +292,7 @@ void turn(float angle, RobotPosition *Position)
     printf("TURN: theta= %.0f\n", Position->theta);
     char log_msg[128];
     snprintf(log_msg, sizeof(log_msg),
-            "TURN -> New position x=%.2f y=%.2f theta=%.2f",
-            Position->x, Position->y, Position->theta);
+             "TURN -> New position x=%.2f y=%.2f theta=%.2f",
+             Position->x, Position->y, Position->theta);
     history_log(INFO, log_msg);
 }

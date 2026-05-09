@@ -10,11 +10,13 @@ struct Command
     bool active;
 };
 
-extern unsigned long dernierMessagePi;
-extern Command currentCmd;
-extern Command listCmd[];
-extern int indexRead;
-extern int indexWrite;
+extern unsigned long dernierMessagePi; // le temp de reception du dernier message par la raspbery pi
+
+extern Command currentCmd; // la commande actuelle
+extern Command listCmd[];  // une liste de commande a executer dans lordre
+
+extern int indexRead;  // lire la commande
+extern int indexWrite; // ecrire une nouvelle commande
 
 void readCmd();
 void writeCmd(Command commande);

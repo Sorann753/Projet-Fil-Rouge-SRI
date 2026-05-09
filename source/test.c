@@ -3,7 +3,6 @@
  */
 
 #include "history/history.h"
-
 #include "testCases/matrixTest.h"
 #include "testCases/testMenu.h"
 #include "testCases/testVision.h"
@@ -18,15 +17,20 @@
 #include "testCases/speechTest.h"
 #include "testCases/executortest.h"
 #include "testCases/testLidar.h"
+#include "testCases/clusterTest.h"
+#include "testCases/arduinoTest.h"
+#include "testCases/testNPLprocess.h"
 
 int main(void)
 {
-    printf("\n\n\n\n\n\n");
-    //history_init();
+    // history_init();
+    // homeMenu();
+    clusterTest();
+    arduinoTest();
 
-    //homeMenu();
-    testLidarAcquisition();
-    //history_close();
+    printf("\n----------------------------------------------------------\n");
 
+    // history_close();
+    testNPLprocess();
     return 0;
 }

@@ -1,12 +1,11 @@
-#include <FL/Fl_Box.H>
 #include "windows/mainWindow.hpp"
-#include "entities/botsim.hpp"
+
 
 SimpleWindow::SimpleWindow(int w, int h, const char *title) : Fl_Window(w, h, title) {
+    begin();   
 
-    begin();
-
-    bot = std::make_unique<Botsim>(0, 0, w, h);
+    bot = std::make_unique<CanvasSim>(w-w, h-h, w, h);
+    comm = new Client();
     end();
     
     resizable(this);
@@ -16,7 +15,6 @@ SimpleWindow::SimpleWindow(int w, int h, const char *title) : Fl_Window(w, h, ti
 //----------------------------------------------------
 
 SimpleWindow::~SimpleWindow() {
-    // peut'être foireux, a vérifier si c'est okay que sa soit vide
 }
 
 //----------------------------------------------------
@@ -29,5 +27,6 @@ int SimpleWindow::handle(int event)
         bot->moveFromKey(Fl::event_key());
         return 1;
     }
-    return Fl_Window::handle(event);
+    return Fl_Window::handle(event);    
+
 }

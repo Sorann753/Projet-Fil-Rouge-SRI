@@ -18,13 +18,13 @@ void readCmd()
 
     if (raw.length() > 0)
     {
-      int index_separateur = raw.indexOf(':');
+      int index_separateur = raw.indexOf(' ');
       Command nouvelleCmd;
 
       if (index_separateur != -1)
       {
-        nouvelleCmd.action = raw.substring(0, index_separateur);
-        nouvelleCmd.valeur = raw.substring(index_separateur + 1).toInt();
+        nouvelleCmd.action = raw.substring(0, index_separateur);          // "cmd" + ":"
+        nouvelleCmd.valeur = raw.substring(index_separateur + 1).toInt(); //":" + "valeur"
       }
       else
       {
@@ -44,14 +44,20 @@ void writeCmd(Command commande)
 
   if (prochainIndex == indexRead)
   {
-    Serial.println("ERREUR : Buffer plein, commande ignoree");
+    Serial1.println("ERREUR : Buffer plein, commande ignoree");
   }
   else
   {
+    int places_libres = (indexRead - indexWrite - 1 + 10) % 10;
+    Serial1.print("[BUFFER] Ecriture [");
+    Serial1.print(indexWrite);
+    Serial1.print("] - Places restantes : ");
+    Serial1.println(places_libres);
+
     listCmd[indexWrite] = commande;
     indexWrite = prochainIndex;
 
-    Serial.print("Commande ajoutee a l'index: ");
-    Serial.println(indexWrite);
+    Serial1.print("Commande ajoutee a l'index: ");
+    Serial1.println(indexWrite);
   }
 }

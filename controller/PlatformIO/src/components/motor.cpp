@@ -1,15 +1,30 @@
 #include "components/motor.hpp"
+#include "constants.hpp"
 
 AF_DCMotor moteurAvD(1);
 AF_DCMotor moteurAvG(2);
 AF_DCMotor moteurArG(3);
 AF_DCMotor moteurArD(4);
 
+void vitesseAvantApres(int vitesse, int vitesseG)
+{
+  Serial1.print("[MOTEUR] PWM Droit: ");
+  Serial1.print(vitesse);
+  Serial1.print(" | PWM Gauche (Corrigé): ");
+  Serial1.println(vitesseG);
+}
 void setspeedroue(int vitesse)
 {
-  moteurAvG.setSpeed(vitesse);
+  int vitesseG = constrain(vitesse + K_CORRECTION_GAUCHE, 0, 255); // pour ne pas depasser 255
+
+  // log vitesse avant et apres correction
+  vitesseAvantApres(vitesse, vitesseG);
+
+  int vitesseD = constrain(vitesse, 0, 255);
+
+  moteurAvG.setSpeed(vitesseG);
   moteurAvD.setSpeed(vitesse);
-  moteurArG.setSpeed(vitesse);
+  moteurArG.setSpeed(vitesseG);
   moteurArD.setSpeed(vitesse);
 }
 

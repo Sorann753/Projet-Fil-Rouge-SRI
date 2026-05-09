@@ -22,8 +22,14 @@ typedef struct IntCoordinate_t {
 
 typedef struct PolarCoordinate_t {
     float dist;
-    float theta;
+    float theta; //rad
 } PolarCoordinate;
+
+typedef struct Coordinate_t {
+    float x;
+    float y;
+} Coordinate;
+
 
 /*---- CONSTANTES ----*/
 #ifndef PI
@@ -43,8 +49,18 @@ float degr_to_rad(float angle_deg);
 float rad_to_degr(float angle_rad);
 
 /**
+ * @brief convertie des coordonnées polaires en coordonnée cartésienne
+ */
+Coordinate PolarToCartesian(PolarCoordinate polarCoordinate);
+
+/**
  * @brief find the euclidean distance between two points
  */
 double euclidDist(IntCoordinate P1, IntCoordinate P2);
+
+/**
+ * @brief find the euclidean distance between two cartesian points
+ */
+double cartesianDist(Coordinate P1, Coordinate P2);
 
 #endif

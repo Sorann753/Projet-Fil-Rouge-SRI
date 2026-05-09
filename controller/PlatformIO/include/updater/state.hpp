@@ -3,18 +3,22 @@
 
 #include <Arduino.h>
 
-enum State {
+enum State
+{
     IDLE,
     MOVING,
     EMERGENCY
 };
 
-extern unsigned long tempsFinAction;
-extern State currentState;
+struct RobotState
+{
+    State state;
+    unsigned long tempsFinAction;
+};
 
 /**
  * @brief Gère les transitions entre les états
  */
-void updateState();
+RobotState updateState(RobotState current, int distAv, unsigned long dernierMessagePi);
 
 #endif
