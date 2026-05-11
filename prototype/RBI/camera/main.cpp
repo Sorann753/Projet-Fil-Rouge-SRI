@@ -8,6 +8,7 @@
 
 #include "libcamera/libcamera.h"
 
+#include "pfr-core/include/utils/matrix.h"
 #include "pfr-core/include/vision/image.h"
 
 static std::shared_ptr<libcamera::Camera> camera;
@@ -232,8 +233,9 @@ public:
         std::size_t size = buffer->planes()[0].length;
 
         MappedImgBuffer content(fd, size);
-        if(!content.isValid()) return;
+        if(!content.isValid) return;
 
+        imgReady = std::move(content);
         readyConf = stream->configuration();
 
         // keep the camera going
@@ -260,10 +262,13 @@ int main(){
     using namespace std::chrono_literals;
     RpiCamera rpicam;
 
-    ImageOwner img = rpicam.consumeImage();
     std::cout << "a mimir" << std::endl;
-    std::this_thread::sleep_for(3000ms);   
-    std::cout << "end" << std::endl;
+    std::this_thread::sleep_for(100ms);   
 
+    ImageOwner img = rpicam.consumeImage();
+
+    std::cout << "[INFO] first pixel color : " << img(0, 0).R << "-" << img(0, 0).G << "-" << img(0, 0).B << std::endl;
+    
+    std::cout << "end" << std::endl;
     return 0;
 }
