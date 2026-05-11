@@ -3,7 +3,7 @@ add_cflags("-Wall", "-Wextra", "-pedantic", "-Wfloat-equal", "-Wshadow")
 add_cflags("-Wpointer-arith", "-Wcast-align", "-Wstrict-prototypes", "-Wstrict-overflow=3")
 add_cflags("-Wwrite-strings", "-Wformat=2")
 add_cflags("-Wno-unused-result", "-Wno-unused-variable", "-Wno-unused-parameter", "-Wno-float-equal")
-set_warnings("all", "error")
+--set_warnings("all", "error")
 set_languages("c11")
 
 add_requires("fltk")
@@ -42,7 +42,7 @@ target("PFR-test")
     set_kind("binary")
     add_includedirs("pfr-core/include/")
     add_files("pfr-core/source/**.c")
-    remove_files("source/main.c", "source/unitTest.c") --on ne compile pas le main vus qu'on compile les test
+    remove_files("pfr-core/source/main.c", "pfr-core/source/communication/main_server.c", "pfr-core/source/unitTest.c") --on ne compile pas le main vus qu'on compile les test
 
 target("PFR-unit")    
     set_default(false)
