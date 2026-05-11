@@ -7,10 +7,10 @@ langue = fr # fr or en
 simulation_open_on_start = off # on or off
 
 [path]
-python_simulation_path = source/actuator/Simulator.py
-python_vocal_interpreter_fr = source/controlMod/VoiceInterface/vocalInterpreter_FR.py
-python_vocal_interpreter_en = source/controlMod/VoiceInterface/vocalInterpreter_EN.py
-python_lidar_script = source/cartography/lidar_scan.py
+python_simulation_path = pfr-core/source/actuator/Simulator.py
+python_vocal_interpreter_fr = pfr-core/source/controlMod/VoiceInterface/vocalInterpreter_FR.py
+python_vocal_interpreter_en = pfr-core/source/controlMod/VoiceInterface/vocalInterpreter_EN.py
+python_lidar_script = pfr-core/source/cartography/lidar_scan.py
 history_folder = history
 image_folder = data
 

@@ -34,7 +34,7 @@ int lidar_start() {
         if (!rel_path) exit(1);
 
         char full_path[1024];
-        snprintf(full_path, sizeof(full_path), "../../../../%s", rel_path);
+        snprintf(full_path, sizeof(full_path), "%s", rel_path);
         free(rel_path);
 
         execlp("python3", "python3", "-u", full_path, NULL);

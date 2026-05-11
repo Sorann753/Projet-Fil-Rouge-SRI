@@ -33,7 +33,7 @@ void arduinoTest(void)
             printf("[DATA] Etat: %d | Action: %s | Temps restant: %d ms | Av: %d\n",
                    data.state, data.cmd, data.duration, data.distAv);
         }
-        usleep(10000);
+        sleep(1);
     }
 
     printf("\n--- TEST 2 : BACKWARD ---\n");
@@ -47,7 +47,7 @@ void arduinoTest(void)
             printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n",
                    data.state, data.cmd, data.distAv);
         }
-        usleep(10000);
+        sleep(1);
     }
 
     printf("\n--- TEST 3 : TURN LEFT---\n");
@@ -61,7 +61,7 @@ void arduinoTest(void)
             printf("[DATA] Etat: %d | Action: %s | Distances -> Av:%d\n",
                    data.state, data.cmd, data.distAv);
         }
-        usleep(10000);
+        sleep(1);
     }
 
     sendCommand("S", 180);

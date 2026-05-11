@@ -43,7 +43,8 @@ target("PFR-test")
     add_includedirs("pfr-core/include/")
     add_files("pfr-core/source/**.c")
     remove_files("pfr-core/source/main.c", "pfr-core/source/communication/main_server.c", "pfr-core/source/unitTest.c") --on ne compile pas le main vus qu'on compile les test
-
+    set_rundir("$(projectdir)")
+    
 target("PFR-unit")    
     set_default(false)
     set_rules("mode.debug")
