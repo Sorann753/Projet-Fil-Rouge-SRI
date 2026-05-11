@@ -9,9 +9,10 @@ set_languages("c11")
 add_requires("fltk")
 
 target("PFR-simulator")
+    set_default(false )
     set_kind("binary")
-    add_includedirs("include/")
-    add_files("source/**.c")
+    add_includedirs("pfr-core/include/")
+    add_files("pfr-core/source/**.c")
     remove_files("source/test.c", "source/unitTest.c", "source/testCases/**c") --les trucs a ne pas compiler
 
 target("PFR-GUI")
@@ -23,10 +24,15 @@ target("PFR-GUI")
 
 
 target("PFR-hardware")
-    set_default(false)
     set_kind("binary")
-    add_includedirs("include/")
-    add_files("source/*.c")
+    add_includedirs("pfr-core/include/")
+    add_includedirs("pfr-core/include/utils/")
+    add_includedirs("raspberry/include/")
+
+    add_files("pfr-core/source/*.c")
+    add_files("raspberry/source/*.cpp")
+
+    remove_files("pfr-core/source/main.c", "pfr-core/source/test.c", "pfr-core/source/unitTest.c", "pfr-core/source/testCases/**c") --les trucs a ne pas compiler
 
 
 
@@ -34,16 +40,16 @@ target("PFR-test")
     set_default(false)
     set_rules("mode.debug")
     set_kind("binary")
-    add_includedirs("include/")
-    add_files("source/**.c")
+    add_includedirs("pfr-core/include/")
+    add_files("pfr-core/source/**.c")
     remove_files("source/main.c", "source/unitTest.c") --on ne compile pas le main vus qu'on compile les test
 
 target("PFR-unit")    
     set_default(false)
     set_rules("mode.debug")
     set_kind("binary")
-    add_includedirs("include/")
-    add_files("source/**.c")
+    add_includedirs("pfr-core/include/")
+    add_files("pfr-core/source/**.c")
     remove_files("source/main.c", "source/test.c") --on ne compile pas le main vus qu'on compile les test
 
 
