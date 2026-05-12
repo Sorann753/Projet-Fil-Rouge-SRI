@@ -1,3 +1,5 @@
+add_rules("mode.debug", "mode.release")
+
 set_languages("cxx17")
 add_requires("camera", {system = true})
 add_requires("camera-base", {system = true})

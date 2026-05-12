@@ -20,8 +20,8 @@ typedef uint8_t byte;
 typedef struct Matrix_t {
     void* content;
 
-    const size_t lines;
-    const size_t columns;
+    size_t lines;
+    size_t columns;
 
     bool isValid;
 } Matrix;

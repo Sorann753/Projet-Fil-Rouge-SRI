@@ -29,10 +29,10 @@ target("PFR-hardware")
     add_includedirs("pfr-core/include/utils/")
     add_includedirs("raspberry/include/")
 
-    add_files("pfr-core/source/*.c")
-    add_files("raspberry/source/*.cpp")
+    add_files("pfr-core/source/**.c")
+    add_files("raspberry/source/**.cpp")
 
-    remove_files("pfr-core/source/main.c", "pfr-core/source/test.c", "pfr-core/source/unitTest.c", "pfr-core/source/testCases/**c") --les trucs a ne pas compiler
+    remove_files("pfr-core/source/communication/main_server.c", "pfr-core/source/main.c", "pfr-core/source/test.c", "pfr-core/source/unitTest.c", "pfr-core/source/testCases/**c") --les trucs a ne pas compiler
 
 
 

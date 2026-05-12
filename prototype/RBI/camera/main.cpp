@@ -3,6 +3,7 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <mutex>
 
 #include <sys/mman.h>
 
@@ -17,6 +18,8 @@ static std::shared_ptr<libcamera::Camera> camera;
  * @brief RAII class to manage the mapped page
  */
 struct MappedImgBuffer{
+    MappedImgBuffer() = default;
+
     MappedImgBuffer(int fd, std::size_t sz) : _size(sz)
     {
         data = mmap(NULL, sz, PROT_READ, MAP_SHARED, fd, 0);
@@ -24,16 +27,18 @@ struct MappedImgBuffer{
     }
     ~MappedImgBuffer(){
         if(data != MAP_FAILED){
+            // std::cout << "[DEBUG] - free img buffer" << std::endl;
             munmap(data, _size);
         }
     }
 
     // move constructors
     MappedImgBuffer(MappedImgBuffer&& other) noexcept
-    : data(other.data), _size(other._size)
+    : data(other.data), _size(other._size), isValid(other.isValid)
     {
-        other.data = nullptr; //we stole the data
+        other.data = 0; //we stole the data
         other._size = 0;
+        other.isValid = false;
     }
 
     MappedImgBuffer& operator=(MappedImgBuffer&& other) noexcept {
@@ -42,10 +47,13 @@ struct MappedImgBuffer{
                 munmap(data, _size);
             }
             data = other.data;
-            other.data = nullptr;
+            other.data = 0;
 
             _size = other._size;
             other._size = 0;
+
+            isValid = other.isValid;
+            other.isValid = false;
         }
         return *this;
     }
@@ -55,12 +63,14 @@ struct MappedImgBuffer{
     MappedImgBuffer& operator=(const MappedImgBuffer&) = delete;
 
     const uint8_t* getPixels() const {
+        if(!isValid) return nullptr;
+
         return static_cast<uint8_t*>(data);
     }
 
     bool isValid = false;
-    void* data;
-    std::size_t _size;
+    void* data = nullptr;
+    std::size_t _size = 0;
 };
 
 /**
@@ -75,8 +85,41 @@ struct ImageOwner{
         isValid = img.isValid;
     }
     ~ImageOwner(){
+        // std::cout << "[DEBUG] free matrix" << std::endl;
         freeMatrix(&img);
     }
+
+    ImageOwner(ImageOwner&& other) : img({nullptr, other.img.lines, other.img.columns, other.isValid})
+    {
+        img.content = other.img.content;
+        other.img.content = 0;
+
+        this->isValid = other.isValid;
+        other.isValid = false;
+    }
+
+    ImageOwner& operator=(ImageOwner&& other){
+        if(this != &other){
+            if(img.isValid){
+                freeMatrix(&img);
+            }
+
+            img.columns = other.img.columns;
+            img.lines = other.img.lines;
+
+            img.content = other.img.content;
+            other.img.content = 0;
+
+            img.isValid = other.isValid;
+            this->isValid = other.isValid;
+            other.isValid = false;
+        }
+        return *this;
+    }
+
+    // forbid the copy
+    ImageOwner(const ImageOwner&) = delete;
+    ImageOwner& operator=(const ImageOwner&) = delete;
 
     /**
      * @brief allow us to get pixels with simple image(x, y) access
@@ -95,18 +138,33 @@ ImageOwner BufferToImage(const MappedImgBuffer& dataBuffer, std::size_t width, s
 {
     // pixels is a 3D matrix here
     const uint8_t* pixels = dataBuffer.getPixels();
+    if(pixels == nullptr){
+        return ImageOwner();
+    }
+    
     ImageOwner newImage(heigh, width);
+    if(!newImage.isValid){
+        std::cout << "[DEBUG] image invalid at creation???" << std::endl;
+    }
+
+    std::cout << "[INFO] - buffer : " << width << " " << heigh << " " << stride << std::endl;
+    std::cout << "[INFO] - new image : " << newImage.img.columns << " " << newImage.img.lines << " " << newImage.isValid << std::endl;
 
     // we're pretty much forced to make a copy there to have the proper type
-    for(auto x = 0; x < width; x++){
-        for(auto y = 0; y < heigh; y++){
-            std::size_t id = (y * stride) + (x * 3);
+    for(auto y = 0; y < heigh; y++){
+        for(auto x = 0; x < width; x++){
+            std::size_t id = (y * stride) + (x * 4);
+            assert(id < dataBuffer._size);
 
-            newImage(x, y).R = pixels[id + 0];
+            newImage(x, y).B = pixels[id + 0];
             newImage(x, y).G = pixels[id + 1];
-            newImage(x, y).B = pixels[id + 2];
+            newImage(x, y).R = pixels[id + 2];
         }
     }
+
+    // std::cout << "[DEBUG] image validity : " << newImage.isValid << std::endl;
+
+    // std::cout << "[DEBUG] - buffer converted" << std::endl;
 
     return newImage;
 }
@@ -119,7 +177,7 @@ public:
 
         // list the existing camera for debug
         for (auto const &camera : cm->cameras()){
-            std::cout << "[DEBUG] - " << camera->id() << std::endl;
+            // std::cout << "[DEBUG] - " << camera->id() << std::endl;
         }
 
         auto cameras = cm->cameras();
@@ -200,6 +258,7 @@ public:
     }
 
     ~RpiCamera(){
+        // std::cout << "[DEBUG] stopping the camera" << std::endl;
         camera->stop();
         camera->release();
         if(stream != nullptr){
@@ -208,6 +267,7 @@ public:
         }
         camera.reset();
         cm->stop();
+        // std::cout << "[DEBUG] camera terminated" << std::endl;
     }
 
     ImageOwner consumeImage(){
@@ -216,8 +276,8 @@ public:
             return ImageOwner();
         }
 
-        ImageOwner img = BufferToImage(imgReady, readyConf.size.width, readyConf.size.height, readyConf.stride);
-        return img;
+        std::lock_guard<std::mutex> lock(imgLock);
+        return BufferToImage(imgReady, readyConf.size.width, readyConf.size.height, readyConf.stride);
     }
 
     static void requestComplete(libcamera::Request* request){
@@ -231,12 +291,19 @@ public:
         auto [stream, buffer] = *(request->buffers().begin());
         int fd = buffer->planes()[0].fd.get();
         std::size_t size = buffer->planes()[0].length;
+        std::cout << "buffer offset : " << buffer->planes()[0].offset << std::endl;
 
         MappedImgBuffer content(fd, size);
         if(!content.isValid) return;
 
-        imgReady = std::move(content);
-        readyConf = stream->configuration();
+        { // atomic operation
+            std::lock_guard<std::mutex> lock(imgLock);
+            // std::cout << "[DEBUG] atomic in" << std::endl;
+            imgReady = std::move(content);
+            std::cout << "(*)" << '\n';
+            readyConf = stream->configuration();
+            // std::cout << "[DEBUG] atomic out" << std::endl;
+        }
 
         // keep the camera going
         request->reuse(Request::ReuseBuffers);
@@ -249,9 +316,9 @@ private:
     libcamera::Stream* stream = nullptr;
     std::vector<std::unique_ptr<libcamera::Request>> requests;
 
-    //TODO : make thread safe
-    static MappedImgBuffer imgReady;
-    static libcamera::StreamConfiguration readyConf;
+    inline static std::mutex imgLock;
+    inline static MappedImgBuffer imgReady;
+    inline static libcamera::StreamConfiguration readyConf;
 
     bool isValid = false;
 };
@@ -263,11 +330,20 @@ int main(){
     RpiCamera rpicam;
 
     std::cout << "a mimir" << std::endl;
-    std::this_thread::sleep_for(100ms);   
+    std::this_thread::sleep_for(3000ms);   
 
-    ImageOwner img = rpicam.consumeImage();
+    ImageOwner img (rpicam.consumeImage());
+    // std::cout << "[DEBUG] - image consumed" << std::endl;
+    // std::cout << "[DEBUG] - image validity outside : " << img.isValid << std::endl;
 
-    std::cout << "[INFO] first pixel color : " << img(0, 0).R << "-" << img(0, 0).G << "-" << img(0, 0).B << std::endl;
+    if(!img.isValid){
+        std::cout << "[ERROR] the image was invalid" << std::endl;
+    }
+    else{
+        std::cout << "[INFO] first pixel color : " << (int)(img(0, 0).R) << "-" << (int)(img(0, 0).G) << "-" << (int)(img(0, 0).B) << std::endl;
+
+        std::cout << "[SUCCESS]" << std::endl;
+    }
     
     std::cout << "end" << std::endl;
     return 0;

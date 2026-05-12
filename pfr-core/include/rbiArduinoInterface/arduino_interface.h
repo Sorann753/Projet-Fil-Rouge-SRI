@@ -9,8 +9,8 @@ extern "C" {
 
 typedef struct
 {
-    int state;
     char cmd[32];
+    int state;
     int duration;
     int distAv;
     int distG;
@@ -27,7 +27,7 @@ enum MODE
 int initSerial(const char *port);
 void sendCommand(const char *action, int value);
 char* readArduino(void);
-int parseTelemetry(char *line, RobotData *data);
+int parseTelemetry(const char *line, RobotData *data);
 void closeArduino(void);
 
 #ifdef __cplusplus

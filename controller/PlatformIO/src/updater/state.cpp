@@ -109,14 +109,14 @@ RobotState watchdogVerification(RobotState currentState, unsigned long dernierMe
 int defineSpeedRatio(String action)
 {
     // si on a forward/backward on utilise CM/sec si turn alors DEG/sec
-    float ratio = (action == "F" || action == "B") ? CM_PAR_SECONDE : DEG_PAR_SECONDE;
-
-    if (action == "F" || action == "B")
+    if (action == "F" || action == "B"){
         setspeedroue(FORWARD_SPEED);
-    else
+        return CM_PAR_SECONDE;
+    }
+    else{
         setspeedroue(TURN_SPEED);
-
-    return ratio;
+        return DEG_PAR_SECONDE;
+    }
 }
 
 //---FONCTION DE TRANSITION---

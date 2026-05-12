@@ -112,7 +112,7 @@ char *readArduino(void)
 }
 
 /*stocket les donner recuperer depuis l'arduino*/
-int parseTelemetry(char *line, RobotData *data)
+int parseTelemetry(const char *line, RobotData *data)
 {
     if (line == NULL)
         return 0;
