@@ -1,5 +1,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <errno.h>
@@ -80,4 +83,7 @@ Image convolut(const Image* img, const Matrix byteMatrix);
 uint32_t packPixel(Pixel rawPixel);
 Pixel unpackPixel(uint32_t packedPixel);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

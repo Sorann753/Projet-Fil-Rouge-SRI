@@ -1,5 +1,8 @@
 #ifndef HISTORY_H
 #define HISTORY_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <time.h>
@@ -18,4 +21,7 @@ void history_log(HistoryLevel level, const char* message);
 
 void history_close(void);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

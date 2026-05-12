@@ -1,5 +1,8 @@
 #ifndef ARDUINO_INTERFACE_H
 #define ARDUINO_INTERFACE_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define DIST_LIMITE_AVANT 40   // Distance s'arrêter=>tourner
 #define DIST_REPRISE_MARCHE 60 // Distance reprise
@@ -27,4 +30,7 @@ char* readArduino(void);
 int parseTelemetry(char *line, RobotData *data);
 void closeArduino(void);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

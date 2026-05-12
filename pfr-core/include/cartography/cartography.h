@@ -1,5 +1,8 @@
 #ifndef CARTOGRAPHY_H
 #define CARTOGRAPHY_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,4 +51,7 @@ Shape fitRect(Cluster obj);
 Shape fitCirle(Cluster obj);
 Shape* makeShapes(Cluster* clusters, size_t count);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

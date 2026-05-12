@@ -5,6 +5,9 @@
 
 #ifndef MATRIX_IMPL_H
 #define MATRIX_IMPL_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h> 
 
@@ -53,4 +56,7 @@ Matrix byte_scaleMatrix(const Matrix* const first, byte scalar);
 
 Matrix byte_multiplyMatrix(const Matrix* const first, const Matrix* const second);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

@@ -1,5 +1,8 @@
 #ifndef TCP_SERVER_H
 #define TCP_SERVER_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <netinet/tcp.h>
 
@@ -40,4 +43,7 @@ int read_message(int client_socket, char *buffer, int buffer_size);
  */
 int send_message(int client_socket, const char *message);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

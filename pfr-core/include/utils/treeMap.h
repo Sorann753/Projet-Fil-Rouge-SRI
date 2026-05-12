@@ -5,6 +5,9 @@
 
 #ifndef TREE_MAP_H
 #define TREE_MAP_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -105,4 +108,7 @@ void rebalanceTree(TreeMap** map);
  */
 bool needRebalancing(const TreeMap* map);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

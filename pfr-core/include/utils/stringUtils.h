@@ -1,5 +1,8 @@
 #ifndef STRING_UTILS_H
 #define STRING_UTILS_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -29,4 +32,7 @@ size_t readln(char* out, size_t maxlen);
 char** split(const char* source, const char* delimiter);
 */
 
+#ifdef __cplusplus
+}
+#endif
 #endif

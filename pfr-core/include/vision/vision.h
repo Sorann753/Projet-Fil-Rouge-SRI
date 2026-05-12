@@ -1,6 +1,10 @@
 #ifndef VISION_H
 #define VISION_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <time.h>
 #include <stdlib.h>
 
@@ -112,4 +116,7 @@ direction_t objectDirection(IntCoordinate ObjectCenter, int32_t delta);
 
 bool exportBallsToFile(const char* outPath, BallArray balls);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

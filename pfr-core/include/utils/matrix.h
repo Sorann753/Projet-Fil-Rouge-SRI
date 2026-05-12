@@ -5,6 +5,9 @@
 
 #ifndef MATRIX_H
 #define MATRIX_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -35,4 +38,7 @@ size_t matrixGetIndex(const Matrix* const mat, const size_t x, const size_t y);
 
 bool isValidAccess(const Matrix* const mat, const size_t x, const size_t y);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

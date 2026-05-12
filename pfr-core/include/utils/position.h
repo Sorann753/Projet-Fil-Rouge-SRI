@@ -3,6 +3,9 @@
  */
 #ifndef __POSITION_H__
 #define __POSITION_H__
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <math.h>
 
@@ -63,4 +66,7 @@ double euclidDist(IntCoordinate P1, IntCoordinate P2);
  */
 double cartesianDist(Coordinate P1, Coordinate P2);
 
+#ifdef __cplusplus
+}
+#endif
 #endif
