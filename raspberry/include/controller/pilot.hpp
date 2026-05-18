@@ -63,7 +63,7 @@ private:
     ArduinoController& hardware;
     int goal; //TODO
     std::vector<int> orders; //TODO
-    int model; //fr
+    int model; //TODO
 };
 
 struct ManualPilot{

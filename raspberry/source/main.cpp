@@ -23,6 +23,9 @@ static std::mutex arduinoMtx;
 
 
 
+/** @note the following blocks have been put as comments
+ * because they are unfinished and i tried getting
+ * the minimum working for the presentation */
 
 // // temporary just to silence the errors
 // namespace libcamera{
@@ -62,20 +65,20 @@ static std::mutex arduinoMtx;
 //     int scan();
 // };
 
-// class History {
-// public:
-//     History(){
-//         history_init();
-//     }
+class History {
+public:
+    History(){
+        history_init();
+    }
 
-//     ~History(){
-//         history_close();
-//     }
+    ~History(){
+        history_close();
+    }
 
-//     void log(HistoryLevel level, std::string msg){
-//         history_log(level, msg.c_str());
-//     }
-// };
+    void log(HistoryLevel level, std::string msg){
+        history_log(level, msg.c_str());
+    }
+};
 
 
 void sensorTask(BiChannel<int, int>& sensorChan, ArduinoController& arduino){
@@ -128,6 +131,8 @@ void controlTask(BiChannel<int, int>& netChan, BiChannel<int, int>& sensorChan, 
 int main() {
     using namespace std::chrono_literals;
 
+    /** @note the types for the network request/response and for the world model
+     * have not been finished yet, those int are placeholders */
     BiChannel<int, int> networkChan;
     BiChannel<int, int> sensorChan;
 
@@ -137,7 +142,8 @@ int main() {
     auto networkProcess = std::thread(&networkTask, std::ref(networkChan));
     auto controlProcess = std::thread(&controlTask, std::ref(networkChan), std::ref(sensorChan), std::ref(arduino));
 
-    std::this_thread::sleep_for(3000ms);
+    // for testing purposes
+    std::this_thread::sleep_for(3000ms); 
     programStop = true;
 
     networkProcess.join();
